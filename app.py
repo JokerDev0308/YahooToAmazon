@@ -6,7 +6,6 @@ import os
 from pathlib import Path
 from session_manager import SessionManager
 import config
-from http.cookies import SimpleCookie
 
 session_manager = SessionManager()
 
@@ -31,26 +30,6 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Column name mappings
-column_name_mapping = {
-    'JAN': 'JAN（マスタ）',
-    'price': '価格（マスタ）',
-    'Yahoo Price': 'yahoo_実質価格',
-    'Rakuten Price': '楽天_実質価格',
-    'Price Difference': '価格差（マスタ価格‐Y!と楽の安い方）',
-    'Min Price URL': '対象リンク（Y!と楽の安い方）',
-    'datetime': 'データ取得時間（Y!と楽の安い方）'
-}
-
-ordered_columns = [
-    'JAN（マスタ）',
-    '価格（マスタ）',
-    'yahoo_実質価格',
-    '楽天_実質価格',
-    '価格差（マスタ価格‐Y!と楽の安い方）',
-    '対象リンク（Y!と楽の安い方）',
-    'データ取得時間（Y!と楽の安い方）'
-]
 
 # Main application class
 class PriceScraperUI:
@@ -67,8 +46,6 @@ class PriceScraperUI:
 
             if st.button('リロード', use_container_width=True):
                 st.rerun()
-
-            self.download_excel()
 
             # Logout button
             if st.button("ログアウト", use_container_width=True):
@@ -115,24 +92,24 @@ class PriceScraperUI:
 
 
     def _handle_file_upload(self):
-        uploaded_file = st.file_uploader("JANコードを含むCSVファイルを選択", type="csv")
+        uploaded_file = st.file_uploader("Product Url List", type="xlsx")
         if uploaded_file is not None:
-            jan_df = pd.read_csv(uploaded_file)
-            st.write("JANコードが読み込まれました:", len(jan_df))
+            jan_df = pd.read_excel(uploaded_file)
+            st.write("The product list has been read:", len(jan_df))
             jan_df.index = jan_df.index + 1
             height = min(len(jan_df) * 35 + 38, 800)
-            st.dataframe(jan_df, use_container_width=True, height=height, key="jancode_update")
+            st.dataframe(jan_df, use_container_width=True, height=height, key="product_list_update")
 
-            jan_df.to_csv(config.JANCODE_SCV, index=False)
-            st.success(f"JANコードが保存されました {config.JANCODE_SCV}")
+            jan_df.to_excel(config.SCRAPED_XLSX, index=False)
+            st.success(f"Product list was saved {config.SCRAPED_XLSX}")
         else:
             try:
-                df = pd.read_csv(config.JANCODE_SCV)
+                df = pd.read_excel(config.SCRAPED_XLSX)
                 df.index = df.index + 1
                 height = min(len(df) * 35 + 38, 800)
-                st.dataframe(df, use_container_width=True, height=height, key="jancode_original")
+                st.dataframe(df, use_container_width=True, height=height, key="scraped_product_list")
             except FileNotFoundError:
-                st.warning("JANコードデータはまだ利用できません。")
+                st.warning("Product list data is not yet available.")
 
     def _setup_scraping_controls(self):
         st.subheader("スクレイピング制御")
@@ -156,42 +133,15 @@ class PriceScraperUI:
 
     def display_main_content(self):
         try:
-            df = pd.read_excel(config.OUTPUT_XLSX)
-            if "Yahoo! Link" in df.columns:
-                df.drop(columns=["Yahoo! Link"], inplace=True)
+            df = pd.read_excel(config.SCRAPED_XLSX)
             
-            df = df.rename(columns=column_name_mapping)[ordered_columns]
+            df = df.rename(columns=config.column_name_mapping)[config.ordered_columns]
             df.index = df.index + 1
             height = min(len(df) * 35 + 38, 800)
             st.dataframe(df, use_container_width=True, height=height, key="result")
         except FileNotFoundError:
             st.warning("スクレイピングされたデータはまだない。")
 
-    def download_excel(self):
-        try:
-            df = pd.read_excel(config.OUTPUT_XLSX)
-            if "Yahoo! Link" in df.columns:
-                df.drop(columns=["Yahoo! Link"], inplace=True)
-
-            df = df.rename(columns=column_name_mapping)[ordered_columns]
-
-            temp_file_path = "/tmp/scraped_data_updated.xlsx"
-            df.to_excel(temp_file_path, index=False)
-
-            with open(temp_file_path, "rb") as file:
-                st.download_button(
-                    label="ダウンロード",
-                    data=file,
-                    file_name="scraped_data_updated.xlsx",
-                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                    use_container_width=True
-                )
-
-            os.remove(temp_file_path)
-        except FileNotFoundError:
-            st.warning("スクレイピングされたデータはまだない。")
-
-    
     def logout(self):
         # session = get_session_id()
         st.session_state.logged_in = False
@@ -204,11 +154,12 @@ class PriceScraperUI:
         # if session in config.LOGIN_STATE and config.LOGIN_STATE[session]:
         if st.session_state.logged_in:
             self.setup_sidebar()
-            tab1, tab2 = st.tabs(["スクラップ価格", "JANコードデータ"])
+            tab1, tab2 = st.tabs(["Fetch Data From Yahoo! Auction", "Makeing Amazon Product"])
             with tab1:
-                self.display_main_content()
-            with tab2:
                 self._handle_file_upload()
+            with tab2:
+                self.display_main_content()
+            
         else:
             self.show_login_modal()
 
