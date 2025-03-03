@@ -30,7 +30,7 @@ class YahooAuctionScraper:
                 '商品URL': url,
                 '商品画像': 'N/A',
                 '商品名': self._safe_find('.ProductTitle__text'),
-                '商品ID': self._safe_find('.ProductTitle__note'),
+                '商品ID':self._extract_id(url, "auction"),
                 '販売価格': self._safe_find('.Price__value').translate(str.maketrans("", "", "円,")),
                 '販売価格(即決)': self._safe_find('.Price__buynow').translate(str.maketrans("", "", "円,")),
                 '商品状態': self._safe_find('.ProductTable__item:contains("商品の状態") + .ProductTable__data'),
@@ -39,7 +39,7 @@ class YahooAuctionScraper:
             counts = self.driver.find_elements(By.CSS_SELECTOR, '.Count__detail')
             data['入札件数'] = counts[0].text if counts else "N/A"
             data['残り時間'] = counts[1].text if len(counts) > 1 else "N/A"
-            data['出品者ID'] = self._extract_seller_id('.Seller__name > a')
+            data['出品者ID'] = self._extract_id(self._safe_find('.Seller__name > a', 'href'), "seller")
 
             # Get all non-clone product images
             image_elements = self.driver.find_elements(By.CSS_SELECTOR, '.ProductImage__image:not([class*="clone"]) .ProductImage__inner img')
@@ -58,7 +58,7 @@ class YahooAuctionScraper:
             # for i, img_url in enumerate(image_urls, 1):
             #     data[f'image{i}'] = img_url
 
-            data['商品画像'] = data.get('image1', 'N/A')
+            data['商品画像'] = data.get('画像URL1', 'N/A')
 
             return data
 
@@ -79,19 +79,13 @@ class YahooAuctionScraper:
         except:
             return "N/A"
         
-    def _extract_seller_id(self, selector):
+    def _extract_id(self, href, pre):
         """Helper method to extract seller ID from the href of an anchor tag"""
         try:
-            element = self._safe_find(selector)
-            if element:
-                # The element should be an <a> tag, and we can extract the href attribute
-                href = element.get_attribute('href')
-                
-                # Use a regular expression to extract the seller ID from the URL
-                match = re.search(r'seller/([a-zA-Z0-9_-]+)', href)
-                if match:
-                    return match.group(1)  # Return the seller ID part from the URL
-            return None
+            # Use a regular expression to extract the seller ID from the URL
+            match = re.search(rf'{pre}/([a-zA-Z0-9_-]+)', href)
+            if match:
+                return match.group(1)  # Return the seller ID part from the URL
         except Exception as e:
             logger.error(f"Failed to extract seller ID: {e}")
             return None
