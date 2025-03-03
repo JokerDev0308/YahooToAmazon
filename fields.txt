@@ -1,0 +1,86 @@
+商品URL
+商品画像
+商品名
+商品ID
+販売価格
+販売価格(即決)
+商品状態
+入札件数
+残り時間
+画像URL1
+画像URL2
+画像URL3
+画像URL4
+画像URL5
+画像URL6
+画像URL7
+画像URL8
+出品者ID
+
+
+TemplateType=fptcustom	Version=2019.0115	上3行は Amazon.com 記入用です。上3行は変更または削除しないでください。.									出品情報-商品をサイト上で販売可能にする際に必要な項目																	寸法-商品のサイズや重量を入力する項目												商品検索情報-サーチ上で商品を検索されやすくするために必要な項目								画像-商品画像を表示させるために必要な項目。詳しくは画像説明タブを参照									
+出品者SKU	商品名	商品コード(JANコード等)	商品コードのタイプ	ブランド名	メーカー名	商品タイプ	メーカー型番	商品説明文	型番	アップデート・削除	在庫数	出荷作業日数	商品の販売価格	ポイント	商品のコンディション	商品のコンディション説明	商品の公開日	予約商品の販売開始日	商品の入荷予定日	使用しない支払い方法	配送日時指定SKUリスト	セール価格	セール時ポイント	セール開始日	セール終了日	パッケージ商品数	メーカー希望価格	発送重量	発送重量の単位	商品の重量	商品の重量の単位	商品の高さ	商品の長さ	商品の幅	商品寸法の単位	商品の重量	商品の重量の単位	商品の長さ	商品の長さの単位	商品説明の箇条書き1	商品説明の箇条書き2	商品説明の箇条書き3	商品説明の箇条書き4	商品説明の箇条書き5	推奨ブラウズノード	検索キーワード	アダルト商品	商品メイン画像URL	カラーサンプル画像URL	商品サブ画像URL1	商品サブ画像URL2	商品サブ画像URL3	商品サブ画像URL4	商品サブ画像URL5	商品サブ画像URL6	商品サブ画像URL7	商品サブ画像URL8
+item_sku	item_name	external_product_id	external_product_id_type	brand_name	manufacturer	feed_product_type	part_number	product_description	model	update_delete	quantity	fulfillment_latency	standard_price	standard_price_points_percent	condition_type	condition_note	product_site_launch_date	merchant_release_date	restock_date	optional_payment_type_exclusion	delivery_schedule_group_id	sale_price	sale_price_points	sale_from_date	sale_end_date	item_package_quantity	list_price	website_shipping_weight	website_shipping_weight_unit_of_measure	item_weight	item_weight_unit_of_measure	item_height	item_length	item_width	item_length_unit_of_measure	item_display_weight	item_display_weight_unit_of_measure	item_display_length	item_display_length_unit_of_measure	bullet_point1	bullet_point2	bullet_point3	bullet_point4	bullet_point5	recommended_browse_nodes	generic_keywords	is_adult_product	main_image_url	swatch_image_url	other_image_url1	other_image_url2	other_image_url3	other_image_url4	other_image_url5	other_image_url6	other_image_url7	other_image_url8
+
+Here’s the original list together with the English translations:
+
+1. 出品者SKU - Seller SKU  
+2. 商品名 - Product Name  
+3. 商品コード(JANコード等) - Product Code (JAN Code, etc.)  
+4. 商品コードのタイプ - Product Code Type  
+5. ブランド名 - Brand Name  
+6. メーカー名 - Manufacturer Name  
+7. 商品タイプ - Product Type  
+8. メーカー型番 - Manufacturer Model Number  
+9. 商品説明文 - Product Description  
+10. 型番 - Model Number  
+11. アップデート・削除 - Update or Delete  
+12. 在庫数 - Stock Quantity  
+13. 出荷作業日数 - Shipping Lead Time  
+14. 商品の販売価格 - Product Selling Price  
+15. ポイント - Points  
+16. 商品のコンディション - Product Condition  
+17. 商品のコンディション説明 - Product Condition Description  
+18. 商品の公開日 - Product Publish Date  
+19. 予約商品の販売開始日 - Pre-order Product Selling Start Date  
+20. 商品の入荷予定日 - Expected Product Arrival Date  
+21. 使用しない支払い方法 - Payment Methods Not Used  
+22. 配送日時指定SKUリスト - Shipping Date Specified SKU List  
+23. セール価格 - Sale Price  
+24. セール時ポイント - Sale Points  
+25. セール開始日 - Sale Start Date  
+26. セール終了日 - Sale End Date  
+27. パッケージ商品数 - Package Quantity  
+28. メーカー希望価格 - Manufacturer Suggested Retail Price  
+29. 発送重量 - Shipping Weight  
+30. 発送重量の単位 - Shipping Weight Unit  
+31. 商品の重量 - Product Weight  
+32. 商品の重量の単位 - Product Weight Unit  
+33. 商品の高さ - Product Height  
+34. 商品の長さ - Product Length  
+35. 商品の幅 - Product Width  
+36. 商品寸法の単位 - Product Dimensions Unit  
+37. 商品の重量 (Repeated) - Product Weight  
+38. 商品の重量の単位 (Repeated) - Product Weight Unit  
+39. 商品の長さ (Repeated) - Product Length  
+40. 商品の長さの単位 - Product Length Unit  
+41. 商品説明の箇条書き1 - Product Description Bullet Point 1  
+42. 商品説明の箇条書き2 - Product Description Bullet Point 2  
+43. 商品説明の箇条書き3 - Product Description Bullet Point 3  
+44. 商品説明の箇条書き4 - Product Description Bullet Point 4  
+45. 商品説明の箇条書き5 - Product Description Bullet Point 5  
+46. 推奨ブラウズノード - Recommended Browse Node  
+47. 検索キーワード - Search Keywords  
+48. アダルト商品 - Adult Product  
+49. 商品メイン画像URL - Main Product Image URL  
+50. カラーサンプル画像URL - Color Sample Image URL  
+51. 商品サブ画像URL1 - Product Sub Image URL 1  
+52. 商品サブ画像URL2 - Product Sub Image URL 2  
+53. 商品サブ画像URL3 - Product Sub Image URL 3  
+54. 商品サブ画像URL4 - Product Sub Image URL 4  
+55. 商品サブ画像URL5 - Product Sub Image URL 5  
+56. 商品サブ画像URL6 - Product Sub Image URL 6  
+57. 商品サブ画像URL7 - Product Sub Image URL 7  
+58. 商品サブ画像URL8 - Product Sub Image URL 8  
+
+Let me know if you need any further adjustments or explanations!
