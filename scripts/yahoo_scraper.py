@@ -1,6 +1,7 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import re
 from config import TIMEOUT
 from webdriver_manager import WebDriverManager
 
@@ -13,30 +14,15 @@ class YahooAuctionScraper:
     def __init__(self):
         self.driver = WebDriverManager.get_driver("yahoo")
 
-    def scrape_price(self, url):
-        """
-        Scrape price information from Yahoo Auction by product URL.
-        Returns a dictionary with 'url' and 'price', or 'N/A' if scraping fails.
-        """
-        try:
-            if not url or url == "nan":
-                logger.error("Invalid URL provided")
-                return {"price": "N/A", "url": None}
-            
-            return self._scrape_from_url(url)
-
-        except Exception as e:
-            logger.error(f"Scraping failed for URL {url}: {e}")
-            return {"price": "N/A", "url": url}
-
-    def _scrape_from_url(self, url):
+    
+    def run(self, url):
         """Helper method to scrape details from a specific Yahoo Auction product URL"""
         try:
             self.driver.get(url)
             
             # Wait for main content to load
             WebDriverWait(self.driver, TIMEOUT).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, ".Price__price"))
+                EC.presence_of_element_located((By.CSS_SELECTOR, ".ProductInformation__item"))
             )
 
             # Get page source and parse all required fields
@@ -53,7 +39,7 @@ class YahooAuctionScraper:
             counts = self.driver.find_elements(By.CSS_SELECTOR, '.Count__detail')
             data['入札件数'] = counts[0].text if counts else "N/A"
             data['残り時間'] = counts[1].text if len(counts) > 1 else "N/A"
-            data['出品者ID'] = self._safe_find('.Seller__name')
+            data['出品者ID'] = self._extract_seller_id('.Seller__name > a')
 
             # Get all non-clone product images
             image_elements = self.driver.find_elements(By.CSS_SELECTOR, '.ProductImage__image:not([class*="clone"]) .ProductImage__inner img')
@@ -92,6 +78,23 @@ class YahooAuctionScraper:
             return element.get_attribute(attribute) if attribute else element.text
         except:
             return "N/A"
+        
+    def _extract_seller_id(self, selector):
+        """Helper method to extract seller ID from the href of an anchor tag"""
+        try:
+            element = self._safe_find(selector)
+            if element:
+                # The element should be an <a> tag, and we can extract the href attribute
+                href = element.get_attribute('href')
+                
+                # Use a regular expression to extract the seller ID from the URL
+                match = re.search(r'seller/([a-zA-Z0-9_-]+)', href)
+                if match:
+                    return match.group(1)  # Return the seller ID part from the URL
+            return None
+        except Exception as e:
+            logger.error(f"Failed to extract seller ID: {e}")
+            return None
 
     def close(self):
         """Close the web driver"""

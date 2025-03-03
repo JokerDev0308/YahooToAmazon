@@ -54,7 +54,7 @@ class Scraper:
                 return {'error': 'Missing URL'}
 
             with ThreadPoolExecutor(max_workers=2) as executor:
-                future = executor.submit(self.yahoo_scraper.scrape_price, url)
+                future = executor.submit(self.yahoo_scraper.run, url)
                 return future.result()
         except Exception as e:
             return {'error': str(e)}
