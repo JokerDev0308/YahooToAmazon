@@ -155,6 +155,7 @@ class PriceScraperUI:
         if st.session_state.logged_in:
             self.setup_sidebar()
             tab1, tab2 = st.tabs(["Fetch Data From Yahoo! Auction", "Makeing Amazon Product"])
+            
             with tab1:
                 self._handle_file_upload()
             with tab2:
