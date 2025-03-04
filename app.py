@@ -138,7 +138,14 @@ class PriceScraperUI:
             df = df.rename(columns=config.column_name_mapping)[config.ordered_columns]
             df.index = df.index + 1
             height = min(len(df) * 35 + 38, 800)
-            st.dataframe(df, use_container_width=True, height=height, key="result")
+            st.dataframe(df,
+                        use_container_width=True,
+                        height=height, 
+                        key="result",
+                        column_config={
+                            "商品画像": st.column_config.ImageColumn()
+                            }
+                        )
         except FileNotFoundError:
             st.warning("スクレイピングされたデータはまだない。")
 
