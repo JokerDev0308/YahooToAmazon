@@ -31,8 +31,8 @@ class YahooAuctionScraper:
                 '商品画像': 'N/A',
                 '商品名': self._safe_find('.ProductTitle__text'),
                 '商品ID':self._extract_id(url, "auction"),
-                '販売価格': self._safe_find('.Price__value').translate(str.maketrans("", "", "円,")),
-                '販売価格(即決)': self._safe_find('.Price__value--buyNow').translate(str.maketrans("", "", "円,")),
+                '販売価格': self.clean_price(self._safe_find('.Price__value').translate(str.maketrans("", "", "円,"))),
+                '販売価格(即決)': self.clean_price(self._safe_find('.Price__value--buyNow').translate(str.maketrans("", "", "円,"))),
                 '商品状態': self._safe_find('.ProductTable__item:contains("商品の状態") + .ProductTable__data'),
             }
 
@@ -89,6 +89,24 @@ class YahooAuctionScraper:
         except Exception as e:
             logger.error(f"Failed to extract seller ID: {e}")
             return None
+        
+    def clean_price(self, price_str):
+        # Ensure the input is a string
+        if isinstance(price_str, (int, float)):  # If the input is numeric, convert it to a string
+            price_str = str(price_str)
+        
+        match = re.search(r'(\d{1,3}(?:,\d{3})*|\d+)(?=税|円)', price_str)
+        
+        if match:
+            cleaned_price = match.group(0)  
+            cleaned_price = cleaned_price.replace(',', '')  
+            
+            try:
+                return float(cleaned_price)  # Convert to float
+            except ValueError:
+                return 0.0 
+        else:
+            return 0.0  
 
     def close(self):
         """Close the web driver"""
