@@ -94,20 +94,36 @@ class PriceScraperUI:
     def _handle_file_upload(self):
         uploaded_file = st.file_uploader("Product Url List", type="xlsx")
         if uploaded_file is not None:
-            jan_df = pd.read_excel(uploaded_file)
-            st.write("The product list has been read:", len(jan_df))
-            jan_df.index = jan_df.index + 1
-            height = min(len(jan_df) * 35 + 38, 800)
-            st.dataframe(jan_df, use_container_width=True, height=height, key="product_list_update")
+            new_df = pd.read_excel(uploaded_file)
+            st.write("The product list has been read:", len(new_df))
+            new_df.index = new_df.index + 1
+            height = min(len(new_df) * 35 + 38, 800)
+            st.dataframe(
+                new_df, 
+                use_container_width=True, 
+                height=height, 
+                key="product_list_update",
+                column_config={
+                        "商品画像": st.column_config.ImageColumn()
+                        }
+                )
 
-            jan_df.to_excel(config.SCRAPED_XLSX, index=False)
+            new_df.to_excel(config.SCRAPED_XLSX, index=False)
             st.success(f"Product list was saved {config.SCRAPED_XLSX}")
         else:
             try:
                 df = pd.read_excel(config.SCRAPED_XLSX)
                 df.index = df.index + 1
                 height = min(len(df) * 35 + 38, 800)
-                st.dataframe(df, use_container_width=True, height=height, key="scraped_product_list")
+                st.dataframe(
+                    df, 
+                    use_container_width=True, 
+                    height=height, 
+                    key="scraped_product_list",
+                    column_config={
+                        "商品画像": st.column_config.ImageColumn()
+                        }
+                    )
             except FileNotFoundError:
                 st.warning("Product list data is not yet available.")
 
@@ -142,9 +158,7 @@ class PriceScraperUI:
                         use_container_width=True,
                         height=height, 
                         key="result",
-                        column_config={
-                            "商品画像": st.column_config.ImageColumn()
-                            }
+                        
                         )
         except FileNotFoundError:
             st.warning("スクレイピングされたデータはまだない。")
