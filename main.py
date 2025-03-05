@@ -72,7 +72,7 @@ class Scraper:
                     print("Scraping stopped by user")
                     break
 
-                print(f"Processing {index + 1}/{total_records}: JAN {row.get('JAN', 'N/A')}")
+                print(f"Processing {index + 1}/{total_records}")
                 
                 results = self.process_product(index, row)
                 self._update_dataframe(index, results)

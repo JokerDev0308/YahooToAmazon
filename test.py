@@ -1,24 +1,16 @@
-import re
+import streamlit as st
+import pandas as pd
 
-def clean_price(price_str):
-        # Ensure the input is a string
-        if isinstance(price_str, (int, float)):  # If the input is numeric, convert it to a string
-            price_str = str(price_str)
-        
-        match = re.search(r'(\d{1,3}(?:,\d{3})*|\d+)(?=税|円)', price_str)
-        
-        if match:
-            cleaned_price = match.group(0)  
-            cleaned_price = cleaned_price.replace(',', '')  
-            
-            try:
-                return int(cleaned_price)  # Convert to float
-            except ValueError:
-                return 0.0 
-        else:
-            return 0.0  
-        
-t = "25,100円（税 0 円）"
-s = "54,800円（税 0 円）"
-print(clean_price(t))
-print(clean_price(s))
+df = pd.DataFrame(
+    [
+       {"command": "st.selectbox", "rating": 4, "is_widget": True},
+       {"command": "st.balloons", "rating": 5, "is_widget": False},
+       {"command": "st.time_input", "rating": 3, "is_widget": True},
+   ]
+)
+edited_df = st.data_editor(df)
+
+print(edited_df)
+
+favorite_command = edited_df.loc[edited_df["rating"].idxmax()]["command"]
+st.markdown(f"Your favorite command is **{favorite_command}** 🎈")
