@@ -92,7 +92,13 @@ class Scraper:
         """Update DataFrame with scraped results."""
         if results and isinstance(results, dict):
             for key, value in results.items():
-                self.df.at[index, key] = value
+                # Ensure that values for specific columns are cast to string before assignment
+                if isinstance(value, str):
+                    self.df.at[index, key] = value
+                else:
+                    # If numeric value, cast to float or an appropriate type
+                    self.df.at[index, key] = float(value) if isinstance(value, (int, float)) else str(value)
+
 
     def _should_save_batch(self, index: int, total_records: int) -> bool:
         """Determine if current batch should be saved."""
