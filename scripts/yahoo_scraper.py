@@ -31,8 +31,8 @@ class YahooAuctionScraper:
                 '商品画像': 'N/A',
                 '商品名': self._safe_find('.ProductTitle__text'),
                 '商品ID':self._extract_id(url, "auction"),
-                '販売価格': self.clean_price(self._safe_find('.Price__value').translate(str.maketrans("", "", "円,"))),
-                '販売価格(即決)': self.clean_price(self._safe_find('.Price__value--buyNow').translate(str.maketrans("", "", "円,"))),
+                '販売価格': self.clean_price(self._safe_find('.Price__value')),
+                '販売価格(即決)': self.clean_price(self._safe_find('.Price__value--buyNow')),
                 '商品状態': self._safe_find('.ProductTable__item:contains("商品の状態") + .ProductTable__data'),
             }
 
