@@ -18,7 +18,7 @@ def make_amazon_products():
     
     amazon_products = pd.DataFrame(columns=config.amazon_columns)
     
-    yahoo_products = yahoo_products[~yahoo_products['出品者ID'].isin(exclude_sellers['seller_id'])]
+    yahoo_products = yahoo_products[~yahoo_products['出品者ID'].isin(exclude_sellers['Excluded Seller ID'])]
 
     amazon_products['item_sku'] = yahoo_products['出品者ID']
 
