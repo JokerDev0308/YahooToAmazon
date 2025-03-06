@@ -20,13 +20,15 @@ def make_amazon_products():
     
     yahoo_products = yahoo_products[~yahoo_products['出品者ID'].isin(exclude_sellers['Excluded Seller ID'])]
     yahoo_products = yahoo_products.reset_index(drop=True)
+    yahoo_products.index = yahoo_products.index + 1
+
 
     amazon_products['item_sku'] = yahoo_products['出品者ID']
 
     amazon_products['item_name'] = yahoo_products['商品名'].copy()
 
     for _, old_word, new_word in products_name_replacements[['Before Replacement', 'After Replacement']].itertuples():
-        amazon_products['item_name'] = amazon_products['item_name'].str.replace(str(old_word), str(new_word))
+        amazon_products['item_name'] = amazon_products['item_name'].replace(str(old_word), str(new_word))
 
     amazon_products['external_product_id'] = yahoo_products['商品ID']
     # amazon_products['external_product_id_type'] = ""

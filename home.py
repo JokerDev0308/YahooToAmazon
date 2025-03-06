@@ -94,7 +94,6 @@ class PriceScraperUI:
             try:
                 amazon_df = make_amazon_products()
                 if not amazon_df.empty:
-                    amazon_df['index'] = amazon_df.index + 1
                     st.dataframe(amazon_df, use_container_width=True)
                 else:
                     st.warning("No products were created. Please check your input data.")
