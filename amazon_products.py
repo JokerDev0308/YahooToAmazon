@@ -49,6 +49,10 @@ def make_amazon_products():
             ""
         )
     )
+
+    for _, row in params.iterrows():
+        amazon_products[row['Item Name']] = row['Setting Values']
+
     # amazon_products['feed_product_type'] = ""
     # amazon_products['part_number'] = ""
     # amazon_products['product_description'] = ""
