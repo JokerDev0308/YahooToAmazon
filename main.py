@@ -81,8 +81,10 @@ class Scraper:
                 if self._should_save_batch(index, total_records):
                     self.save_results()
                     sleep(3)
-                sleep(1)                  
-            self.stop_running()                
+                sleep(1)
+
+            if self._check_running():              
+                self.stop_running()                
         except Exception as e:
             print(f"Scraping error: {str(e)}")
         finally:
@@ -110,10 +112,7 @@ class Scraper:
     @staticmethod
     def _check_running() -> bool:
         """Check if scraping should continue."""
-        try:
-            return os.path.exists(config.RUNNING)
-        except Exception as e:
-            return False
+        return os.path.exists(config.RUNNING)
     
     @staticmethod
     def stop_running():
