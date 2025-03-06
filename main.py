@@ -61,7 +61,7 @@ class Scraper:
             with ThreadPoolExecutor(max_workers=2) as executor:
                 if 'auctions.yahoo.co.jp' in url:
                     future = executor.submit(self.yahoo_auction_scraper.run, url)
-                elif 'fril.jp' in url:
+                elif 'paypayfleamarket.yahoo.co.jp' in url:
                     future = executor.submit(self.yahoo_fleamaket_scraper.run, url)
                 else:
                     return {'error': 'Unsupported URL type'}
@@ -86,6 +86,7 @@ class Scraper:
                 print(f"Processing {index + 1}/{total_records}")
                 
                 results = self.process_product(index, row)
+
                 self._update_dataframe(index, results)
 
                 if self._should_save_batch(index, total_records):
