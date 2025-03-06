@@ -40,6 +40,7 @@ with col1:
         params_df,
         height=height,
         num_rows="dynamic",
+        use_container_width= True,
         column_config={
             "項目名": st.column_config.TextColumn(),
             "説明": st.column_config.TextColumn(),

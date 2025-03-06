@@ -20,7 +20,7 @@ def make_amazon_products():
     yahoo_products = yahoo_products.reset_index(drop=True)
     yahoo_products.index = yahoo_products.index + 1
 
-
+    
     amazon_products['item_sku'] = yahoo_products['出品者ID']
 
     amazon_products['item_name'] = yahoo_products['商品名']
