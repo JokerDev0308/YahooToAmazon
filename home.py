@@ -5,6 +5,7 @@ import config
 import os
 from pathlib import Path
 from session_manager import SessionManager
+from amazon_products import make_amazon_products
 import config
 
 # Main application class
@@ -89,7 +90,11 @@ class PriceScraperUI:
         file_path.unlink()
 
     def display_main_content(self):
-        st.info('coming soon')
+        if st.button('making'):
+            amazon_df = make_amazon_products()
+            st.dataframe(amazon_df, use_container_width=True)
+        else:
+            st.subheader("Comming Soon")
 
     
 
