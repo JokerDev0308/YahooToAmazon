@@ -32,7 +32,7 @@ def make_amazon_products():
 
     amazon_products['brand_name'] = yahoo_products['商品名'].apply(
         lambda product_name: next(
-            (brand for _, keyword, brand in kewords[['Keyword', 'Brand']].itertuples() 
+            (brand for _, keyword, brand in kewords[['Keyword', 'Brand Name']].itertuples() 
              if keyword in product_name), 
             ""
         )
