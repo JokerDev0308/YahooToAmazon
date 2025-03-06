@@ -32,6 +32,7 @@ class App:
         self.initialize_session_state()
         self.setup_page_config()
         
+        
     @staticmethod
     def initialize_session_state():
         if 'logged_in' not in st.session_state:
@@ -44,13 +45,13 @@ class App:
     def logout(self):
         st.session_state.logged_in = False
         config.CURRENT_USER = None
-        self.run()
+        # st.rerun()
+
         
     def get_pages(self):
         return [
-            st.Page("home.py", title="Home"),
-            st.Page("settings.py", title="Settings"),
-            st.Page(self.logout, title="Logout"),
+            st.Page("home.py", title="Home", icon="🏠"),
+            st.Page("settings.py", title="Settings", icon= "⚙️"),
         ]
         
     def authenticate(self, username: str, password: str) -> bool:
@@ -72,14 +73,15 @@ class App:
                 if st.button("ログイン"):
                     if self.authenticate(username, password):
                         st.session_state.logged_in = True
-                        st.success("ログインに成功しました!")
-                        # st.switch_page("Home")
+                        st.toast("ログインに成功しました!")
+                        st.rerun()
                     else:
                         st.error("ユーザー名またはパスワードが無効です。")
     
     def run(self):
         if st.session_state.logged_in:
             st.navigation(self.get_pages()).run()
+            st.sidebar.button('logout', on_click=self.logout, use_container_width=True, key='logout')
         else:
             self.show_login_modal()
 

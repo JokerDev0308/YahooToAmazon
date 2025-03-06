@@ -7,33 +7,26 @@ from pathlib import Path
 from session_manager import SessionManager
 import config
 
-    
+def save_df2excel(df:pd.DataFrame, excel_name:str):
+    output_path = Path(excel_name)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    df.to_excel(output_path, index=False)
+    st.success(f'Data saved to {output_path}')
+
+
 col1, col2, col3, col4, col5 = st.tabs(["Standard Parameters","Seller Exclusions","Linking With Keywords","Sales Price Table","Product Name Replacement"])
 
 with col1:
-    empty_param_df = pd.DataFrame({
-                    'Item Name': [],
-                    'Explaination': [],
-                    'Setting Values': []
-                })
+    params_df = pd.DataFrame(columns=config.parms_columns)
+    
     if Path(config.SETTING_PARAMS).exists():
-        try:
-            params_df = pd.read_excel(config.SETTING_PARAMS)
-            if params_df.empty:
-                params_df = empty_param_df.copy()
-        except Exception as e:
-            st.error(f"Error reading file: {e}")
-            params_df = empty_param_df.copy()
-    else:
-        params_df = empty_param_df.copy()
-
-    # Ensure all columns are of string type to avoid type mismatch
-    params_df['Item Name'] = params_df['Item Name'].astype(str)
-    params_df['Explaination'] = params_df['Explaination'].astype(str)
-    params_df['Setting Values'] = params_df['Setting Values'].astype(str)
-
+        saved_params_df = pd.read_excel(config.SETTING_PARAMS)
+        for col in saved_params_df:
+            if col in params_df:
+                params_df[col] = saved_params_df[col].astype(str)
+    
     # Use the data editor with the appropriate column types
-    edited = st.data_editor(
+    edited_params_df = st.data_editor(
         params_df,
         num_rows="dynamic",
         column_config={
@@ -44,32 +37,21 @@ with col1:
     )
 
     if st.button('Standard Parameters Save'):
-        output_path = Path(config.SETTING_PARAMS)
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        edited.to_excel(output_path, index=False)
-        st.success(f'Data saved to {output_path}')
+        save_df2excel(edited_params_df,config.SETTING_PARAMS)
 
 with col2:
-    empty_seller_exclution_df = pd.DataFrame({
-                    'Excluded Seller ID': []
-                })
+    seller_exclution_df = pd.DataFrame(columns=config.seller_exclution_columns)
+    
     if Path(config.SETTING_SELLER_EXCLUTIONS).exists():
-        try:
-            params_df = pd.read_excel(config.SETTING_SELLER_EXCLUTIONS)
-            if params_df.empty:
-                params_df = empty_seller_exclution_df.copy()
-        except Exception as e:
-            st.error(f"Error reading file: {e}")
-            params_df = empty_seller_exclution_df.copy()
-    else:
-        params_df = empty_seller_exclution_df.copy()
+        saved_seller_exclution_df = pd.read_excel(config.SETTING_SELLER_EXCLUTIONS)
+        for col in saved_seller_exclution_df:
+            if col in seller_exclution_df:
+                seller_exclution_df[col] = saved_seller_exclution_df[col].astype(str)
 
-    # Ensure all columns are of string type to avoid type mismatch
-    params_df['Excluded Seller ID'] = params_df['Excluded Seller ID'].astype(str)
 
     # Use the data editor with the appropriate column types
-    edited = st.data_editor(
-        params_df,
+    edited_seller_exclution_df = st.data_editor(
+        seller_exclution_df,
         num_rows="dynamic",
         column_config={
             "Excluded Seller ID": st.column_config.TextColumn(),
@@ -77,40 +59,20 @@ with col2:
     )
 
     if st.button('Excluded Seller ID Save'):
-        output_path = Path(config.SETTING_SELLER_EXCLUTIONS)
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        edited.to_excel(output_path, index=False)
-        st.success(f'Data saved to {output_path}')
+        save_df2excel(edited_seller_exclution_df,config.SETTING_SELLER_EXCLUTIONS)
 
 with col3:
-    empty_keywords_df = pd.DataFrame({
-                    'Keyword': [],
-                    'Brand Name': [],
-                    'Manufacturer': [],
-                    'Recommended Browse Nodes': [],
-                    'Generic Keywords': [],
-                })
+    keywords_df = pd.DataFrame(columns=config.keywords_columns)
+    
     if Path(config.SETTING_KEYWORDS).exists():
-        try:
-            params_df = pd.read_excel(config.SETTING_KEYWORDS)
-            if params_df.empty:
-                params_df = empty_keywords_df.copy()
-        except Exception as e:
-            st.error(f"Error reading file: {e}")
-            params_df = empty_keywords_df.copy()
-    else:
-        params_df = empty_keywords_df.copy()
-
-    # Ensure all columns are of string type to avoid type mismatch
-    params_df['Keyword'] = params_df['Keyword'].astype(str)
-    params_df['Brand Name'] = params_df['Brand Name'].astype(str)
-    params_df['Manufacturer'] = params_df['Manufacturer'].astype(str)
-    params_df['Recommended Browse Nodes'] = params_df['Recommended Browse Nodes'].astype(str)
-    params_df['Generic Keywords'] = params_df['Generic Keywords'].astype(str)
-
+        saved_keywords_df = pd.read_excel(config.SETTING_KEYWORDS)
+        for col in saved_keywords_df:
+            if col in keywords_df:
+                keywords_df[col] = saved_keywords_df[col].astype(str)
+    
     # Use the data editor with the appropriate column types
-    edited = st.data_editor(
-        params_df,
+    edited_keywords_df = st.data_editor(
+        keywords_df,
         num_rows="dynamic",
         column_config={
             "Keyword": st.column_config.TextColumn(),
@@ -122,84 +84,50 @@ with col3:
     )
 
     if st.button('Keywords Save'):
-        output_path = Path(config.SETTING_KEYWORDS)
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        edited.to_excel(output_path, index=False)
-        st.success(f'Data saved to {output_path}')
-
+        save_df2excel(edited_keywords_df,config.SETTING_KEYWORDS)
 
 with col4:
-    empty_sales_df = pd.DataFrame({
-                    'Purchase Price': [],
-                    'Amazon Sales Price': [],
-                })
+    sales_df = pd.DataFrame(columns=config.sales_columns)
+    
     if Path(config.SETTING_SALES_PRICE).exists():
-        try:
-            params_df = pd.read_excel(config.SETTING_SALES_PRICE)
-            if params_df.empty:
-                params_df = empty_sales_df.copy()
-        except Exception as e:
-            st.error(f"Error reading file: {e}")
-            params_df = empty_sales_df.copy()
-    else:
-        params_df = empty_sales_df.copy()
-
-    # Ensure all columns are of string type to avoid type mismatch
-    params_df['Purchase Price'] = params_df['Purchase Price'].astype(str)
-    params_df['Amazon Sales Price'] = params_df['Amazon Sales Price'].astype(str)
-
+        saved_sales_df = pd.read_excel(config.SETTING_SALES_PRICE)
+        for col in saved_sales_df:
+            if col in sales_df:
+                sales_df[col] = saved_sales_df[col].astype(str)
+    
     # Use the data editor with the appropriate column types
-    edited = st.data_editor(
-        params_df,
+    edited_sales_df = st.data_editor(
+        sales_df,
         num_rows="dynamic",
         column_config={
             "Purchase Price": st.column_config.TextColumn(),
-            "Amazon Sales Price": st.column_config.TextColumn(),
+            "Amazon Sales Price": st.column_config.TextColumn()
         }
     )
 
     if st.button('Sales Price Save'):
-        output_path = Path(config.SETTING_SALES_PRICE)
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        edited.to_excel(output_path, index=False)
-        st.success(f'Data saved to {output_path}')
-
-
+        save_df2excel(edited_sales_df, config.SETTING_SALES_PRICE)
 
 with col5:
-    empty_replacements_df = pd.DataFrame({
-                    'Before Replacement': [],
-                    'After Replacement': [],
-                })
+    replacements_df = pd.DataFrame(columns=config.product_name_replacements_columns)
+    
     if Path(config.SETTING_PRODUCT_NAME_REM).exists():
-        try:
-            params_df = pd.read_excel(config.SETTING_PRODUCT_NAME_REM)
-            if params_df.empty:
-                params_df = empty_replacements_df.copy()
-        except Exception as e:
-            st.error(f"Error reading file: {e}")
-            params_df = empty_replacements_df.copy()
-    else:
-        params_df = empty_replacements_df.copy()
-
-    # Ensure all columns are of string type to avoid type mismatch
-    params_df['Before Replacement'] = params_df['Before Replacement'].astype(str)
-    params_df['After Replacement'] = params_df['After Replacement'].astype(str)
-
+        saved_replacements_df = pd.read_excel(config.SETTING_PRODUCT_NAME_REM)
+        for col in saved_replacements_df:
+            if col in replacements_df:
+                replacements_df[col] = saved_replacements_df[col].astype(str)
+    
     # Use the data editor with the appropriate column types
-    edited = st.data_editor(
-        params_df,
+    edited_replacements_df = st.data_editor(
+        replacements_df,
         num_rows="dynamic",
         column_config={
             "Before Replacement": st.column_config.TextColumn(),
-            "After Replacement": st.column_config.TextColumn(),
+            "After Replacement": st.column_config.TextColumn()
         }
     )
 
     if st.button('Replacement Save'):
-        output_path = Path(config.SETTING_PRODUCT_NAME_REM)
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        edited.to_excel(output_path, index=False)
-        st.success(f'Data saved to {output_path}')
+        save_df2excel(edited_replacements_df, config.SETTING_PRODUCT_NAME_REM)
 
 

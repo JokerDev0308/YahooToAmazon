@@ -17,28 +17,7 @@ CURRENT_USER = None
 LOGIN_STATE = {}
 
 
-column_name_mapping = {
-    '商品URL': '商品URL',
-    '商品画像': '商品画像',
-    '商品名': '商品名',
-    '商品ID': '商品ID',
-    '販売価格': '販売価格',
-    '販売価格(即決)': '販売価格(即決)',
-    '商品状態': '商品状態',
-    '入札件数': '入札件数',
-    '残り時間': '残り時間',
-    '画像URL1': '画像URL1',
-    '画像URL2': '画像URL2',
-    '画像URL3': '画像URL3',
-    '画像URL4': '画像URL4',
-    '画像URL5': '画像URL5',
-    '画像URL6': '画像URL6',
-    '画像URL7': '画像URL7',
-    '画像URL8': '画像URL8',
-    '出品者ID': '出品者ID'
-}
-
-ordered_columns = [
+yahoo_columns = [
     '商品URL',
     '商品画像',
     '商品名',
@@ -59,3 +38,29 @@ ordered_columns = [
     '出品者ID'
 ]
 
+amazon_columns = [
+    'item_sku', 'item_name', 'external_product_id', 'external_product_id_type',
+    'brand_name', 'manufacturer', 'feed_product_type', 'part_number',
+    'product_description', 'model', 'update_delete', 'quantity',
+    'fulfillment_latency', 'standard_price', 'standard_price_points_percent',
+    'condition_type', 'condition_note', 'product_site_launch_date',
+    'merchant_release_date', 'restock_date', 'optional_payment_type_exclusion',
+    'delivery_schedule_group_id', 'sale_price', 'sale_price_points',
+    'sale_from_date', 'sale_end_date', 'item_package_quantity', 'list_price',
+    'website_shipping_weight', 'website_shipping_weight_unit_of_measure',
+    'item_weight', 'item_weight_unit_of_measure', 'item_height', 'item_length',
+    'item_width', 'item_length_unit_of_measure', 'item_display_weight',
+    'item_display_weight_unit_of_measure', 'item_display_length',
+    'item_display_length_unit_of_measure', 'bullet_point1', 'bullet_point2',
+    'bullet_point3', 'bullet_point4', 'bullet_point5', 'recommended_browse_nodes',
+    'generic_keywords', 'is_adult_product', 'main_image_url', 'swatch_image_url',
+    'other_image_url1', 'other_image_url2', 'other_image_url3', 'other_image_url4',
+    'other_image_url5', 'other_image_url6', 'other_image_url7', 'other_image_url8'
+]
+
+
+parms_columns = ['Item Name', 'Explaination', 'Setting Values']
+seller_exclution_columns = ['Excluded Seller ID']
+keywords_columns = ['Keyword', 'Brand Name', 'Manufacturer', 'Recommended Browse Nodes', 'Generic Keywords']
+sales_columns = ['Purchase Price', 'Amazon Sales Price']
+product_name_replacements_columns = ['Before Replacement', 'After Replacement']

@@ -23,55 +23,50 @@ class PriceScraperUI:
 
     def _handle_file_upload(self):
         uploaded_file = st.file_uploader("Product Url List", type="xlsx")
+
+        yahoo_products_df = pd.DataFrame(columns=config.yahoo_columns)
+
         if uploaded_file is not None:
             new_df = pd.read_excel(uploaded_file)
-            st.write("The product list has been read:", len(new_df))
-            new_df.index = new_df.index + 1
-            height = min(len(new_df) * 35 + 38, 800)
-            st.dataframe(
-                new_df, 
-                use_container_width=True, 
-                height=height, 
-                key="product_list_update",
-                # column_config={
-                #         "商品画像": st.column_config.ImageColumn(),
-                #         "画像URL1": st.column_config.ImageColumn(),
-                #         "画像URL2": st.column_config.ImageColumn(),
-                #         "画像URL3": st.column_config.ImageColumn(),
-                #         "画像URL4": st.column_config.ImageColumn(),
-                #         "画像URL5": st.column_config.ImageColumn(),
-                #         "画像URL6": st.column_config.ImageColumn(),
-                #         "画像URL7": st.column_config.ImageColumn(),
-                #         "画像URL8": st.column_config.ImageColumn(),
-                #         }
-                )
 
-            new_df.to_excel(config.SCRAPED_XLSX, index=False)
-            st.success(f"Product list was saved {config.SCRAPED_XLSX}")
-        else:
-            try:
-                df = pd.read_excel(config.SCRAPED_XLSX)
-                df.index = df.index + 1
-                height = min(len(df) * 35 + 38, 800)
-                st.dataframe(
-                    df, 
-                    use_container_width=True, 
-                    height=height, 
-                    key="scraped_product_list",
-                    # column_config={
-                    #     "商品画像": st.column_config.ImageColumn(),
-                    #     "画像URL1": st.column_config.ImageColumn(),
-                    #     "画像URL2": st.column_config.ImageColumn(),
-                    #     "画像URL3": st.column_config.ImageColumn(),
-                    #     "画像URL4": st.column_config.ImageColumn(),
-                    #     "画像URL5": st.column_config.ImageColumn(),
-                    #     "画像URL6": st.column_config.ImageColumn(),
-                    #     "画像URL7": st.column_config.ImageColumn(),
-                    #     "画像URL8": st.column_config.ImageColumn(),
-                    #     }
-                    )
-            except FileNotFoundError:
-                st.warning("Product list data is not yet available.")
+            for col in new_df.columns:
+                if col in yahoo_products_df.columns:
+                    yahoo_products_df[col] = new_df[col]
+
+            st.write("The product list has been read:", len(new_df))
+            output_path = Path(config.SCRAPED_XLSX)
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            yahoo_products_df.to_excel(output_path, index=False)
+            st.success(f'Data saved to {output_path}')
+            
+        elif Path(config.SCRAPED_XLSX).exists():
+            df = pd.read_excel(config.SCRAPED_XLSX)
+            for col in df.columns:
+                if col in yahoo_products_df.columns:
+                    yahoo_products_df[col] = df[col]
+
+        yahoo_products_df.index = yahoo_products_df.index + 1
+        height = min(len(yahoo_products_df) * 35 + 38, 800)
+
+
+        st.dataframe(
+            yahoo_products_df, 
+            use_container_width=True, 
+            height=height, 
+            key="scraped_product_list",
+            # column_config={
+            #     "商品画像": st.column_config.ImageColumn(),
+            #     "画像URL1": st.column_config.ImageColumn(),
+            #     "画像URL2": st.column_config.ImageColumn(),
+            #     "画像URL3": st.column_config.ImageColumn(),
+            #     "画像URL4": st.column_config.ImageColumn(),
+            #     "画像URL5": st.column_config.ImageColumn(),
+            #     "画像URL6": st.column_config.ImageColumn(),
+            #     "画像URL7": st.column_config.ImageColumn(),
+            #     "画像URL8": st.column_config.ImageColumn(),
+            #     }
+            )
+           
 
     def _setup_scraping_controls(self):
         st.subheader("スクレイピング制御")
@@ -94,26 +89,13 @@ class PriceScraperUI:
         file_path.unlink()
 
     def display_main_content(self):
-        try:
-            df = pd.read_excel(config.SCRAPED_XLSX)
-            
-            df = df.rename(columns=config.column_name_mapping)[config.ordered_columns]
-            df.index = df.index + 1
-            height = min(len(df) * 35 + 38, 800)
-            st.dataframe(df,
-                        use_container_width=True,
-                        height=height, 
-                        key="result",
-                        
-                        )
-        except FileNotFoundError:
-            st.warning("スクレイピングされたデータはまだない。")
+        st.info('coming soon')
 
     
 
     def run(self):
         self.setup_sidebar()
-        tab1, tab2 = st.tabs(["Fetch Data From Yahoo! Auction", "Makeing Amazon Product"])
+        tab1, tab2 = st.tabs(["Fetch Data From Yahoo! Auction", "Making Amazon Product"])
         
         with tab1:
             self._handle_file_upload()

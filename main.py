@@ -8,6 +8,7 @@ from concurrent.futures import ThreadPoolExecutor
 from webdriver_manager import WebDriverManager
 from scripts.yahoo_scraper import YahooAuctionScraper
 import config
+from pathlib import Path
 
 class DataHandler:
     @staticmethod
@@ -80,13 +81,13 @@ class Scraper:
                 if self._should_save_batch(index, total_records):
                     self.save_results()
                     sleep(3)
-
-                sleep(1)  # Rate limiting
-                
+                sleep(1)                  
+            self.stop_running()                
         except Exception as e:
             print(f"Scraping error: {str(e)}")
         finally:
             self.cleanup()
+
 
     def _update_dataframe(self, index: int, results: Dict[str, Any]) -> None:
         """Update DataFrame with scraped results."""
@@ -110,6 +111,11 @@ class Scraper:
     def _check_running() -> bool:
         """Check if scraping should continue."""
         return os.path.exists(config.RUNNING)
+    
+    @staticmethod
+    def stop_running():
+        file_path = Path(config.RUNNING)
+        file_path.unlink()
 
     def save_results(self) -> None:
         """Save results to Excel file."""
