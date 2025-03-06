@@ -24,7 +24,7 @@ class PriceScraperUI:
 
     def _manage_product_list(self):
         yahoo_products_df = pd.DataFrame(columns=config.yahoo_columns)
-        
+
         uploaded_file = st.file_uploader("Product Url List", type="xlsx")
         if uploaded_file is not None:
             new_df = pd.read_excel(uploaded_file)
@@ -91,9 +91,10 @@ class PriceScraperUI:
     def making_amazon_products(self):
         if st.button('Create Amazon Products'):
             try:
-                amazon_df = make_amazon_products()
+                amazon_df: pd.DataFrame = make_amazon_products()
                 if not amazon_df.empty:
-                    st.dataframe(amazon_df, use_container_width=True)
+                    height = min(len(amazon_df) * 35 + 38, 800)
+                    st.dataframe(amazon_df, height=height, use_container_width=True)
                 else:
                     st.warning("No products were created. Please check your input data.")
             except Exception as e:

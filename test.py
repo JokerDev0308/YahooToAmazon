@@ -1,16 +1,2 @@
-import streamlit as st
-import pandas as pd
-
-df = pd.DataFrame(
-    [
-       {"command": "st.selectbox", "rating": 4, "is_widget": True},
-       {"command": "st.balloons", "rating": 5, "is_widget": False},
-       {"command": "st.time_input", "rating": 3, "is_widget": True},
-   ]
-)
-edited_df = st.data_editor(df)
-
-print(edited_df)
-
-favorite_command = edited_df.loc[edited_df["rating"].idxmax()]["command"]
-st.markdown(f"Your favorite command is **{favorite_command}** 🎈")
+t = "最強i7【メモリ16GB+SSD512GB/Core i7-3.20GHzWindows11/Office2021/Blu-ray/Webカメラ/Wi-Fi/筆ぐるめ/人気NECノートパソコン最強i7【メモリ16GB+SSD512GB/Core i7-3.20GHzWindows11/Office2021/Blu-ray/Webカメラ/Wi-Fi/筆ぐるめ/人気NECノートパソコン"
+print(t + "です。")

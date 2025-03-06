@@ -41,11 +41,13 @@ class Scraper:
         self.yahoo_scraper = YahooAuctionScraper()
         self.batch_size = batch_size
         self.data_handler = DataHandler()
+        
 
     def load_data(self) -> bool:
         """Load data and return success status."""
         self.df = self.data_handler.load_excel(config.SCRAPED_XLSX)
         return self.df is not None
+    
 
     def process_product(self, index: int, row: pd.Series) -> Dict[str, Any]:
         """Process a single product with error handling."""
@@ -59,6 +61,7 @@ class Scraper:
                 return future.result()
         except Exception as e:
             return {'error': str(e)}
+        
 
     def scrape_running(self) -> None:
         """Main scraping loop with improved error handling and optimization."""

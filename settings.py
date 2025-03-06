@@ -35,9 +35,10 @@ with col1:
             if col in params_df:
                 params_df[col] = saved_params_df[col].astype(str)
     
-    # Use the data editor with the appropriate column types
+    height = min(len(params_df) * 35 + 38, 800)
     edited_params_df = st.data_editor(
         params_df,
+        height=height,
         num_rows="dynamic",
         column_config={
             "Item Name": st.column_config.TextColumn(),
@@ -69,9 +70,10 @@ with col2:
                 seller_exclution_df[col] = saved_seller_exclution_df[col].astype(str)
 
 
-    # Use the data editor with the appropriate column types
+    height = min(len(seller_exclution_df) * 35 + 38, 800)
     edited_seller_exclution_df = st.data_editor(
         seller_exclution_df,
+        height=height,
         num_rows="dynamic",
         column_config={
             "Excluded Seller ID": st.column_config.TextColumn(),
@@ -100,10 +102,11 @@ with col3:
             if col in keywords_df:
                 keywords_df[col] = saved_keywords_df[col].astype(str)
     
-    # Use the data editor with the appropriate column types
+    height = min(len(keywords_df) * 35 + 38, 800)
     edited_keywords_df = st.data_editor(
         keywords_df,
         num_rows="dynamic",
+        height=height,
         column_config={
             "Keyword": st.column_config.TextColumn(),
             "Brand Name": st.column_config.TextColumn(),
@@ -135,10 +138,11 @@ with col4:
             if col in sales_df:
                 sales_df[col] = saved_sales_df[col]
     
-    # Use the data editor with the appropriate column types
+    height = min(len(sales_df) * 35 + 38, 800)
     edited_sales_df = st.data_editor(
         sales_df,
         num_rows="dynamic",
+        height=height,
         column_config={
             "Purchase Price": st.column_config.NumberColumn(),
             "Amazon Sales Price": st.column_config.NumberColumn()
@@ -169,10 +173,11 @@ with col5:
                 # Replace NaN values with empty string before converting to str
                 replacements_df[col] = saved_replacements_df[col].fillna('').astype(str)
     
-    # Use the data editor with the appropriate column types
+    height = min(len(replacements_df) * 35 + 38, 800)
     edited_replacements_df = st.data_editor(
         replacements_df,
         num_rows="dynamic",
+        height=height,
         column_config={
             "Before Replacement": st.column_config.TextColumn(),
             "After Replacement": st.column_config.TextColumn()

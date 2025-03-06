@@ -55,7 +55,7 @@ def make_amazon_products():
 
     # amazon_products['feed_product_type'] = ""
     # amazon_products['part_number'] = ""
-    # amazon_products['product_description'] = ""
+    amazon_products['product_description'] = yahoo_products['商品名'] + "です。"
     # amazon_products['model'] = ""
     # amazon_products['update_delete'] = ""
     # amazon_products['quantity'] = ""
@@ -83,7 +83,7 @@ def make_amazon_products():
     # amazon_products['item_display_weight_unit_of_measure'] = ""
     # amazon_products['item_display_length'] = ""
     # amazon_products['item_display_length_unit_of_measure'] = ""
-    # amazon_products['bullet_point1'] = ""
+    amazon_products['bullet_point1'] = yahoo_products['商品名'] + "です。"
     # amazon_products['bullet_point2'] = ""
     # amazon_products['bullet_point3'] = ""
     # amazon_products['bullet_point4'] = ""
