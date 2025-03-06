@@ -104,17 +104,16 @@ class Scraper:
 
     def _update_dataframe(self, index: int, results: Dict[str, Any]) -> None:
         """Update DataFrame with scraped results."""
-        if results and isinstance(results, dict):
-            for key, value in results.items():
-                # Ensure the column dtype is 'object' to allow any type assignment
-                if self.df[key].dtype != 'object':
-                    self.df[key] = self.df[key].astype('object')
+        for key, value in results.items():
+            # Ensure the column dtype is 'object' to allow any type assignment
+            if self.df[key].dtype != 'object':
+                self.df[key] = self.df[key].astype('object')
 
-                # Assign the value (if 'N/A', convert to NaN or assign as string if needed)
-                if value == 'N/A':  # Example handling for 'N/A'
-                    self.df.at[index, key] = 'N/A'  # Assign string 'N/A'
-                else:
-                    self.df.at[index, key] = value
+            # Assign the value (if 'N/A', convert to NaN or assign as string if needed)
+            if value == 'N/A':  # Example handling for 'N/A'
+                self.df.at[index, key] = 'N/A'  # Assign string 'N/A'
+            else:
+                self.df.at[index, key] = value
 
     def _should_save_batch(self, index: int, total_records: int) -> bool:
         """Determine if current batch should be saved."""
