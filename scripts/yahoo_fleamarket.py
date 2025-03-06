@@ -4,6 +4,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import re
 from config import TIMEOUT
 from webdriver_manager import WebDriverManager
+import config
 
 import logging
 # Configure logging
@@ -57,12 +58,7 @@ class YahooFleamarketScraper:
 
         except Exception as e:
             logger.error(f"URL scraping failed for {url}: {e}")
-            return {field: "N/A" for field in [
-                '商品URL', '商品画像', '商品名', '商品ID', '販売価格', '販売価格(即決)',
-                '商品状態', '入札件数', '残り時間', '出品者ID',
-                '画像URL1', '画像URL2', '画像URL3', '画像URL4',
-                '画像URL5', '画像URL6', '画像URL7', '画像URL8'
-            ]}
+            return {"商品URL": url} 
 
     def _safe_find(self, selector, attribute=None):
         """Helper method to safely find elements and get their text or attribute"""

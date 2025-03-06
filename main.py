@@ -64,7 +64,7 @@ class Scraper:
                 elif 'paypayfleamarket.yahoo.co.jp' in url:
                     future = executor.submit(self.yahoo_fleamaket_scraper.run, url)
                 else:
-                    return {'error': 'Unsupported URL type'}
+                    return {"商品URL":url}
                 return future.result()
         except Exception as e:
             return {'error': str(e)}
