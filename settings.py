@@ -115,7 +115,8 @@ with col5:
         saved_replacements_df = pd.read_excel(config.SETTING_PRODUCT_NAME_REM)
         for col in saved_replacements_df:
             if col in replacements_df:
-                replacements_df[col] = saved_replacements_df[col].astype(str)
+                # Replace NaN values with empty string before converting to str
+                replacements_df[col] = saved_replacements_df[col].fillna('').astype(str)
     
     # Use the data editor with the appropriate column types
     edited_replacements_df = st.data_editor(
