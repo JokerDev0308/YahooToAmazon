@@ -140,8 +140,8 @@ with col4:
         sales_df,
         num_rows="dynamic",
         column_config={
-            "Purchase Price": st.column_config.TextColumn(),
-            "Amazon Sales Price": st.column_config.TextColumn()
+            "Purchase Price": st.column_config.NumberColumn(),
+            "Amazon Sales Price": st.column_config.NumberColumn()
         }
     )
 
