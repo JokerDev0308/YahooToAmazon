@@ -14,6 +14,7 @@ setup_sales_price = pd.read_excel(config.SETTING_SALES_PRICE)
 
 
 def make_amazon_products():
+    global yahoo_products
     
     amazon_products = pd.DataFrame(columns=config.amazon_columns)
     
