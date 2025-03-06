@@ -45,13 +45,12 @@ class App:
     def logout(self):
         st.session_state.logged_in = False
         config.CURRENT_USER = None
-        # st.rerun()
 
         
     def get_pages(self):
         return [
-            st.Page("home.py", title="Home", icon="🏠"),
-            st.Page("settings.py", title="Settings", icon= "⚙️"),
+            st.Page("home.py", title="ホーム", icon="🏠"),
+            st.Page("settings.py", title="設定", icon= "⚙️"),
         ]
         
     def authenticate(self, username: str, password: str) -> bool:
@@ -81,7 +80,7 @@ class App:
     def run(self):
         if st.session_state.logged_in:
             st.navigation(self.get_pages()).run()
-            st.sidebar.button('logout', on_click=self.logout, use_container_width=True, key='logout')
+            st.sidebar.button('ログアウト', on_click=self.logout, use_container_width=True, key='logout')
         else:
             self.show_login_modal()
 

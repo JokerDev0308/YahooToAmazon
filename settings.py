@@ -11,15 +11,15 @@ def save_df2excel(df:pd.DataFrame, excel_name:str):
     output_path = Path(excel_name)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     df.to_excel(output_path, index=False)
-    st.success(f'Data saved to {output_path}')
+    st.success(f'データを {output_path} に保存しました')
 
 
-col1, col2, col3, col4, col5 = st.tabs(["Standard Parameters","Seller Exclusions","Linking With Keywords","Sales Price Table","Product Name Replacement"])
+col1, col2, col3, col4, col5 = st.tabs(["定型パラメータ","除外セラー","キーワードとの紐づけ","販売価格テーブル","商品名置換テーブル"])
 
 with col1:
     params_df = pd.DataFrame(columns=config.parms_columns)
 
-    uploaded_file = st.file_uploader("Upload standard parameters", type="xlsx")
+    uploaded_file = st.file_uploader("定型パラメータをアップロード", type="xlsx")
     if uploaded_file is not None:
         new_df = pd.read_excel(uploaded_file)
 
@@ -35,25 +35,25 @@ with col1:
             if col in params_df:
                 params_df[col] = saved_params_df[col].astype(str)
     
-    height = min(len(params_df) * 35 + 38, 800)
+    height = min(len(params_df) * 35 + 38, 500)
     edited_params_df = st.data_editor(
         params_df,
         height=height,
         num_rows="dynamic",
         column_config={
-            "Item Name": st.column_config.TextColumn(),
-            "Explaination": st.column_config.TextColumn(),
-            "Setting Values": st.column_config.TextColumn()
+            "項目名": st.column_config.TextColumn(),
+            "説明": st.column_config.TextColumn(),
+            "設定値": st.column_config.TextColumn()
         }
     )
 
-    if st.button('Standard Parameters Save'):
+    if st.button('定型パラメータを保存'):
         save_df2excel(edited_params_df,config.SETTING_PARAMS)
 
 with col2:
     seller_exclution_df = pd.DataFrame(columns=config.seller_exclution_columns)
     
-    uploaded_file = st.file_uploader("Upload Seller exclusions", type="xlsx")
+    uploaded_file = st.file_uploader("除外セラーをアップロード", type="xlsx")
     if uploaded_file is not None:
         new_df = pd.read_excel(uploaded_file)
 
@@ -70,23 +70,23 @@ with col2:
                 seller_exclution_df[col] = saved_seller_exclution_df[col].astype(str)
 
 
-    height = min(len(seller_exclution_df) * 35 + 38, 800)
+    height = min(len(seller_exclution_df) * 35 + 38, 500)
     edited_seller_exclution_df = st.data_editor(
         seller_exclution_df,
         height=height,
         num_rows="dynamic",
         column_config={
-            "Excluded Seller ID": st.column_config.TextColumn(),
+            "除外セラーID": st.column_config.TextColumn(),
         }
     )
 
-    if st.button('Seller exclusions Save'):
+    if st.button('除外セラーを保存'):
         save_df2excel(edited_seller_exclution_df,config.SETTING_SELLER_EXCLUTIONS)
 
 with col3:
     keywords_df = pd.DataFrame(columns=config.keywords_columns)
     
-    uploaded_file = st.file_uploader("Upload list of keywords to link", type="xlsx")
+    uploaded_file = st.file_uploader("キーワード紐づけリストをアップロード", type="xlsx")
     if uploaded_file is not None:
         new_df = pd.read_excel(uploaded_file)
 
@@ -102,27 +102,28 @@ with col3:
             if col in keywords_df:
                 keywords_df[col] = saved_keywords_df[col].astype(str)
     
-    height = min(len(keywords_df) * 35 + 38, 800)
+    height = min(len(keywords_df) * 35 + 38, 500)
     edited_keywords_df = st.data_editor(
         keywords_df,
         num_rows="dynamic",
+        use_container_width=True,
         height=height,
         column_config={
-            "Keyword": st.column_config.TextColumn(),
-            "Brand Name": st.column_config.TextColumn(),
-            "Manufacturer": st.column_config.TextColumn(),
-            "Recommended Browse Nodes": st.column_config.TextColumn(),
-            "Generic Keywords": st.column_config.TextColumn()
+            "キーワード": st.column_config.TextColumn(),
+            "brand_name (ブランド名)": st.column_config.TextColumn(),
+            "manufacturer (メーカ名)": st.column_config.TextColumn(),
+            "recommended_browse_nodes (推奨ブラウズノード)": st.column_config.TextColumn(),
+            "generic_keywords (検索キーワード)": st.column_config.TextColumn()
         }
     )
 
-    if st.button('Keywords Save'):
+    if st.button('キーワードを保存'):
         save_df2excel(edited_keywords_df,config.SETTING_KEYWORDS)
 
 with col4:
     sales_df = pd.DataFrame(columns=config.sales_columns)
     
-    uploaded_file = st.file_uploader("Upload sales price table", type="xlsx")
+    uploaded_file = st.file_uploader("販売価格テーブルをアップロード", type="xlsx")
     if uploaded_file is not None:
         new_df = pd.read_excel(uploaded_file)
 
@@ -138,24 +139,24 @@ with col4:
             if col in sales_df:
                 sales_df[col] = saved_sales_df[col]
     
-    height = min(len(sales_df) * 35 + 38, 800)
+    height = min(len(sales_df) * 35 + 38, 500)
     edited_sales_df = st.data_editor(
         sales_df,
         num_rows="dynamic",
         height=height,
         column_config={
-            "Purchase Price": st.column_config.NumberColumn(),
-            "Amazon Sales Price": st.column_config.NumberColumn()
+            "仕入れ価格": st.column_config.NumberColumn(),
+            "アマゾン販売価格": st.column_config.NumberColumn()
         }
     )
 
-    if st.button('Sales Price Save'):
+    if st.button('販売価格を保存'):
         save_df2excel(edited_sales_df, config.SETTING_SALES_PRICE)
 
 with col5:
     replacements_df = pd.DataFrame(columns=config.product_name_replacements_columns)
     
-    uploaded_file = st.file_uploader("Upload the table of product name replacement ", type="xlsx")
+    uploaded_file = st.file_uploader("商品名置換テーブルをアップロード", type="xlsx")
     if uploaded_file is not None:
         new_df = pd.read_excel(uploaded_file)
 
@@ -173,18 +174,18 @@ with col5:
                 # Replace NaN values with empty string before converting to str
                 replacements_df[col] = saved_replacements_df[col].fillna('').astype(str)
     
-    height = min(len(replacements_df) * 35 + 38, 800)
+    height = min(len(replacements_df) * 35 + 38, 500)
     edited_replacements_df = st.data_editor(
         replacements_df,
         num_rows="dynamic",
         height=height,
         column_config={
-            "Before Replacement": st.column_config.TextColumn(),
-            "After Replacement": st.column_config.TextColumn()
+            "置換前": st.column_config.TextColumn(),
+            "置換後": st.column_config.TextColumn()
         }
     )
 
-    if st.button('Replacement Save'):
+    if st.button('置換設定を保存'):
         save_df2excel(edited_replacements_df, config.SETTING_PRODUCT_NAME_REM)
 
 

@@ -16,7 +16,7 @@ def make_amazon_products():
     
     amazon_products = pd.DataFrame(columns=config.amazon_columns)
     
-    yahoo_products = yahoo_products[~yahoo_products['出品者ID'].isin(exclude_sellers['Excluded Seller ID'])]
+    yahoo_products = yahoo_products[~yahoo_products['出品者ID'].isin(exclude_sellers['除外セラーID'])]
     yahoo_products = yahoo_products.reset_index(drop=True)
     yahoo_products.index = yahoo_products.index + 1
 
@@ -25,7 +25,7 @@ def make_amazon_products():
 
     amazon_products['item_name'] = yahoo_products['商品名']
 
-    for _, old_word, new_word in products_name_replacements[['Before Replacement', 'After Replacement']].itertuples():
+    for _, old_word, new_word in products_name_replacements[['置換前', '置換後']].itertuples():
         if pd.notna(new_word):
             amazon_products['item_name'] = amazon_products['item_name'].str.replace(str(old_word), str(new_word), regex=False)
         else:
@@ -36,7 +36,7 @@ def make_amazon_products():
 
     amazon_products['brand_name'] = yahoo_products['商品名'].apply(
         lambda product_name: next(
-            (brand for _, keyword, brand in kewords[['Keyword', 'Brand Name']].itertuples() 
+            (brand for _, keyword, brand in kewords[['キーワード', 'brand_name (ブランド名)']].itertuples() 
              if keyword in product_name), 
             ""
         )
@@ -44,14 +44,14 @@ def make_amazon_products():
 
     amazon_products['manufacturer'] = yahoo_products['商品名'].apply(
         lambda product_name: next(
-            (brand for _, keyword, brand in kewords[['Keyword', 'Manufacturer']].itertuples() 
+            (brand for _, keyword, brand in kewords[['キーワード', 'manufacturer (メーカ名)']].itertuples() 
              if keyword in product_name), 
             ""
         )
     )
 
     for _, row in params.iterrows():
-        amazon_products[row['Item Name']] = row['Setting Values']
+        amazon_products[row['項目名']] = row['設定値']
 
     # amazon_products['feed_product_type'] = ""
     # amazon_products['part_number'] = ""
@@ -91,7 +91,7 @@ def make_amazon_products():
 
     amazon_products['recommended_browse_nodes'] = yahoo_products['商品名'].apply(
         lambda product_name: next(
-            (brand for _, keyword, brand in kewords[['Keyword', 'Recommended Browse Nodes']].itertuples() 
+            (brand for _, keyword, brand in kewords[['キーワード', 'recommended_browse_nodes (推奨ブラウズノード)']].itertuples() 
              if keyword in product_name), 
             ""
         )
@@ -99,7 +99,7 @@ def make_amazon_products():
 
     amazon_products['generic_keywords'] = yahoo_products['商品名'].apply(
         lambda product_name: next(
-            (brand for _, keyword, brand in kewords[['Keyword', 'Generic Keywords']].itertuples() 
+            (brand for _, keyword, brand in kewords[['キーワード', 'generic_keywords (検索キーワード)']].itertuples() 
              if keyword in product_name), 
             ""
         )

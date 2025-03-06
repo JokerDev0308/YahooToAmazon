@@ -25,7 +25,7 @@ class PriceScraperUI:
     def _manage_product_list(self):
         yahoo_products_df = pd.DataFrame(columns=config.yahoo_columns)
 
-        uploaded_file = st.file_uploader("Product Url List", type="xlsx")
+        uploaded_file = st.file_uploader("商品URLリスト", type="xlsx")
         if uploaded_file is not None:
             new_df = pd.read_excel(uploaded_file)
 
@@ -33,11 +33,11 @@ class PriceScraperUI:
                 if col in yahoo_products_df.columns:
                     yahoo_products_df[col] = new_df[col]
 
-            st.write("The product list has been read:", len(new_df))
+            st.write("T商品リストを読み込みました:", len(new_df))
             output_path = Path(config.SCRAPED_XLSX)
             output_path.parent.mkdir(parents=True, exist_ok=True)
             yahoo_products_df.to_excel(output_path, index=False)
-            st.success(f'Data saved to {output_path}')
+            st.success(f'データを保存しました {output_path}')
             
         elif Path(config.SCRAPED_XLSX).exists():
             df = pd.read_excel(config.SCRAPED_XLSX)
@@ -89,24 +89,24 @@ class PriceScraperUI:
         file_path.unlink()
 
     def making_amazon_products(self):
-        if st.button('Create Amazon Products'):
+        if st.button('Amazon商品を作成'):
             try:
                 amazon_df: pd.DataFrame = make_amazon_products()
                 if not amazon_df.empty:
                     height = min(len(amazon_df) * 35 + 38, 800)
                     st.dataframe(amazon_df, height=height, use_container_width=True)
                 else:
-                    st.warning("No products were created. Please check your input data.")
+                    st.warning("商品が作成されませんでした。入力データを確認してください。")
             except Exception as e:
-                st.error(f"Error creating Amazon products: {str(e)}")
+                st.error(f"Amazon商品の作成中にエラーが発生しました: {str(e)}")
         else:
-            st.info("Click the button to create Amazon products")
+            st.info("ボタンをクリックしてAmazon商品を作成してください")
 
     
 
     def run(self):
         self.setup_sidebar()
-        tab1, tab2 = st.tabs(["Fetch Data From Yahoo! Auction", "Making Amazon Product"])
+        tab1, tab2 = st.tabs(["Yahoo!オークションからデータ取得", "Amazon商品作成"])
         
         with tab1:
             self._manage_product_list()

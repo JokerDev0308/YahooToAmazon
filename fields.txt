@@ -28,7 +28,7 @@ Here’s the original list together with the English translations:
 2. 商品名 - Product Name  
 3. 商品コード(JANコード等) - Product Code (JAN Code, etc.)  
 4. 商品コードのタイプ - Product Code Type  
-5. ブランド名 - Brand Name  
+5. ブランド名 - brand_name (ブランド名)  
 6. メーカー名 - Manufacturer Name  
 7. 商品タイプ - Product Type  
 8. メーカー型番 - Manufacturer Model Number  

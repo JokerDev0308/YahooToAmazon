@@ -59,8 +59,8 @@ amazon_columns = [
 ]
 
 
-parms_columns = ['Item Name', 'Explaination', 'Setting Values']
-seller_exclution_columns = ['Excluded Seller ID']
-keywords_columns = ['Keyword', 'Brand Name', 'Manufacturer', 'Recommended Browse Nodes', 'Generic Keywords']
-sales_columns = ['Purchase Price', 'Amazon Sales Price']
-product_name_replacements_columns = ['Before Replacement', 'After Replacement']
+parms_columns = ['項目名', '説明', '設定値']
+seller_exclution_columns = ['除外セラーID']
+keywords_columns = ['キーワード', 'brand_name (ブランド名)', 'manufacturer (メーカ名)', 'recommended_browse_nodes (推奨ブラウズノード)', 'generic_keywords (検索キーワード)']
+sales_columns = ['仕入れ価格', 'アマゾン販売価格']
+product_name_replacements_columns = ['置換前', '置換後']
