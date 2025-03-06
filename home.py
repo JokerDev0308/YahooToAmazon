@@ -89,12 +89,19 @@ class PriceScraperUI:
         file_path = Path(config.RUNNING)
         file_path.unlink()
 
-    def display_main_content(self):
-        if st.button('making'):
-            amazon_df = make_amazon_products()
-            st.dataframe(amazon_df, use_container_width=True)
+    def making_amazon_products(self):
+        if st.button('Create Amazon Products'):
+            try:
+                amazon_df = make_amazon_products()
+                if not amazon_df.empty:
+                    amazon_df['index'] = amazon_df.index + 1
+                    st.dataframe(amazon_df, use_container_width=True)
+                else:
+                    st.warning("No products were created. Please check your input data.")
+            except Exception as e:
+                st.error(f"Error creating Amazon products: {str(e)}")
         else:
-            st.subheader("Comming Soon")
+            st.info("Click the button to create Amazon products")
 
     
 
@@ -105,7 +112,7 @@ class PriceScraperUI:
         with tab1:
             self._handle_file_upload()
         with tab2:
-            self.display_main_content()
+            self.making_amazon_products()
             
        
 
