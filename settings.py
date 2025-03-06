@@ -133,7 +133,7 @@ with col4:
         saved_sales_df = pd.read_excel(config.SETTING_SALES_PRICE)
         for col in saved_sales_df:
             if col in sales_df:
-                sales_df[col] = saved_sales_df[col].astype(str)
+                sales_df[col] = saved_sales_df[col]
     
     # Use the data editor with the appropriate column types
     edited_sales_df = st.data_editor(
