@@ -6,7 +6,8 @@ from time import sleep
 from typing import Optional, Dict, Any
 from concurrent.futures import ThreadPoolExecutor
 from webdriver_manager import WebDriverManager
-from scripts.yahoo_scraper import YahooAuctionScraper
+from scripts.yahoo_auction import YahooAuctionScraper
+from scripts.yahoo_fleamarket import YahooFleamarketScraper
 import config
 from pathlib import Path
 
@@ -38,7 +39,8 @@ class DataHandler:
 class Scraper:
     def __init__(self, batch_size: int = 10):
         self.df: Optional[pd.DataFrame] = None
-        self.yahoo_scraper = YahooAuctionScraper()
+        self.yahoo_auction_scraper = YahooAuctionScraper()
+        self.yahoo_fleamaket_scraper = YahooFleamarketScraper()
         self.batch_size = batch_size
         self.data_handler = DataHandler()
         
@@ -57,7 +59,12 @@ class Scraper:
                 return {'error': 'Missing URL'}
 
             with ThreadPoolExecutor(max_workers=2) as executor:
-                future = executor.submit(self.yahoo_scraper.run, url)
+                if 'auctions.yahoo.co.jp' in url:
+                    future = executor.submit(self.yahoo_auction_scraper.run, url)
+                elif 'fril.jp' in url:
+                    future = executor.submit(self.yahoo_fleamaket_scraper.run, url)
+                else:
+                    return {'error': 'Unsupported URL type'}
                 return future.result()
         except Exception as e:
             return {'error': str(e)}
