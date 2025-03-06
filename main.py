@@ -110,7 +110,10 @@ class Scraper:
     @staticmethod
     def _check_running() -> bool:
         """Check if scraping should continue."""
-        return os.path.exists(config.RUNNING)
+        try:
+            return os.path.exists(config.RUNNING)
+        except Exception as e:
+            return False
     
     @staticmethod
     def stop_running():
