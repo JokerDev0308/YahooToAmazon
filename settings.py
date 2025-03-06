@@ -18,8 +18,18 @@ col1, col2, col3, col4, col5 = st.tabs(["Standard Parameters","Seller Exclusions
 
 with col1:
     params_df = pd.DataFrame(columns=config.parms_columns)
-    
-    if Path(config.SETTING_PARAMS).exists():
+
+    uploaded_file = st.file_uploader("Upload standard parameters", type="xlsx")
+    if uploaded_file is not None:
+        new_df = pd.read_excel(uploaded_file)
+
+        for col in new_df.columns:
+            if col in params_df.columns:
+                params_df[col] = new_df[col]
+
+        save_df2excel(params_df,config.SETTING_PARAMS)
+        
+    elif Path(config.SETTING_PARAMS).exists():
         saved_params_df = pd.read_excel(config.SETTING_PARAMS)
         for col in saved_params_df:
             if col in params_df:
@@ -42,7 +52,17 @@ with col1:
 with col2:
     seller_exclution_df = pd.DataFrame(columns=config.seller_exclution_columns)
     
-    if Path(config.SETTING_SELLER_EXCLUTIONS).exists():
+    uploaded_file = st.file_uploader("Upload Seller exclusions", type="xlsx")
+    if uploaded_file is not None:
+        new_df = pd.read_excel(uploaded_file)
+
+        for col in new_df.columns:
+            if col in seller_exclution_df.columns:
+                seller_exclution_df[col] = new_df[col]
+
+        save_df2excel(seller_exclution_df,config.SETTING_SELLER_EXCLUTIONS)
+
+    elif Path(config.SETTING_SELLER_EXCLUTIONS).exists():
         saved_seller_exclution_df = pd.read_excel(config.SETTING_SELLER_EXCLUTIONS)
         for col in saved_seller_exclution_df:
             if col in seller_exclution_df:
@@ -58,13 +78,23 @@ with col2:
         }
     )
 
-    if st.button('Excluded Seller ID Save'):
+    if st.button('Seller exclusions Save'):
         save_df2excel(edited_seller_exclution_df,config.SETTING_SELLER_EXCLUTIONS)
 
 with col3:
     keywords_df = pd.DataFrame(columns=config.keywords_columns)
     
-    if Path(config.SETTING_KEYWORDS).exists():
+    uploaded_file = st.file_uploader("Upload list of keywords to link", type="xlsx")
+    if uploaded_file is not None:
+        new_df = pd.read_excel(uploaded_file)
+
+        for col in new_df.columns:
+            if col in keywords_df.columns:
+                keywords_df[col] = new_df[col]
+
+        save_df2excel(keywords_df,config.SETTING_KEYWORDS)
+
+    elif Path(config.SETTING_KEYWORDS).exists():
         saved_keywords_df = pd.read_excel(config.SETTING_KEYWORDS)
         for col in saved_keywords_df:
             if col in keywords_df:
@@ -89,7 +119,17 @@ with col3:
 with col4:
     sales_df = pd.DataFrame(columns=config.sales_columns)
     
-    if Path(config.SETTING_SALES_PRICE).exists():
+    uploaded_file = st.file_uploader("Upload sales price table", type="xlsx")
+    if uploaded_file is not None:
+        new_df = pd.read_excel(uploaded_file)
+
+        for col in new_df.columns:
+            if col in sales_df.columns:
+                sales_df[col] = new_df[col]
+
+        save_df2excel(sales_df,config.SETTING_SALES_PRICE)
+
+    elif Path(config.SETTING_SALES_PRICE).exists():
         saved_sales_df = pd.read_excel(config.SETTING_SALES_PRICE)
         for col in saved_sales_df:
             if col in sales_df:
@@ -111,6 +151,17 @@ with col4:
 with col5:
     replacements_df = pd.DataFrame(columns=config.product_name_replacements_columns)
     
+    uploaded_file = st.file_uploader("Upload the table of product name replacement ", type="xlsx")
+    if uploaded_file is not None:
+        new_df = pd.read_excel(uploaded_file)
+
+        for col in new_df.columns:
+            if col in replacements_df.columns:
+                replacements_df[col] = new_df[col]
+
+        save_df2excel(replacements_df,config.SETTING_PRODUCT_NAME_REM)
+
+
     if Path(config.SETTING_PRODUCT_NAME_REM).exists():
         saved_replacements_df = pd.read_excel(config.SETTING_PRODUCT_NAME_REM)
         for col in saved_replacements_df:

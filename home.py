@@ -22,11 +22,10 @@ class PriceScraperUI:
                 st.rerun()
 
 
-    def _handle_file_upload(self):
-        uploaded_file = st.file_uploader("Product Url List", type="xlsx")
-
+    def _manage_product_list(self):
         yahoo_products_df = pd.DataFrame(columns=config.yahoo_columns)
-
+        
+        uploaded_file = st.file_uploader("Product Url List", type="xlsx")
         if uploaded_file is not None:
             new_df = pd.read_excel(uploaded_file)
 
@@ -109,7 +108,7 @@ class PriceScraperUI:
         tab1, tab2 = st.tabs(["Fetch Data From Yahoo! Auction", "Making Amazon Product"])
         
         with tab1:
-            self._handle_file_upload()
+            self._manage_product_list()
         with tab2:
             self.making_amazon_products()
             
