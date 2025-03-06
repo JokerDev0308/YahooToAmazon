@@ -4,17 +4,15 @@ from pathlib import Path
 
 import config
 
-yahoo_products = pd.read_excel(config.SCRAPED_XLSX)
-
-params = pd.read_excel(config.SETTING_PARAMS)
-kewords = pd.read_excel(config.SETTING_KEYWORDS)
-products_name_replacements = pd.read_excel(config.SETTING_PRODUCT_NAME_REM)
-exclude_sellers = pd.read_excel(config.SETTING_SELLER_EXCLUTIONS)
-setup_sales_price = pd.read_excel(config.SETTING_SALES_PRICE)
-
-
 def make_amazon_products():
-    global yahoo_products
+    yahoo_products = pd.read_excel(config.SCRAPED_XLSX)
+
+    params = pd.read_excel(config.SETTING_PARAMS)
+    kewords = pd.read_excel(config.SETTING_KEYWORDS)
+    products_name_replacements = pd.read_excel(config.SETTING_PRODUCT_NAME_REM)
+    exclude_sellers = pd.read_excel(config.SETTING_SELLER_EXCLUTIONS)
+    setup_sales_price = pd.read_excel(config.SETTING_SALES_PRICE)
+
     
     amazon_products = pd.DataFrame(columns=config.amazon_columns)
     
