@@ -28,7 +28,7 @@ def make_amazon_products():
     amazon_products['item_name'] = yahoo_products['商品名'].copy()
 
     for _, old_word, new_word in products_name_replacements[['Before Replacement', 'After Replacement']].itertuples():
-        amazon_products['item_name'] = amazon_products['item_name'].replace(str(old_word), str(new_word))
+        amazon_products['item_name'] = amazon_products['item_name'].str.replace(str(old_word), str(new_word), regex=False)
 
     amazon_products['external_product_id'] = yahoo_products['商品ID']
     # amazon_products['external_product_id_type'] = ""
