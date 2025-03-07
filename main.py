@@ -35,6 +35,17 @@ class DataHandler:
         except Exception as e:
             print(f"Error saving file: {str(e)}")
             return False
+    
+    @staticmethod
+    def set_progress(progress: float) -> None:
+        """Save progress value to file with error handling."""
+        try:
+            progress_file = Path("tmp/progress.txt")
+            progress_file.parent.mkdir(exist_ok=True)
+            progress_file.write_text(str(progress))
+        except Exception as e:
+            print(f"Error saving progress: {e}")
+        
 
 class Scraper:
     def __init__(self, batch_size: int = 10):
@@ -84,14 +95,15 @@ class Scraper:
                     break
 
                 print(f"Processing {index + 1}/{total_records}")
-                
                 results = self.process_product(index, row)
-
                 self._update_dataframe(index, results)
 
                 if self._should_save_batch(index, total_records):
                     self.save_results()
-                    sleep(3)
+                    sleep(1)
+
+                self.data_handler.set_progress(index)
+                
                 sleep(1)
 
             if self._check_running():              

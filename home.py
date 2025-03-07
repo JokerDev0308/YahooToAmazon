@@ -1,5 +1,5 @@
 import streamlit as st
-
+from concurrent.futures import ThreadPoolExecutor
 import pandas as pd
 import config
 import os
@@ -7,6 +7,7 @@ from pathlib import Path
 from session_manager import SessionManager
 from amazon_products import make_amazon_products
 import config
+from time import sleep
 
 # Main application class
 class PriceScraperUI:
@@ -21,25 +22,53 @@ class PriceScraperUI:
             if st.button('リロード', use_container_width=True):
                 st.rerun()
 
+    def scraping_progress(self, limit):
+        progress_text = "Operation in progress. Please wait."
+        progress_value = 0
+        my_bar = st.progress(progress_value, text=progress_text)
+
+        while limit > progress_value:
+            progress_value = self.progress_thread()
+            my_bar.progress(progress_value, text=progress_text)
+            sleep(1)
+            
+        my_bar.empty()
+
+    def progress_thread(self):
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            return executor.submit(self.get_progress).result()
+
+    def get_progress(self) -> float:
+        """Get progress value from file with error handling."""
+        try:
+            progress_file = Path("tmp/progress.txt")
+            if progress_file.exists():
+                return float(progress_file.read_text())
+            return 0.0
+        except Exception:
+            return 0.0
 
     def _manage_product_list(self):
         yahoo_products_df = pd.DataFrame(columns=config.yahoo_columns)
 
-        uploaded_file = st.file_uploader("商品URLリスト", type="xlsx")
-        if uploaded_file is not None:
-            new_df = pd.read_excel(uploaded_file)
+        if not self.running():
+            uploaded_file = st.file_uploader("商品URLリスト", type="xlsx")
+            if uploaded_file is not None:
+                new_df = pd.read_excel(uploaded_file)
 
-            for col in new_df.columns:
-                if col in yahoo_products_df.columns:
-                    yahoo_products_df[col] = new_df[col]
+                for col in new_df.columns:
+                    if col in yahoo_products_df.columns:
+                        yahoo_products_df[col] = new_df[col]
 
-            st.write("T商品リストを読み込みました:", len(new_df))
-            output_path = Path(config.SCRAPED_XLSX)
-            output_path.parent.mkdir(parents=True, exist_ok=True)
-            yahoo_products_df.to_excel(output_path, index=False)
-            st.success(f'データを保存しました {output_path}')
+                st.write("T商品リストを読み込みました:", len(new_df))
+                output_path = Path(config.SCRAPED_XLSX)
+                output_path.parent.mkdir(parents=True, exist_ok=True)
+                yahoo_products_df.to_excel(output_path, index=False)
+                st.success(f'データを保存しました {output_path}')
+        else:
+            self.scraping_progress()
             
-        elif Path(config.SCRAPED_XLSX).exists():
+        if Path(config.SCRAPED_XLSX).exists():
             df = pd.read_excel(config.SCRAPED_XLSX)
             for col in df.columns:
                 if col in yahoo_products_df.columns:
