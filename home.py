@@ -27,11 +27,11 @@ class PriceScraperUI:
         progress_value = 0
         my_bar = st.progress(progress_value, text=progress_text)
 
-        while limit > progress_value:
+        while limit >= progress_value:
             progress_value = self.progress_thread()
             my_bar.progress(progress_value, text=progress_text)
             sleep(1)
-            
+
         my_bar.empty()
 
     def progress_thread(self):
@@ -65,8 +65,8 @@ class PriceScraperUI:
                 output_path.parent.mkdir(parents=True, exist_ok=True)
                 yahoo_products_df.to_excel(output_path, index=False)
                 st.success(f'データを保存しました {output_path}')
-        else:
-            self.scraping_progress()
+        
+            
             
         if Path(config.SCRAPED_XLSX).exists():
             df = pd.read_excel(config.SCRAPED_XLSX)
@@ -74,9 +74,11 @@ class PriceScraperUI:
                 if col in yahoo_products_df.columns:
                     yahoo_products_df[col] = df[col]
 
+        if self.running():
+            self.scraping_progress(len(yahoo_products_df))
+
         yahoo_products_df.index = yahoo_products_df.index + 1
         height = min(len(yahoo_products_df) * 35 + 38, 700)
-
 
         st.dataframe(
             yahoo_products_df, 
