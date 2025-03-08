@@ -29,6 +29,7 @@ class PriceScraperUI:
 
         while limit >= progress_value:
             progress_value = self.progress_thread()
+            st.write(progress_value/limit)
             my_bar.progress(progress_value/limit, text=progress_text)
             sleep(1)
 
