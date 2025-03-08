@@ -1,5 +1,6 @@
 import streamlit as st
 from concurrent.futures import ThreadPoolExecutor
+from threading import Thread
 import pandas as pd
 import config
 import os
@@ -76,16 +77,11 @@ class PriceScraperUI:
             for col in df.columns:
                 if col in yahoo_products_df.columns:
                     yahoo_products_df[col] = df[col]
-
+        
         if self.running():
-            total_rows = len(yahoo_products_df)
-            if total_rows > 0:
-                progress_text = "スクレイピング実行中..."
-                with st.spinner(progress_text):
-                    try:
-                        self.scraping_progress(total_rows)
-                    except Exception as e:
-                        st.error(f"Progress tracking error: {str(e)}")
+            thread = Thread(target=self.scraping_progress, args=(len(yahoo_products_df),))
+            thread.start()
+            
 
         yahoo_products_df.index = yahoo_products_df.index + 1
         height = min(len(yahoo_products_df) * 35 + 38, 700)
