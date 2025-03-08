@@ -42,7 +42,7 @@ class PriceScraperUI:
     def get_progress(self) -> float:
         """Get progress value from file with error handling."""
         try:
-            progress_file = Path("tmp/progress.txt")
+            progress_file = Path(config.PROGRESS_TXT)
             if progress_file.exists():
                 return float(progress_file.read_text())
             return 0.0
