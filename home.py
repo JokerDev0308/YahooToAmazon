@@ -1,6 +1,5 @@
 import streamlit as st
 from concurrent.futures import ThreadPoolExecutor
-from threading import Thread
 import pandas as pd
 import config
 import os
@@ -79,9 +78,7 @@ class PriceScraperUI:
                     yahoo_products_df[col] = df[col]
         
         if self.running():
-            thread = Thread(target=self.scraping_progress, args=(len(yahoo_products_df),))
-            thread.start()
-            
+            self.scraping_progress(len(yahoo_products_df))
 
         yahoo_products_df.index = yahoo_products_df.index + 1
         height = min(len(yahoo_products_df) * 35 + 38, 700)
