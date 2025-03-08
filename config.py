@@ -1,6 +1,8 @@
 # config.py
 HEADLESS = True  # Set to False if you want to see browser running
 TIMEOUT = 1  # Selenium wait timeout
+
+
 CHROMEDRIVER_PATH = "drivers/chromedriver"
 SCRAPED_XLSX = 'data/scraped_data.xlsx'
 PROGRESS_TXT = 'tmp/progress.txt'

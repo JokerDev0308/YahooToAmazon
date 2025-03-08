@@ -29,9 +29,11 @@ class PriceScraperUI:
 
         while limit >= progress_value:
             progress_value = self.progress_thread()
-            st.write(progress_value/limit)
+            
             my_bar.progress(progress_value/limit, text=progress_text)
             sleep(1)
+            if progress_value == limit:
+                st.rerun()
 
         my_bar.empty()
 
@@ -76,7 +78,14 @@ class PriceScraperUI:
                     yahoo_products_df[col] = df[col]
 
         if self.running():
-            self.scraping_progress(len(yahoo_products_df))
+            total_rows = len(yahoo_products_df)
+            if total_rows > 0:
+                progress_text = "スクレイピング実行中..."
+                with st.spinner(progress_text):
+                    try:
+                        self.scraping_progress(total_rows)
+                    except Exception as e:
+                        st.error(f"Progress tracking error: {str(e)}")
 
         yahoo_products_df.index = yahoo_products_df.index + 1
         height = min(len(yahoo_products_df) * 35 + 38, 700)
