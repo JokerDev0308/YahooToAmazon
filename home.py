@@ -23,7 +23,7 @@ class PriceScraperUI:
                 st.rerun()
 
     def scraping_progress(self, limit):
-        progress_text = "Operation in progress. Please wait."
+        progress_text = "操作中です。少々お待ちください。"
         progress_value = 0
         my_bar = st.progress(progress_value, text=progress_text)
 
