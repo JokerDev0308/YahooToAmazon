@@ -83,8 +83,8 @@ class PriceScraperUI:
         df_container = st.container()
         
         # Clear and display dataframe in the container
-        df_container.empty()
         with df_container:
+            df_container.empty()
             st.dataframe(
                 yahoo_products_df, 
                 use_container_width=True, 
