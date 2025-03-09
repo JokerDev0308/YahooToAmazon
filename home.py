@@ -30,11 +30,11 @@ class PriceScraperUI:
 
             while limit >= progress_value:
                 progress_value = self.progress_thread()
-                
                 my_bar.progress(progress_value/limit, text=progress_text)
                 sleep(1)
                 if progress_value !=0 and (progress_value % config.BATCH_SIZE == 0 or progress_value == limit):
                     st.rerun()
+
             my_bar.empty()
 
     def progress_thread(self):
@@ -79,7 +79,8 @@ class PriceScraperUI:
         height = min(len(yahoo_products_df) * 35 + 38, 700)
         
         # Create two containers for concurrent display
-        progress_container = st.empty()
+        # progress_container = st.empty()
+        self.scraping_progress(len(yahoo_products_df))
         df_container = st.empty()
         
         # Clear and display dataframe in the container
@@ -89,24 +90,23 @@ class PriceScraperUI:
                 use_container_width=True, 
                 height=height, 
                 key="scraped_product_list",
-                # column_config={
-                #     "商品画像": st.column_config.ImageColumn(),
-                #     "画像URL1": st.column_config.ImageColumn(),
-                #     "画像URL2": st.column_config.ImageColumn(),
-                #     "画像URL3": st.column_config.ImageColumn(),
-                #     "画像URL4": st.column_config.ImageColumn(),
-                #     "画像URL5": st.column_config.ImageColumn(),
-                #     "画像URL6": st.column_config.ImageColumn(),
-                #     "画像URL7": st.column_config.ImageColumn(),
-                #     "画像URL8": st.column_config.ImageColumn(),
-                # }
+                column_config={
+                    "商品画像": st.column_config.ImageColumn(),
+                    "画像URL1": st.column_config.ImageColumn(),
+                    "画像URL2": st.column_config.ImageColumn(),
+                    "画像URL3": st.column_config.ImageColumn(),
+                    "画像URL4": st.column_config.ImageColumn(),
+                    "画像URL5": st.column_config.ImageColumn(),
+                    "画像URL6": st.column_config.ImageColumn(),
+                    "画像URL7": st.column_config.ImageColumn(),
+                    "画像URL8": st.column_config.ImageColumn(),
+                }
             )
         
-        # Show progress if running
-        if self.running():
-            st.switch_page('home.py')
-            with progress_container:
-                self.scraping_progress(len(yahoo_products_df))
+        # # Show progress if running
+        # if self.running():
+        #     with progress_container:
+        #         self.scraping_progress(len(yahoo_products_df))
 
     def _setup_scraping_controls(self):
         st.subheader("スクレイピング制御")
@@ -155,10 +155,11 @@ class PriceScraperUI:
         self.setup_sidebar()
         tab1, tab2 = st.tabs(["Yahoo!からデータ取得", "Amazon商品作成"])
         
-        with tab1:
-            self._manage_product_list()
         with tab2:
             self.making_amazon_products()
+        with tab1:
+            self._manage_product_list()
+        
             
        
 
