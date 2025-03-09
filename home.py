@@ -79,9 +79,9 @@ class PriceScraperUI:
         height = min(len(yahoo_products_df) * 35 + 38, 700)
         
         # Create two containers for concurrent display
-        # progress_container = st.empty()
-        if self.running():
-            self.scraping_progress(len(yahoo_products_df))
+        progress_container = st.container()
+        # if self.running():
+        #     self.scraping_progress(len(yahoo_products_df))
         df_container = st.empty()
         
         # Clear and display dataframe in the container
@@ -105,9 +105,9 @@ class PriceScraperUI:
             )
         
         # # Show progress if running
-        # if self.running():
-        #     with progress_container:
-        #         self.scraping_progress(len(yahoo_products_df))
+        if self.running():
+            with progress_container:
+                self.scraping_progress(len(yahoo_products_df))
 
     def _setup_scraping_controls(self):
         st.subheader("スクレイピング制御")
