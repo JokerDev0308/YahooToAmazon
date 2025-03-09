@@ -80,28 +80,26 @@ class PriceScraperUI:
 
         # Create two containers for concurrent display
         progress_container = st.empty()
-        df_container = st.container()
+        df_container = st.empty()
         
         # Clear and display dataframe in the container
-        with df_container:
-            df_container.empty()
-            st.dataframe(
-                yahoo_products_df, 
-                use_container_width=True, 
-                height=height, 
-                key="scraped_product_list",
-                # column_config={
-                #     "商品画像": st.column_config.ImageColumn(),
-                #     "画像URL1": st.column_config.ImageColumn(),
-                #     "画像URL2": st.column_config.ImageColumn(),
-                #     "画像URL3": st.column_config.ImageColumn(),
-                #     "画像URL4": st.column_config.ImageColumn(),
-                #     "画像URL5": st.column_config.ImageColumn(),
-                #     "画像URL6": st.column_config.ImageColumn(),
-                #     "画像URL7": st.column_config.ImageColumn(),
-                #     "画像URL8": st.column_config.ImageColumn(),
-                # }
-            )
+        df_container.dataframe(
+            yahoo_products_df, 
+            use_container_width=True, 
+            height=height, 
+            key="scraped_product_list",
+            # column_config={
+            #     "商品画像": st.column_config.ImageColumn(),
+            #     "画像URL1": st.column_config.ImageColumn(),
+            #     "画像URL2": st.column_config.ImageColumn(),
+            #     "画像URL3": st.column_config.ImageColumn(),
+            #     "画像URL4": st.column_config.ImageColumn(),
+            #     "画像URL5": st.column_config.ImageColumn(),
+            #     "画像URL6": st.column_config.ImageColumn(),
+            #     "画像URL7": st.column_config.ImageColumn(),
+            #     "画像URL8": st.column_config.ImageColumn(),
+            # }
+        )
         
         # Show progress if running
         if self.running():
@@ -127,8 +125,10 @@ class PriceScraperUI:
             file.write('1')
 
     def stop_running(self):
-        file_path = Path(config.RUNNING)
-        file_path.unlink()
+        running_file = Path(config.RUNNING)
+        progress_file = Path(config.PROGRESS_TXT)
+        running_file.unlink()
+        progress_file.unlink()
 
     def making_amazon_products(self):
         if st.button('Amazon商品を作成'):
