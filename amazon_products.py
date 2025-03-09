@@ -16,6 +16,7 @@ def make_amazon_products():
     
     amazon_products = pd.DataFrame(columns=config.amazon_columns)
     
+    yahoo_products = yahoo_products[~yahoo_products['商品画像'].isna()]    
     yahoo_products = yahoo_products[~yahoo_products['出品者ID'].isin(exclude_sellers['除外セラーID'])]
     yahoo_products = yahoo_products.reset_index(drop=True)
     yahoo_products.index = yahoo_products.index + 1

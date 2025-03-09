@@ -33,7 +33,7 @@ class PriceScraperUI:
                 
                 my_bar.progress(progress_value/limit, text=progress_text)
                 sleep(1)
-                if progress_value % config.BATCH_SIZE == 0 or progress_value == limit:
+                if progress_value !=0 and (progress_value % config.BATCH_SIZE == 0 or progress_value == limit):
                     st.rerun()
             my_bar.empty()
 
@@ -41,15 +41,15 @@ class PriceScraperUI:
         with ThreadPoolExecutor(max_workers=2) as executor:
             return executor.submit(self.get_progress).result()
 
-    def get_progress(self) -> float:
+    def get_progress(self) -> int:
         """Get progress value from file with error handling."""
         try:
             progress_file = Path(config.PROGRESS_TXT)
             if progress_file.exists():
-                return float(progress_file.read_text())
-            return 0.0
+                return int(progress_file.read_text())
+            return 0
         except Exception:
-            return 0.0
+            return 0
 
     def _manage_product_list(self):
         yahoo_products_df = pd.DataFrame(columns=config.yahoo_columns)
@@ -82,7 +82,8 @@ class PriceScraperUI:
         progress_container = st.empty()
         df_container = st.container()
         
-        # Display dataframe in the container
+        # Clear and display dataframe in the container
+        df_container.empty()
         with df_container:
             st.dataframe(
                 yahoo_products_df, 
