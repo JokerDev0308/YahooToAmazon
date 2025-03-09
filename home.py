@@ -23,20 +23,20 @@ class PriceScraperUI:
             if st.button('リロード', use_container_width=True):
                 st.rerun()
 
-    def scraping_progress(self, limit):
+    def scraping_progress(self, limit, container):
         if limit > 0:
             progress_text = "操作中です。少々お待ちください。"
             progress_value = 0
-            my_bar = st.progress(progress_value, text=progress_text)
+            container = st.progress(progress_value, text=progress_text)
 
             while limit >= progress_value:
                 progress_value = self.progress_thread()
                 
-                my_bar.progress(progress_value/limit, text=progress_text)
+                container.progress(progress_value/limit, text=progress_text)
                 sleep(1)
                 if progress_value !=0 and (progress_value % config.BATCH_SIZE == 0 or progress_value == limit):
                     st.rerun()
-            my_bar.empty()
+            container.empty()
 
     def progress_thread(self):
         with ThreadPoolExecutor(max_workers=2) as executor:
@@ -79,11 +79,10 @@ class PriceScraperUI:
         yahoo_products_df.index = yahoo_products_df.index + 1
         height = min(len(yahoo_products_df) * 35 + 38, 700)
         
-        progress_thread = Thread(target=self.scraping_progress, args=len(yahoo_products_df), daemon=True)
-        progress_thread.start()
+        
         # self.scraping_progress(len(yahoo_products_df))
         # Create two containers for concurrent display
-        # progress_container = st.empty()
+        progress_container = st.empty()
         df_container = st.empty()
         
         # Clear and display dataframe in the container
@@ -105,6 +104,9 @@ class PriceScraperUI:
                 #     "画像URL8": st.column_config.ImageColumn(),
                 # }
             )
+
+        progress_thread = Thread(target=self.scraping_progress, args=(len(yahoo_products_df), progress_container), daemon=True)
+        progress_thread.start()
         
         # # Show progress if running
         # if self.running():
