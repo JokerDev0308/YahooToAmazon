@@ -128,8 +128,8 @@ class PriceScraperUI:
             progress_file.unlink()
 
     def making_amazon_products(self):
-        with st.spinner("Yahooからデータをスクレイピングしている間、お待ちください。"):
-            self.running()
+        if self.running():
+            st.spinner("Yahooからデータをスクレイピングしている間、お待ちください。")
 
         if st.button('Amazon商品を作成'):
             try:
