@@ -134,7 +134,7 @@ class PriceScraperUI:
 
     def run(self):
         self.setup_sidebar()
-        tab1, tab2 = st.tabs(["Yahoo!オークションからデータ取得", "Amazon商品作成"])
+        tab1, tab2 = st.tabs(["Yahoo!からデータ取得", "Amazon商品作成"])
         
         with tab1:
             self._manage_product_list()
