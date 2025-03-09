@@ -155,8 +155,10 @@ class PriceScraperUI:
         tab1, tab2 = st.tabs(["Yahoo!からデータ取得", "Amazon商品作成"])
         
         with tab1:
-            self._manage_product_list()
-            self._manage_product_list()
+            if self.running():
+                self._manage_product_list()
+            else:
+                self._manage_product_list()
         with tab2:
             self.making_amazon_products()
             
