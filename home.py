@@ -75,14 +75,10 @@ class PriceScraperUI:
                 if col in yahoo_products_df.columns:
                     yahoo_products_df[col] = df[col]
         
-        # Create two containers for concurrent display
-        progress_container = st.empty()
-        df_container = st.container()
+        yahoo_products_df.index = yahoo_products_df.index + 1
+        height = min(len(yahoo_products_df) * 35 + 38, 700)
         
-        # Clear and display dataframe in the container
-        with df_container:
-            yahoo_products_df.index = yahoo_products_df.index + 1
-            height = min(len(yahoo_products_df) * 35 + 38, 700)
+        if not self.running():
             st.dataframe(
                 yahoo_products_df, 
                 use_container_width=True, 
@@ -100,11 +96,25 @@ class PriceScraperUI:
                 #     "画像URL8": st.column_config.ImageColumn(),
                 # }
             )
-        
-        # Show progress if running
-        if self.running():
-            with progress_container:
-                self.scraping_progress(len(yahoo_products_df))
+        else:
+            self.scraping_progress(len(yahoo_products_df))
+            st.dataframe(
+                yahoo_products_df, 
+                use_container_width=True, 
+                height=height, 
+                key="scraped_product_list",
+                # column_config={
+                #     "商品画像": st.column_config.ImageColumn(),
+                #     "画像URL1": st.column_config.ImageColumn(),
+                #     "画像URL2": st.column_config.ImageColumn(),
+                #     "画像URL3": st.column_config.ImageColumn(),
+                #     "画像URL4": st.column_config.ImageColumn(),
+                #     "画像URL5": st.column_config.ImageColumn(),
+                #     "画像URL6": st.column_config.ImageColumn(),
+                #     "画像URL7": st.column_config.ImageColumn(),
+                #     "画像URL8": st.column_config.ImageColumn(),
+                # }
+            )
 
     def _setup_scraping_controls(self):
         st.subheader("スクレイピング制御")
