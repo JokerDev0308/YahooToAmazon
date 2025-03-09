@@ -17,6 +17,7 @@ env/
 
 # Ignore CSV input (optional, if you don’t want to commit JAN codes)
 data/
+data/users.json
 data/settings/
 
 
