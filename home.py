@@ -68,8 +68,6 @@ class PriceScraperUI:
                 output_path.parent.mkdir(parents=True, exist_ok=True)
                 yahoo_products_df.to_excel(output_path, index=False)
                 st.success(f'データを保存しました {output_path}')
-        
-            
             
         if Path(config.SCRAPED_XLSX).exists():
             df = pd.read_excel(config.SCRAPED_XLSX)
@@ -77,30 +75,26 @@ class PriceScraperUI:
                 if col in yahoo_products_df.columns:
                     yahoo_products_df[col] = df[col]
         
-        if self.running():
-            self.scraping_progress(len(yahoo_products_df))
-
         yahoo_products_df.index = yahoo_products_df.index + 1
         height = min(len(yahoo_products_df) * 35 + 38, 700)
 
-        st.dataframe(
-            yahoo_products_df, 
-            use_container_width=True, 
-            height=height, 
-            key="scraped_product_list",
-            # column_config={
-            #     "商品画像": st.column_config.ImageColumn(),
-            #     "画像URL1": st.column_config.ImageColumn(),
-            #     "画像URL2": st.column_config.ImageColumn(),
-            #     "画像URL3": st.column_config.ImageColumn(),
-            #     "画像URL4": st.column_config.ImageColumn(),
-            #     "画像URL5": st.column_config.ImageColumn(),
-            #     "画像URL6": st.column_config.ImageColumn(),
-            #     "画像URL7": st.column_config.ImageColumn(),
-            #     "画像URL8": st.column_config.ImageColumn(),
-            #     }
+        # Create two containers for concurrent display
+        progress_container = st.empty()
+        df_container = st.container()
+        
+        # Display dataframe in the container
+        with df_container:
+            st.dataframe(
+                yahoo_products_df, 
+                use_container_width=True, 
+                height=height, 
+                key="scraped_product_list"
             )
-           
+        
+        # Show progress if running
+        if self.running():
+            with progress_container:
+                self.scraping_progress(len(yahoo_products_df))
 
     def _setup_scraping_controls(self):
         st.subheader("スクレイピング制御")
