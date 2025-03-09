@@ -80,26 +80,27 @@ class PriceScraperUI:
 
         # Create two containers for concurrent display
         progress_container = st.empty()
-        df_container = st.empty()
+        df_container = st.container()
         
         # Clear and display dataframe in the container
-        df_container.dataframe(
-            yahoo_products_df, 
-            use_container_width=True, 
-            height=height, 
-            key="scraped_product_list",
-            # column_config={
-            #     "商品画像": st.column_config.ImageColumn(),
-            #     "画像URL1": st.column_config.ImageColumn(),
-            #     "画像URL2": st.column_config.ImageColumn(),
-            #     "画像URL3": st.column_config.ImageColumn(),
-            #     "画像URL4": st.column_config.ImageColumn(),
-            #     "画像URL5": st.column_config.ImageColumn(),
-            #     "画像URL6": st.column_config.ImageColumn(),
-            #     "画像URL7": st.column_config.ImageColumn(),
-            #     "画像URL8": st.column_config.ImageColumn(),
-            # }
-        )
+        with df_container:
+            st.dataframe(
+                yahoo_products_df, 
+                use_container_width=True, 
+                height=height, 
+                key="scraped_product_list",
+                # column_config={
+                #     "商品画像": st.column_config.ImageColumn(),
+                #     "画像URL1": st.column_config.ImageColumn(),
+                #     "画像URL2": st.column_config.ImageColumn(),
+                #     "画像URL3": st.column_config.ImageColumn(),
+                #     "画像URL4": st.column_config.ImageColumn(),
+                #     "画像URL5": st.column_config.ImageColumn(),
+                #     "画像URL6": st.column_config.ImageColumn(),
+                #     "画像URL7": st.column_config.ImageColumn(),
+                #     "画像URL8": st.column_config.ImageColumn(),
+                # }
+            )
         
         # Show progress if running
         if self.running():
