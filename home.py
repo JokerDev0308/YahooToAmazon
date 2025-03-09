@@ -85,7 +85,7 @@ class PriceScraperUI:
         with df_container:
             if self.running():
                 # Show progress
-                self.scraping_progress(len(yahoo_products_df))
+                progress_container = st.empty()
                 # Read and display the new data
                 if Path(config.SCRAPED_XLSX).exists():
                     new_df = pd.read_excel(config.SCRAPED_XLSX)
@@ -96,6 +96,11 @@ class PriceScraperUI:
                         height=height,
                         key="scraped_product_list"
                     )
+
+                with progress_container:
+                    self.scraping_progress(len(yahoo_products_df))
+
+
             else:
                 st.dataframe(
                     yahoo_products_df,
