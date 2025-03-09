@@ -105,8 +105,9 @@ class PriceScraperUI:
                 # }
             )
 
-        progress_thread = Thread(target=self.scraping_progress, args=(len(yahoo_products_df), progress_container), daemon=True)
-        progress_thread.start()
+        if self.running():
+            progress_thread = Thread(target=self.scraping_progress, args=(len(yahoo_products_df), progress_container), daemon=True)
+            progress_thread.start()
         
         # # Show progress if running
         # if self.running():
