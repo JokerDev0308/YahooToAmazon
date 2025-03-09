@@ -4,6 +4,7 @@ TIMEOUT = 1  # Selenium wait timeout
 
 
 CHROMEDRIVER_PATH = "drivers/chromedriver"
+USERS_XLSX = 'data/users.json'
 SCRAPED_XLSX = 'data/scraped_data.xlsx'
 PROGRESS_TXT = 'tmp/progress.txt'
 

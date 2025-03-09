@@ -7,6 +7,21 @@ from pathlib import Path
 from session_manager import SessionManager
 import config
 
+# Custom CSS
+LOGIN_STYLE = """
+    <style>
+        #login{
+            text-align:center;
+        }
+        .stButton{
+            text-align:center;
+        }
+        .stButton>button{
+            min-width:7rem;
+        }
+    </style>
+"""
+
 def save_df2excel(df:pd.DataFrame, excel_name:str):
     output_path = Path(excel_name)
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -14,7 +29,7 @@ def save_df2excel(df:pd.DataFrame, excel_name:str):
     st.success(f'データを {output_path} に保存しました')
 
 
-col1, col2, col3, col4, col5 = st.tabs(["定型パラメータ","除外セラー","キーワードとの紐づけ","販売価格テーブル","商品名置換テーブル"])
+col1, col2, col3, col4, col5, col6 = st.tabs(["定型パラメータ","除外セラー","キーワードとの紐づけ","販売価格テーブル","商品名置換テーブル", "パスワード設定"])
 
 with col1:
     params_df = pd.DataFrame(columns=config.parms_columns)
@@ -189,4 +204,25 @@ with col5:
     if st.button('置換設定を保存'):
         save_df2excel(edited_replacements_df, config.SETTING_PRODUCT_NAME_REM)
 
+with col6:
+    session_manager = SessionManager()
+    col1, col2, col3 = st.columns(3)
+    with col2:
+        with st.container(border=True):
+            st.markdown(LOGIN_STYLE, unsafe_allow_html=True)
+            
+            old_password = st.text_input("古いパスワード", type="password")
+            new_password = st.text_input("新しいパスワード", type="password")
+            confirm_password = st.text_input("新しいパスワードの確認", type="password")
+            
+            if st.button("保存"):
+                res =  session_manager.reset_password('admin', old_password, new_password, confirm_password)
+
+                if res['status'] == 'error':
+                    st.error(res['message'])
+                elif res['status'] == 'success':
+                    st.success(res["message"])
+                else:
+                    st.error('不明なエラー')
+                       
 

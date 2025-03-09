@@ -23,19 +23,20 @@ class PriceScraperUI:
                 st.rerun()
 
     def scraping_progress(self, limit):
-        progress_text = "操作中です。少々お待ちください。"
-        progress_value = 0
-        my_bar = st.progress(progress_value, text=progress_text)
+        if limit > 0:
+            progress_text = "操作中です。少々お待ちください。"
+            progress_value = 0
+            my_bar = st.progress(progress_value, text=progress_text)
 
-        while limit >= progress_value:
-            progress_value = self.progress_thread()
-            
-            my_bar.progress(progress_value/limit, text=progress_text)
-            sleep(1)
-            if progress_value % config.BATCH_SIZE == 0 or progress_value == limit:
-                st.rerun()
+            while limit >= progress_value:
+                progress_value = self.progress_thread()
+                
+                my_bar.progress(progress_value/limit, text=progress_text)
+                sleep(1)
+                if progress_value % config.BATCH_SIZE == 0 or progress_value == limit:
+                    st.rerun()
 
-        my_bar.empty()
+            my_bar.empty()
 
     def progress_thread(self):
         with ThreadPoolExecutor(max_workers=2) as executor:
