@@ -78,37 +78,28 @@ class PriceScraperUI:
         yahoo_products_df.index = yahoo_products_df.index + 1
         height = min(len(yahoo_products_df) * 35 + 38, 700)
         
-        # Create container for display
-        df_container = st.empty()
+        if self.running():
+            self.scraping_progress(len(yahoo_products_df))
+
+        st.dataframe(
+            yahoo_products_df, 
+            use_container_width=True, 
+            height=height, 
+            key="scraped_product_list",
+            column_config={
+                "商品画像": st.column_config.ImageColumn(),
+                "画像URL1": st.column_config.ImageColumn(),
+                "画像URL2": st.column_config.ImageColumn(),
+                "画像URL3": st.column_config.ImageColumn(),
+                "画像URL4": st.column_config.ImageColumn(),
+                "画像URL5": st.column_config.ImageColumn(),
+                "画像URL6": st.column_config.ImageColumn(),
+                "画像URL7": st.column_config.ImageColumn(),
+                "画像URL8": st.column_config.ImageColumn(),
+            }
+        )
         
-        # Display dataframe in the container
-        with df_container:
-            if self.running():
-                # Show progress
-                progress_container = st.empty()
-                # Read and display the new data
-                if Path(config.SCRAPED_XLSX).exists():
-                    new_df = pd.read_excel(config.SCRAPED_XLSX)
-                    new_df.index = new_df.index + 1
-                    st.dataframe(
-                        new_df,
-                        use_container_width=True,
-                        height=height,
-                        key="scraped_product_list"
-                    )
-
-                with progress_container:
-                    self.scraping_progress(len(yahoo_products_df))
-
-
-            else:
-                st.dataframe(
-                    yahoo_products_df,
-                    use_container_width=True,
-                    height=height,
-                    key="scraped_product_list"
-                )
-
+        
     def _setup_scraping_controls(self):
         st.subheader("スクレイピング制御")
         if self.running():
@@ -137,6 +128,9 @@ class PriceScraperUI:
             progress_file.unlink()
 
     def making_amazon_products(self):
+        with st.spinner("Yahooからデータをスクレイピングしている間、お待ちください。"):
+            self.running()
+
         if st.button('Amazon商品を作成'):
             try:
                 amazon_df: pd.DataFrame = make_amazon_products()
