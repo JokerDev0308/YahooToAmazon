@@ -75,15 +75,14 @@ class PriceScraperUI:
                 if col in yahoo_products_df.columns:
                     yahoo_products_df[col] = df[col]
         
-        yahoo_products_df.index = yahoo_products_df.index + 1
-        height = min(len(yahoo_products_df) * 35 + 38, 700)
-
         # Create two containers for concurrent display
         progress_container = st.empty()
         df_container = st.container()
         
         # Clear and display dataframe in the container
         with df_container:
+            yahoo_products_df.index = yahoo_products_df.index + 1
+            height = min(len(yahoo_products_df) * 35 + 38, 700)
             st.dataframe(
                 yahoo_products_df, 
                 use_container_width=True, 
@@ -128,8 +127,11 @@ class PriceScraperUI:
     def stop_running(self):
         running_file = Path(config.RUNNING)
         progress_file = Path(config.PROGRESS_TXT)
-        running_file.unlink()
-        progress_file.unlink()
+        if running_file.exists():
+            running_file.unlink()
+        
+        while not progress_file.exists():
+            progress_file.unlink()
 
     def making_amazon_products(self):
         if st.button('Amazon商品を作成'):

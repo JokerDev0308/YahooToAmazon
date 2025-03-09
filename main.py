@@ -37,7 +37,7 @@ class DataHandler:
             return False
     
     @staticmethod
-    def set_progress(progress: float) -> None:
+    def set_progress(progress: int) -> None:
         """Save progress value to file with error handling."""
         try:
             progress_file = Path(config.PROGRESS_TXT)
@@ -91,7 +91,7 @@ class Scraper:
             total_records = len(self.df)
             for index, row in self.df.iterrows():
                 if not self._check_running():
-                    print("Scraping stopped by user")
+                    print("Scraping was stopped")
                     break
 
                 print(f"Processing {index + 1}/{total_records}")
@@ -137,8 +137,10 @@ class Scraper:
     def stop_running():
         running_file = Path(config.RUNNING)
         progress_file = Path(config.PROGRESS_TXT)
-        running_file.unlink()
-        progress_file.unlink()
+        if running_file.exists():
+            running_file.unlink()
+        if progress_file.exists():
+            progress_file.unlink()
 
     def save_results(self) -> None:
         """Save results to Excel file."""
