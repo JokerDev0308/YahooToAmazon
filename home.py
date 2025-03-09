@@ -106,6 +106,7 @@ class PriceScraperUI:
         if self.running():
             with progress_container:
                 self.scraping_progress(len(yahoo_products_df))
+                df_container.empty()
 
     def _setup_scraping_controls(self):
         st.subheader("スクレイピング制御")
@@ -155,10 +156,7 @@ class PriceScraperUI:
         tab1, tab2 = st.tabs(["Yahoo!からデータ取得", "Amazon商品作成"])
         
         with tab1:
-            if self.running():
-                self._manage_product_list()
-            else:
-                self._manage_product_list()
+            self._manage_product_list()
         with tab2:
             self.making_amazon_products()
             
