@@ -104,7 +104,7 @@ class PriceScraperUI:
         
         # Show progress if running
         if self.running():
-            st.navigation('home.py')
+            st.switch_page('home.py')
             with progress_container:
                 self.scraping_progress(len(yahoo_products_df))
 
