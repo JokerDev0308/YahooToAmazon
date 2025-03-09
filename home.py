@@ -13,7 +13,6 @@ from time import sleep
 class PriceScraperUI:
     def __init__(self):
         self.initialized = False
-        self.yahoo_products_df = pd.DataFrame(columns=config.yahoo_columns)
 
     def setup_sidebar(self):
         with st.sidebar:
@@ -54,7 +53,7 @@ class PriceScraperUI:
             return 0.0
 
     def _manage_product_list(self):
-        
+        yahoo_products_df = pd.DataFrame(columns=config.yahoo_columns)
 
         if not self.running():
             uploaded_file = st.file_uploader("商品URLリスト", type="xlsx")
@@ -62,23 +61,23 @@ class PriceScraperUI:
                 new_df = pd.read_excel(uploaded_file)
 
                 for col in new_df.columns:
-                    if col in self.yahoo_products_df.columns:
-                        self.yahoo_products_df[col] = new_df[col]
+                    if col in yahoo_products_df.columns:
+                        yahoo_products_df[col] = new_df[col]
 
                 st.write("T商品リストを読み込みました:", len(new_df))
                 output_path = Path(config.SCRAPED_XLSX)
                 output_path.parent.mkdir(parents=True, exist_ok=True)
-                self.yahoo_products_df.to_excel(output_path, index=False)
+                yahoo_products_df.to_excel(output_path, index=False)
                 st.success(f'データを保存しました {output_path}')
             
         if Path(config.SCRAPED_XLSX).exists():
             df = pd.read_excel(config.SCRAPED_XLSX)
             for col in df.columns:
-                if col in self.yahoo_products_df.columns:
-                    self.yahoo_products_df[col] = df[col]
+                if col in yahoo_products_df.columns:
+                    yahoo_products_df[col] = df[col]
         
-        self.yahoo_products_df.index = self.yahoo_products_df.index + 1
-        height = min(len(self.yahoo_products_df) * 35 + 38, 700)
+        yahoo_products_df.index = yahoo_products_df.index + 1
+        height = min(len(yahoo_products_df) * 35 + 38, 700)
 
         # Create two containers for concurrent display
         progress_container = st.empty()
@@ -87,37 +86,36 @@ class PriceScraperUI:
         # Display dataframe in the container
         with df_container:
             st.dataframe(
-                self.yahoo_products_df, 
+                yahoo_products_df, 
                 use_container_width=True, 
                 height=height, 
                 key="scraped_product_list",
-                column_config={
-                    "商品画像": st.column_config.ImageColumn(),
-                    "画像URL1": st.column_config.ImageColumn(),
-                    "画像URL2": st.column_config.ImageColumn(),
-                    "画像URL3": st.column_config.ImageColumn(),
-                    "画像URL4": st.column_config.ImageColumn(),
-                    "画像URL5": st.column_config.ImageColumn(),
-                    "画像URL6": st.column_config.ImageColumn(),
-                    "画像URL7": st.column_config.ImageColumn(),
-                    "画像URL8": st.column_config.ImageColumn(),
-                }
+                # column_config={
+                #     "商品画像": st.column_config.ImageColumn(),
+                #     "画像URL1": st.column_config.ImageColumn(),
+                #     "画像URL2": st.column_config.ImageColumn(),
+                #     "画像URL3": st.column_config.ImageColumn(),
+                #     "画像URL4": st.column_config.ImageColumn(),
+                #     "画像URL5": st.column_config.ImageColumn(),
+                #     "画像URL6": st.column_config.ImageColumn(),
+                #     "画像URL7": st.column_config.ImageColumn(),
+                #     "画像URL8": st.column_config.ImageColumn(),
+                # }
             )
         
         # Show progress if running
         if self.running():
             with progress_container:
-                self.scraping_progress(len(self.yahoo_products_df))
+                self.scraping_progress(len(yahoo_products_df))
 
     def _setup_scraping_controls(self):
         st.subheader("スクレイピング制御")
         if self.running():
             st.sidebar.button("停 止", type="primary", use_container_width=True, on_click=self.stop_running)
         else:
-            if self.yahoo_products_df or len(self.yahoo_products_df) == 0:
-                st.sidebar.button("開 始", type="secondary", use_container_width=True, disabled=True)
-            else:
-                st.sidebar.button("開 始", type="secondary", use_container_width=True, on_click=self.start_running)
+            st.sidebar.button("開 始", type="secondary", use_container_width=True, on_click=self.start_running)
+        
+        
 
     def running(self):
         return os.path.exists(config.RUNNING)
