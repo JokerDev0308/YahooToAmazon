@@ -1,6 +1,5 @@
 import streamlit as st
 from concurrent.futures import ThreadPoolExecutor
-from threading import Thread
 import pandas as pd
 import config
 import os
@@ -23,20 +22,20 @@ class PriceScraperUI:
             if st.button('リロード', use_container_width=True):
                 st.rerun()
 
-    def scraping_progress(self, limit, container):
+    def scraping_progress(self, limit):
         if limit > 0:
             progress_text = "操作中です。少々お待ちください。"
             progress_value = 0
-            container = st.progress(progress_value, text=progress_text)
+            my_bar = st.progress(progress_value, text=progress_text)
 
             while limit >= progress_value:
                 progress_value = self.progress_thread()
                 
-                container.progress(progress_value/limit, text=progress_text)
+                my_bar.progress(progress_value/limit, text=progress_text)
                 sleep(1)
                 if progress_value !=0 and (progress_value % config.BATCH_SIZE == 0 or progress_value == limit):
                     st.rerun()
-            container.empty()
+            my_bar.empty()
 
     def progress_thread(self):
         with ThreadPoolExecutor(max_workers=2) as executor:
@@ -79,8 +78,6 @@ class PriceScraperUI:
         yahoo_products_df.index = yahoo_products_df.index + 1
         height = min(len(yahoo_products_df) * 35 + 38, 700)
         
-        
-        # self.scraping_progress(len(yahoo_products_df))
         # Create two containers for concurrent display
         progress_container = st.empty()
         df_container = st.empty()
@@ -104,15 +101,12 @@ class PriceScraperUI:
                 #     "画像URL8": st.column_config.ImageColumn(),
                 # }
             )
-
-        if self.running():
-            progress_thread = Thread(target=self.scraping_progress, args=(len(yahoo_products_df), progress_container), daemon=True)
-            progress_thread.start()
         
-        # # Show progress if running
-        # if self.running():
-        #     with progress_container:
-        #         self.scraping_progress(len(yahoo_products_df))
+        # Show progress if running
+        if self.running():
+            st.navigation('home.py')
+            with progress_container:
+                self.scraping_progress(len(yahoo_products_df))
 
     def _setup_scraping_controls(self):
         st.subheader("スクレイピング制御")
