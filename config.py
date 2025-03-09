@@ -13,6 +13,7 @@ SETTING_KEYWORDS = 'data/settings/keywords.xlsx'
 SETTING_SALES_PRICE = 'data/settings/sales_price.xlsx'
 SETTING_PRODUCT_NAME_REM = 'data/settings/product_name_rem.xlsx'
 
+BATCH_SIZE = 10
 
 RUNNING = "tmp/running"
 WAITING = False

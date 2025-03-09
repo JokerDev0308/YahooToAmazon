@@ -32,7 +32,7 @@ class PriceScraperUI:
             
             my_bar.progress(progress_value/limit, text=progress_text)
             sleep(1)
-            if progress_value == limit:
+            if progress_value % config.BATCH_SIZE == 0 or progress_value == limit:
                 st.rerun()
 
         my_bar.empty()

@@ -48,11 +48,11 @@ class DataHandler:
         
 
 class Scraper:
-    def __init__(self, batch_size: int = 10):
+    def __init__(self):
         self.df: Optional[pd.DataFrame] = None
         self.yahoo_auction_scraper = YahooAuctionScraper()
         self.yahoo_fleamaket_scraper = YahooFleamarketScraper()
-        self.batch_size = batch_size
+        self.batch_size = config.BATCH_SIZE
         self.data_handler = DataHandler()
         
 
