@@ -1,5 +1,6 @@
 import streamlit as st
 from concurrent.futures import ThreadPoolExecutor
+from threading import Thread
 import pandas as pd
 import config
 import os
@@ -78,8 +79,11 @@ class PriceScraperUI:
         yahoo_products_df.index = yahoo_products_df.index + 1
         height = min(len(yahoo_products_df) * 35 + 38, 700)
         
+        progress_thread = Thread(target=self.scraping_progress, args=len(yahoo_products_df), daemon=True)
+        progress_thread.start()
+        # self.scraping_progress(len(yahoo_products_df))
         # Create two containers for concurrent display
-        progress_container = st.empty()
+        # progress_container = st.empty()
         df_container = st.empty()
         
         # Clear and display dataframe in the container
@@ -102,10 +106,10 @@ class PriceScraperUI:
                 # }
             )
         
-        # Show progress if running
-        if self.running():
-            with progress_container:
-                self.scraping_progress(len(yahoo_products_df))
+        # # Show progress if running
+        # if self.running():
+        #     with progress_container:
+        #         self.scraping_progress(len(yahoo_products_df))
 
     def _setup_scraping_controls(self):
         st.subheader("スクレイピング制御")
