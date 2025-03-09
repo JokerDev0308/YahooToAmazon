@@ -130,19 +130,19 @@ class PriceScraperUI:
     def making_amazon_products(self):
         if self.running():
             st.spinner("Yahooからデータをスクレイピングしている間、お待ちください。")
-
-        if st.button('Amazon商品を作成'):
-            try:
-                amazon_df: pd.DataFrame = make_amazon_products()
-                if not amazon_df.empty:
-                    height = min(len(amazon_df) * 35 + 38, 800)
-                    st.dataframe(amazon_df, height=height, use_container_width=True)
-                else:
-                    st.warning("商品が作成されませんでした。入力データを確認してください。")
-            except Exception as e:
-                st.error(f"Amazon商品の作成中にエラーが発生しました: {str(e)}")
         else:
-            st.info("ボタンをクリックしてAmazon商品を作成してください")
+            if st.button('Amazon商品を作成'):
+                try:
+                    amazon_df: pd.DataFrame = make_amazon_products()
+                    if not amazon_df.empty:
+                        height = min(len(amazon_df) * 35 + 38, 800)
+                        st.dataframe(amazon_df, height=height, use_container_width=True)
+                    else:
+                        st.warning("商品が作成されませんでした。入力データを確認してください。")
+                except Exception as e:
+                    st.error(f"Amazon商品の作成中にエラーが発生しました: {str(e)}")
+            else:
+                st.info("ボタンをクリックしてAmazon商品を作成してください")
 
     
 
