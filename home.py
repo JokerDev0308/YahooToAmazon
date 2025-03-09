@@ -35,7 +35,6 @@ class PriceScraperUI:
                 sleep(1)
                 if progress_value % config.BATCH_SIZE == 0 or progress_value == limit:
                     st.rerun()
-
             my_bar.empty()
 
     def progress_thread(self):
