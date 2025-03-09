@@ -80,7 +80,7 @@ class PriceScraperUI:
         
         # Create two containers for concurrent display
         # progress_container = st.empty()
-        if not self.running():
+        if self.running():
             self.scraping_progress(len(yahoo_products_df))
         df_container = st.empty()
         
