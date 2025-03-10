@@ -22,7 +22,7 @@ def make_amazon_products():
     yahoo_products.index = yahoo_products.index + 1
 
     
-    amazon_products['item_sku'] = yahoo_products['出品者ID']
+    amazon_products['item_sku'] = yahoo_products['商品ID']
 
     amazon_products['item_name'] = yahoo_products['商品名']
 
@@ -32,7 +32,7 @@ def make_amazon_products():
         else:
             amazon_products['item_name'] = amazon_products['item_name'].str.replace(str(old_word), '', regex=False)
 
-    amazon_products['external_product_id'] = yahoo_products['商品ID']
+    # amazon_products['external_product_id'] = ""
     # amazon_products['external_product_id_type'] = ""
 
     amazon_products['brand_name'] = yahoo_products['商品名'].apply(
@@ -55,13 +55,13 @@ def make_amazon_products():
         amazon_products[row['項目名']] = row['設定値']
 
     # amazon_products['feed_product_type'] = ""
-    # amazon_products['part_number'] = ""
+    amazon_products['part_number'] = yahoo_products['商品ID']
     amazon_products['product_description'] = yahoo_products['商品名'] + "です。"
-    # amazon_products['model'] = ""
-    # amazon_products['update_delete'] = ""
+    amazon_products['model'] = yahoo_products['商品ID']
+    amazon_products['update_delete'] = "Update"
     # amazon_products['quantity'] = ""
     # amazon_products['fulfillment_latency'] = ""
-    # amazon_products['standard_price'] = ""
+    amazon_products['standard_price'] = 12800
     # amazon_products['standard_price_points_percent'] = ""
     # amazon_products['condition_type'] = ""
     # amazon_products['condition_note'] = ""
@@ -90,20 +90,20 @@ def make_amazon_products():
     # amazon_products['bullet_point4'] = ""
     # amazon_products['bullet_point5'] = ""
 
-    amazon_products['recommended_browse_nodes'] = yahoo_products['商品名'].apply(
-        lambda product_name: next(
+    amazon_products['recommended_browse_nodes'] = amazon_products.apply(
+        lambda row: next(
             (brand for _, keyword, brand in kewords[['キーワード', 'recommended_browse_nodes (推奨ブラウズノード)']].itertuples() 
-             if keyword in product_name), 
-            ""
-        )
+             if keyword in row['商品名']), 
+            row['recommended_browse_nodes']
+        ), axis=1
     )
 
-    amazon_products['generic_keywords'] = yahoo_products['商品名'].apply(
-        lambda product_name: next(
+    amazon_products['generic_keywords'] = amazon_products.apply(
+        lambda row: next(
             (brand for _, keyword, brand in kewords[['キーワード', 'generic_keywords (検索キーワード)']].itertuples() 
-             if keyword in product_name), 
-            ""
-        )
+             if keyword in row['商品名']), 
+            row['generic_keywords']
+        ), axis=1
     )
 
     # amazon_products['is_adult_product'] = ""
