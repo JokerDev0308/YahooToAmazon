@@ -79,7 +79,8 @@ class PriceScraperUI:
         yahoo_products_df.index = yahoo_products_df.index + 1
         height = min(len(yahoo_products_df) * 35 + 38, 700)
         
-        self.scraping_progress(len(yahoo_products_df))
+        if self.running():
+            self.scraping_progress(len(yahoo_products_df))
         
         st.dataframe(
             yahoo_products_df, 
