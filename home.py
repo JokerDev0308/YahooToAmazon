@@ -65,11 +65,10 @@ class PriceScraperUI:
             if uploaded_file is not None:
                 new_df = pd.read_excel(uploaded_file)
 
-                if new_df['商品URL'] != yahoo_products_df['商品URL']:
+                if not new_df['商品URL'].equals(yahoo_products_df['商品URL']):
                     for col in new_df.columns:
                         if col in yahoo_products_df.columns:
                             yahoo_products_df[col] = new_df[col]
-
                 
                     st.write("T商品リストを読み込みました:", len(new_df))
                     output_path = Path(config.SCRAPED_XLSX)
