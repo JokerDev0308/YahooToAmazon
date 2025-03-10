@@ -68,7 +68,7 @@ class PriceScraperUI:
                 st.success(f'データを保存しました {output_path}')
                 # Clean up the temporary uploaded file
                 uploaded_file.close()
-                del uploaded_file
+                uploaded_file.detach()
             
         if Path(config.SCRAPED_XLSX).exists():
             df = pd.read_excel(config.SCRAPED_XLSX)
