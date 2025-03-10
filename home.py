@@ -68,6 +68,10 @@ class PriceScraperUI:
                 output_path.parent.mkdir(parents=True, exist_ok=True)
                 yahoo_products_df.to_excel(output_path, index=False)
                 st.success(f'データを保存しました {output_path}')
+
+                uploaded_file.close()
+                del uploaded_file
+                st.rerun()
             
         if Path(config.SCRAPED_XLSX).exists():
             df = pd.read_excel(config.SCRAPED_XLSX)
