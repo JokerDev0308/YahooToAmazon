@@ -58,17 +58,17 @@ class PriceScraperUI:
             uploaded_file = st.file_uploader("商品URLリスト", type="xlsx")
             if uploaded_file is not None:
                 new_df = pd.read_excel(uploaded_file)
-
-                # if not new_df['商品URL'].equals(yahoo_products_df['商品URL']):
-                for col in new_df.columns:
-                    if col in yahoo_products_df.columns:
-                        yahoo_products_df[col] = new_df[col]
-            
-                st.write("商品リストを読み込みました:", len(new_df))
-                output_path = Path(config.SCRAPED_XLSX)
-                output_path.parent.mkdir(parents=True, exist_ok=True)
-                yahoo_products_df.to_excel(output_path, index=False)
-                st.success(f'データを保存しました {output_path}')
+                saved_df = pd.read_excel(config.SCRAPED_XLSX) if Path(config.SCRAPED_XLSX).exists() else yahoo_products_df
+                if not new_df['商品URL'].equals(yahoo_products_df['商品URL']):
+                    for col in new_df.columns:
+                        if col in yahoo_products_df.columns:
+                            yahoo_products_df[col] = new_df[col]
+                
+                    st.write("商品リストを読み込みました:", len(new_df))
+                    output_path = Path(config.SCRAPED_XLSX)
+                    output_path.parent.mkdir(parents=True, exist_ok=True)
+                    yahoo_products_df.to_excel(output_path, index=False)
+                    st.success(f'データを保存しました {output_path}')
 
         if Path(config.SCRAPED_XLSX).exists():
             saved_df = pd.read_excel(config.SCRAPED_XLSX)
