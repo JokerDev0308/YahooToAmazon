@@ -91,8 +91,9 @@ class PriceScraperUI:
             existing_urls = set(yahoo_products_df['商品URL']) if not yahoo_products_df.empty else set()
             new_urls = set(new_df['商品URL'])
             if existing_urls != new_urls:
-                valid_columns = [col for col in new_df.columns if col in yahoo_products_df.columns]
-                yahoo_products_df = pd.DataFrame(new_df[valid_columns], columns=valid_columns)
+                for col in new_df.columns:
+                    if col in yahoo_products_df.columns:
+                        yahoo_products_df[col] = new_df[col]
                 
                 self.output_path.parent.mkdir(parents=True, exist_ok=True)
                 yahoo_products_df.to_excel(self.output_path, index=False)
