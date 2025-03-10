@@ -78,10 +78,15 @@ class PriceScraperUI:
 
     def _load_product_data(self, uploaded_file) -> pd.DataFrame:
         yahoo_products_df = pd.DataFrame(columns=config.yahoo_columns)
+
+        if self.output_path.exists():
+            df = pd.read_excel(self.output_path)
+            for col in df.columns:
+                if col in yahoo_products_df.columns:
+                    yahoo_products_df[col] = df[col]
         
         if uploaded_file:
             new_df = pd.read_excel(uploaded_file)
-
             if yahoo_products_df['商品URL'] != new_df['商品URL']:
                 valid_columns = [col for col in new_df.columns if col in yahoo_products_df.columns]
                 yahoo_products_df = pd.DataFrame(new_df[valid_columns], columns=valid_columns)
@@ -90,12 +95,6 @@ class PriceScraperUI:
                 yahoo_products_df.to_excel(self.output_path, index=False)
                 st.success(f'データを保存しました {self.output_path}')
             
-        elif self.output_path.exists():
-            df = pd.read_excel(self.output_path)
-            for col in df.columns:
-                if col in yahoo_products_df.columns:
-                    yahoo_products_df[col] = df[col]
-                    
         return yahoo_products_df
 
     def _manage_product_list(self):
