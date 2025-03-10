@@ -43,8 +43,8 @@ class PriceScraperUI:
             my_bar.progress(progress_value/limit, text=progress_text)
             sleep(1)
             
-            if progress_value and (progress_value % config.BATCH_SIZE == 0 or progress_value == limit):
-                st.rerun()
+            # if progress_value and (progress_value % config.BATCH_SIZE == 0 or progress_value == limit):
+            #     st.rerun()
 
         my_bar.empty()
 
@@ -81,12 +81,14 @@ class PriceScraperUI:
         
         if uploaded_file:
             new_df = pd.read_excel(uploaded_file)
-            valid_columns = [col for col in new_df.columns if col in yahoo_products_df.columns]
-            yahoo_products_df = pd.DataFrame(new_df[valid_columns], columns=valid_columns)
-            
-            self.output_path.parent.mkdir(parents=True, exist_ok=True)
-            yahoo_products_df.to_excel(self.output_path, index=False)
-            st.success(f'データを保存しました {self.output_path}')
+
+            if yahoo_products_df['商品URL'] != new_df['商品URL']:
+                valid_columns = [col for col in new_df.columns if col in yahoo_products_df.columns]
+                yahoo_products_df = pd.DataFrame(new_df[valid_columns], columns=valid_columns)
+                
+                self.output_path.parent.mkdir(parents=True, exist_ok=True)
+                yahoo_products_df.to_excel(self.output_path, index=False)
+                st.success(f'データを保存しました {self.output_path}')
             
         elif self.output_path.exists():
             df = pd.read_excel(self.output_path)
