@@ -134,6 +134,6 @@ class PriceScraperUI:
         with tab2:
             self.making_amazon_products()
 
-if __name__ == "__main__":
-    app = PriceScraperUI()
-    app.run()
+# if __name__ == "__main__":
+app = PriceScraperUI()
+app.run()
