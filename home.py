@@ -30,11 +30,11 @@ class PriceScraperUI:
 
             while limit >= progress_value:
                 progress_value = self.progress_thread()
-                
                 my_bar.progress(progress_value/limit, text=progress_text)
                 sleep(1)
-                if progress_value !=0 and (progress_value % config.BATCH_SIZE == 0 or progress_value == limit):
+                if progress_value !=0 and  progress_value == limit:
                     st.rerun()
+
             my_bar.empty()
 
     def progress_thread(self):
@@ -76,39 +76,37 @@ class PriceScraperUI:
                     yahoo_products_df.to_excel(output_path, index=False)
                     st.success(f'データを保存しました {output_path}')
             
+        if Path(config.SCRAPED_XLSX).exists():
+            df = pd.read_excel(config.SCRAPED_XLSX)
+            for col in df.columns:
+                if col in yahoo_products_df.columns:
+                    yahoo_products_df[col] = df[col]
+        
         yahoo_products_df.index = yahoo_products_df.index + 1
-        height = min(len(yahoo_products_df) * 35 + 38, 700)
+        height = min(len(yahoo_products_df) * 35 + 38, 600)
         
-        # Create two containers for concurrent display
-        progress_container = st.empty()
-        df_container = st.container()
-        
-        # Clear and display dataframe in the container
-        with df_container:
-            st.dataframe(
-                yahoo_products_df, 
-                use_container_width=True, 
-                height=height, 
-                key="scraped_product_list",
-                # column_config={
-                #     "商品画像": st.column_config.ImageColumn(),
-                #     "画像URL1": st.column_config.ImageColumn(),
-                #     "画像URL2": st.column_config.ImageColumn(),
-                #     "画像URL3": st.column_config.ImageColumn(),
-                #     "画像URL4": st.column_config.ImageColumn(),
-                #     "画像URL5": st.column_config.ImageColumn(),
-                #     "画像URL6": st.column_config.ImageColumn(),
-                #     "画像URL7": st.column_config.ImageColumn(),
-                #     "画像URL8": st.column_config.ImageColumn(),
-                # }
-            )
-        
-        # Show progress if running
         if self.running():
-            with progress_container:
-                self.scraping_progress(len(yahoo_products_df))
-                df_container.clear()
+            self.scraping_progress(len(yahoo_products_df))
 
+        st.dataframe(
+            yahoo_products_df, 
+            use_container_width=True, 
+            height=height, 
+            key="scraped_product_list",
+            # column_config={
+            #     "商品画像": st.column_config.ImageColumn(),
+            #     "画像URL1": st.column_config.ImageColumn(),
+            #     "画像URL2": st.column_config.ImageColumn(),
+            #     "画像URL3": st.column_config.ImageColumn(),
+            #     "画像URL4": st.column_config.ImageColumn(),
+            #     "画像URL5": st.column_config.ImageColumn(),
+            #     "画像URL6": st.column_config.ImageColumn(),
+            #     "画像URL7": st.column_config.ImageColumn(),
+            #     "画像URL8": st.column_config.ImageColumn(),
+            # }
+        )
+        
+        
     def _setup_scraping_controls(self):
         st.subheader("スクレイピング制御")
         if self.running():
@@ -141,7 +139,7 @@ class PriceScraperUI:
             try:
                 amazon_df: pd.DataFrame = make_amazon_products()
                 if not amazon_df.empty:
-                    height = min(len(amazon_df) * 35 + 38, 800)
+                    height = min(len(amazon_df) * 35 + 38, 600)
                     st.dataframe(amazon_df, height=height, use_container_width=True)
                 else:
                     st.warning("商品が作成されませんでした。入力データを確認してください。")
@@ -150,17 +148,15 @@ class PriceScraperUI:
         else:
             st.info("ボタンをクリックしてAmazon商品を作成してください")
 
-    
 
     def run(self):
         self.setup_sidebar()
         tab1, tab2 = st.tabs(["Yahoo!からデータ取得", "Amazon商品作成"])
-        
+
         with tab1:
             self._manage_product_list()
         with tab2:
             self.making_amazon_products()
-            
        
 
 # Initialize and run the app
