@@ -113,7 +113,23 @@ class PriceScraperUI:
         if self.running():
             self.scraping_progress(len(yahoo_products_df))
 
-        st.dataframe(yahoo_products_df, use_container_width=True, height=height, key="scraped_product_list")
+        st.dataframe(
+                yahoo_products_df, 
+                use_container_width=True, 
+                height=height, 
+                key="scraped_product_list",
+                column_config={
+                    "商品画像": st.column_config.ImageColumn(),
+                    "画像URL1": st.column_config.ImageColumn(),
+                    "画像URL2": st.column_config.ImageColumn(),
+                    "画像URL3": st.column_config.ImageColumn(),
+                    "画像URL4": st.column_config.ImageColumn(),
+                    "画像URL5": st.column_config.ImageColumn(),
+                    "画像URL6": st.column_config.ImageColumn(),
+                    "画像URL7": st.column_config.ImageColumn(),
+                    "画像URL8": st.column_config.ImageColumn(),
+                }
+            )
 
     def making_amazon_products(self):
         if st.button('Amazon商品を作成'):
