@@ -67,7 +67,10 @@ class PriceScraperUI:
                     yahoo_products_df = pd.read_excel(config.SCRAPED_XLSX)
                 
                 if yahoo_products_df.empty or not new_df['商品URL'].equals(yahoo_products_df.get('商品URL', pd.Series())):
-                    yahoo_products_df = new_df[new_df.columns.intersection(config.yahoo_columns)]
+                    for col in new_df.columns:
+                        if col not in config.yahoo_columns:
+                            yahoo_products_df[col] = new_df[col]
+
                     st.write("商品リストを読み込みました:", len(new_df))
                     output_path = Path(config.SCRAPED_XLSX)
                     output_path.parent.mkdir(parents=True, exist_ok=True)
