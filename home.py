@@ -87,7 +87,9 @@ class PriceScraperUI:
         
         if uploaded_file:
             new_df = pd.read_excel(uploaded_file)
-            if yahoo_products_df['商品URL'] != new_df['商品URL']:
+            existing_urls = set(yahoo_products_df['商品URL']) if not yahoo_products_df.empty else set()
+            new_urls = set(new_df['商品URL'])
+            if existing_urls != new_urls:
                 valid_columns = [col for col in new_df.columns if col in yahoo_products_df.columns]
                 yahoo_products_df = pd.DataFrame(new_df[valid_columns], columns=valid_columns)
                 
