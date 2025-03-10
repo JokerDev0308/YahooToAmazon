@@ -93,7 +93,7 @@ def make_amazon_products():
     amazon_products['recommended_browse_nodes'] = amazon_products.apply(
         lambda row: next(
             (brand for _, keyword, brand in kewords[['キーワード', 'recommended_browse_nodes (推奨ブラウズノード)']].itertuples() 
-             if keyword in row['商品名']), 
+             if keyword in row['item_name']), 
             row['recommended_browse_nodes']
         ), axis=1
     )
@@ -101,7 +101,7 @@ def make_amazon_products():
     amazon_products['generic_keywords'] = amazon_products.apply(
         lambda row: next(
             (brand for _, keyword, brand in kewords[['キーワード', 'generic_keywords (検索キーワード)']].itertuples() 
-             if keyword in row['商品名']), 
+             if keyword in row['item_name']), 
             row['generic_keywords']
         ), axis=1
     )
