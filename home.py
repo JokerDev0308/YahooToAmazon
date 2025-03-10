@@ -30,11 +30,11 @@ class PriceScraperUI:
 
             while limit >= progress_value:
                 progress_value = self.progress_thread()
-                my_bar.progress(progress_value/limit, text=progress_text + ' ' + str(progress_value) + '/' + str(limit))
+                
+                my_bar.progress(progress_value/limit, text=progress_text)
                 sleep(1)
-                if progress_value !=0 and  progress_value == limit:
+                if progress_value !=0 and progress_value == limit:
                     st.rerun()
-
             my_bar.empty()
 
     def progress_thread(self):
@@ -54,40 +54,33 @@ class PriceScraperUI:
     def _manage_product_list(self):
         yahoo_products_df = pd.DataFrame(columns=config.yahoo_columns)
 
+        if Path(config.SCRAPED_XLSX).exists():
+            saved_df = pd.read_excel(config.SCRAPED_XLSX)
+            for col in saved_df.columns:
+                if col in yahoo_products_df.columns:
+                    yahoo_products_df[col] = saved_df[col]
+
         if not self.running():
             uploaded_file = st.file_uploader("商品URLリスト", type="xlsx")
             if uploaded_file is not None:
                 new_df = pd.read_excel(uploaded_file)
-                if '商品URL' not in new_df.columns:
-                    st.error("アップロードされたファイルに '商品URL' 列がありません")
-                    return
-                
-                if Path(config.SCRAPED_XLSX).exists():
-                    saved_df = pd.read_excel(config.SCRAPED_XLSX)
-                    for col in saved_df.columns:
-                        if col in yahoo_products_df.columns:
-                            yahoo_products_df[col] = saved_df[col]
-                
+
                 if not new_df['商品URL'].equals(yahoo_products_df['商品URL']):
                     for col in new_df.columns:
                         if col in yahoo_products_df.columns:
                             yahoo_products_df[col] = new_df[col]
-
-                    st.write("商品リストを読み込みました:", len(new_df))
+                
+                    st.write("T商品リストを読み込みました:", len(new_df))
                     output_path = Path(config.SCRAPED_XLSX)
                     output_path.parent.mkdir(parents=True, exist_ok=True)
                     yahoo_products_df.to_excel(output_path, index=False)
                     st.success(f'データを保存しました {output_path}')
-
-        elif Path(config.SCRAPED_XLSX).exists():
-            yahoo_products_df = pd.read_excel(config.SCRAPED_XLSX)
             
         yahoo_products_df.index = yahoo_products_df.index + 1
-        height = min(len(yahoo_products_df) * 35 + 38, 600)
+        height = min(len(yahoo_products_df) * 35 + 38, 700)
         
-        if self.running():
-            self.scraping_progress(len(yahoo_products_df))
-
+        self.scraping_progress(len(yahoo_products_df))
+        
         st.dataframe(
             yahoo_products_df, 
             use_container_width=True, 
@@ -106,7 +99,8 @@ class PriceScraperUI:
             # }
         )
         
-        
+       
+
     def _setup_scraping_controls(self):
         st.subheader("スクレイピング制御")
         if self.running():
@@ -139,7 +133,7 @@ class PriceScraperUI:
             try:
                 amazon_df: pd.DataFrame = make_amazon_products()
                 if not amazon_df.empty:
-                    height = min(len(amazon_df) * 35 + 38, 600)
+                    height = min(len(amazon_df) * 35 + 38, 800)
                     st.dataframe(amazon_df, height=height, use_container_width=True)
                 else:
                     st.warning("商品が作成されませんでした。入力データを確認してください。")
@@ -148,15 +142,17 @@ class PriceScraperUI:
         else:
             st.info("ボタンをクリックしてAmazon商品を作成してください")
 
+    
 
     def run(self):
         self.setup_sidebar()
         tab1, tab2 = st.tabs(["Yahoo!からデータ取得", "Amazon商品作成"])
-
+        
         with tab1:
             self._manage_product_list()
         with tab2:
             self.making_amazon_products()
+            
        
 
 # Initialize and run the app
