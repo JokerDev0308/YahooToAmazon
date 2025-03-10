@@ -63,7 +63,10 @@ class PriceScraperUI:
                     return
                 
                 if Path(config.SCRAPED_XLSX).exists():
-                    yahoo_products_df = pd.read_excel(config.SCRAPED_XLSX)
+                    saved_df = pd.read_excel(config.SCRAPED_XLSX)
+                    for col in saved_df.columns:
+                        if col in yahoo_products_df.columns:
+                            yahoo_products_df[col] = saved_df[col]
                 
                 if yahoo_products_df.empty or not new_df['商品URL'].equals(yahoo_products_df.get('商品URL', pd.Series())):
                     for col in new_df.columns:
