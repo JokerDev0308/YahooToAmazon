@@ -68,7 +68,7 @@ class PriceScraperUI:
                         if col in yahoo_products_df.columns:
                             yahoo_products_df[col] = saved_df[col]
                 
-                if yahoo_products_df.empty or not new_df['商品URL'].equals(yahoo_products_df.get('商品URL', pd.Series())):
+                if not new_df['商品URL'].equals(yahoo_products_df['商品URL']):
                     for col in new_df.columns:
                         if col in yahoo_products_df.columns:
                             yahoo_products_df[col] = new_df[col]
