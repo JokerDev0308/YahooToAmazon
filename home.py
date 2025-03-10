@@ -30,7 +30,7 @@ class PriceScraperUI:
 
             while limit >= progress_value:
                 progress_value = self.progress_thread()
-                my_bar.progress(progress_value/limit, text=progress_text)
+                my_bar.progress(progress_value/limit, text=progress_text + ' ' + str(progress_value) + '/' + str(limit))
                 sleep(1)
                 if progress_value !=0 and  progress_value == limit:
                     st.rerun()
@@ -58,23 +58,24 @@ class PriceScraperUI:
             uploaded_file = st.file_uploader("商品URLリスト", type="xlsx")
             if uploaded_file is not None:
                 new_df = pd.read_excel(uploaded_file)
-                saved_df = pd.read_excel(config.SCRAPED_XLSX) if Path(config.SCRAPED_XLSX).exists() else yahoo_products_df
-                if not new_df['商品URL'].equals(yahoo_products_df['商品URL']):
-                    for col in new_df.columns:
-                        if col in yahoo_products_df.columns:
-                            yahoo_products_df[col] = new_df[col]
+                if '商品URL' not in new_df.columns:
+                    st.error("アップロードされたファイルに '商品URL' 列がありません")
+                    return
                 
+                yahoo_products_df = pd.DataFrame(columns=config.yahoo_columns)
+                if Path(config.SCRAPED_XLSX).exists():
+                    yahoo_products_df = pd.read_excel(config.SCRAPED_XLSX)
+                
+                if yahoo_products_df.empty or not new_df['商品URL'].equals(yahoo_products_df.get('商品URL', pd.Series())):
+                    yahoo_products_df = new_df[new_df.columns.intersection(config.yahoo_columns)]
                     st.write("商品リストを読み込みました:", len(new_df))
                     output_path = Path(config.SCRAPED_XLSX)
                     output_path.parent.mkdir(parents=True, exist_ok=True)
                     yahoo_products_df.to_excel(output_path, index=False)
                     st.success(f'データを保存しました {output_path}')
 
-        if Path(config.SCRAPED_XLSX).exists():
-            saved_df = pd.read_excel(config.SCRAPED_XLSX)
-            for col in saved_df.columns:
-                if col in yahoo_products_df.columns:
-                    yahoo_products_df[col] = saved_df[col]
+        elif Path(config.SCRAPED_XLSX).exists():
+            yahoo_products_df = pd.read_excel(config.SCRAPED_XLSX)
             
         yahoo_products_df.index = yahoo_products_df.index + 1
         height = min(len(yahoo_products_df) * 35 + 38, 600)
