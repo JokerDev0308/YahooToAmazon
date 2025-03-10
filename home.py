@@ -124,7 +124,8 @@ class PriceScraperUI:
         if running_file.exists():
             running_file.unlink()
         
-        while not progress_file.exists():
+        while progress_file.exists():
+            progress_file.close()
             progress_file.unlink()
 
     def making_amazon_products(self):
