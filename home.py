@@ -67,7 +67,7 @@ class PriceScraperUI:
                 yahoo_products_df.to_excel(output_path, index=False)
                 st.success(f'データを保存しました {output_path}')
                 # Clean up the temporary uploaded file
-                uploaded_file.close()
+                # uploaded_file.close()
                 uploaded_file.detach()
             
         if Path(config.SCRAPED_XLSX).exists():
