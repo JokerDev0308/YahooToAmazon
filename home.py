@@ -31,9 +31,9 @@ class PriceScraperUI:
             while limit >= progress_value:
                 progress_value = self.progress_thread()
                 
-                my_bar.progress(progress_value/limit, text=progress_text)
+                my_bar.progress(progress_value/limit, text=progress_text + f" {progress_value}/{limit}")
                 sleep(1)
-                if progress_value !=0 and (progress_value % config.BATCH_SIZE == 0 or progress_value == limit):
+                if progress_value !=0 and progress_value == limit:
                     st.rerun()
             my_bar.empty()
 
@@ -69,10 +69,6 @@ class PriceScraperUI:
                 yahoo_products_df.to_excel(output_path, index=False)
                 st.success(f'データを保存しました {output_path}')
 
-                uploaded_file = None
-                
-                
-            
         if Path(config.SCRAPED_XLSX).exists():
             df = pd.read_excel(config.SCRAPED_XLSX)
             for col in df.columns:
