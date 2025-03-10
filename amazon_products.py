@@ -61,7 +61,14 @@ def make_amazon_products():
     amazon_products['update_delete'] = "Update"
     # amazon_products['quantity'] = ""
     # amazon_products['fulfillment_latency'] = ""
-    amazon_products['standard_price'] = 12800
+    amazon_products['standard_price'] = yahoo_products['販売価格'].apply(
+        lambda price: next(
+            (amazon_price for _, purchase_price, amazon_price in setup_sales_price[['仕入れ価格', 'アマゾン販売価格']].itertuples() 
+             if purchase_price <= price < setup_sales_price['仕入れ価格'].shift(-1).fillna(float('inf')).loc[_]),
+            setup_sales_price['アマゾン販売価格'].iloc[-1]  # Default to last price if no range matches
+        )
+    )
+    
     # amazon_products['standard_price_points_percent'] = ""
     # amazon_products['condition_type'] = ""
     # amazon_products['condition_note'] = ""
