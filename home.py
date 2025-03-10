@@ -76,7 +76,7 @@ class PriceScraperUI:
                     yahoo_products_df[col] = df[col]
         
         yahoo_products_df.index = yahoo_products_df.index + 1
-        height = min(len(yahoo_products_df) * 35 + 38, 700)
+        height = min(len(yahoo_products_df) * 35 + 38, 500)
         
         if self.running():
             self.scraping_progress(len(yahoo_products_df))
@@ -132,7 +132,7 @@ class PriceScraperUI:
             try:
                 amazon_df: pd.DataFrame = make_amazon_products()
                 if not amazon_df.empty:
-                    height = min(len(amazon_df) * 35 + 38, 800)
+                    height = min(len(amazon_df) * 35 + 38, 500)
                     st.dataframe(amazon_df, height=height, use_container_width=True)
                 else:
                     st.warning("商品が作成されませんでした。入力データを確認してください。")
