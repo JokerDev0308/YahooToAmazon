@@ -62,13 +62,12 @@ class PriceScraperUI:
                     st.error("アップロードされたファイルに '商品URL' 列がありません")
                     return
                 
-                yahoo_products_df = pd.DataFrame(columns=config.yahoo_columns)
                 if Path(config.SCRAPED_XLSX).exists():
                     yahoo_products_df = pd.read_excel(config.SCRAPED_XLSX)
                 
                 if yahoo_products_df.empty or not new_df['商品URL'].equals(yahoo_products_df.get('商品URL', pd.Series())):
                     for col in new_df.columns:
-                        if col not in config.yahoo_columns:
+                        if col in yahoo_products_df.columns:
                             yahoo_products_df[col] = new_df[col]
 
                     st.write("商品リストを読み込みました:", len(new_df))
