@@ -17,9 +17,7 @@ class PriceScraperUI:
 
     def setup_sidebar(self):
         with st.sidebar:
-            st.subheader("メニュー")
             self._setup_scraping_controls()
-
             if st.button('リロード', use_container_width=True):
                 st.rerun()
 
@@ -102,7 +100,6 @@ class PriceScraperUI:
        
 
     def _setup_scraping_controls(self):
-        st.subheader("スクレイピング制御")
         if self.running():
             st.sidebar.button("停 止", type="primary", use_container_width=True, on_click=self.stop_running)
         else:
