@@ -7,6 +7,7 @@ from pathlib import Path
 from session_manager import SessionManager
 from amazon_products import make_amazon_products
 import config
+from datetime import datetime
 from time import sleep
 
 # Main application class
@@ -87,15 +88,15 @@ class PriceScraperUI:
             height=height, 
             key="scraped_product_list",
             column_config={
-                "商品画像": st.column_config.ImageColumn(),
-                "画像URL1": st.column_config.ImageColumn(),
-                "画像URL2": st.column_config.ImageColumn(),
-                "画像URL3": st.column_config.ImageColumn(),
-                "画像URL4": st.column_config.ImageColumn(),
-                "画像URL5": st.column_config.ImageColumn(),
-                "画像URL6": st.column_config.ImageColumn(),
-                "画像URL7": st.column_config.ImageColumn(),
-                "画像URL8": st.column_config.ImageColumn(),
+                # "商品画像": st.column_config.ImageColumn(),
+                # "画像URL1": st.column_config.ImageColumn(),
+                # "画像URL2": st.column_config.ImageColumn(),
+                # "画像URL3": st.column_config.ImageColumn(),
+                # "画像URL4": st.column_config.ImageColumn(),
+                # "画像URL5": st.column_config.ImageColumn(),
+                # "画像URL6": st.column_config.ImageColumn(),
+                # "画像URL7": st.column_config.ImageColumn(),
+                # "画像URL8": st.column_config.ImageColumn(),
             }
         )
        
@@ -128,20 +129,72 @@ class PriceScraperUI:
             progress_file.unlink()
 
     def making_amazon_products(self):
-        if st.button('Amazon商品を作成'):
+        session = SessionManager()
+        
+        if st.button('Amazon製品の作成'):
             try:
                 amazon_df: pd.DataFrame = make_amazon_products()
                 if not amazon_df.empty:
-                    height = min(len(amazon_df) * 35 + 38, 800)
+                    session.amazon_df = amazon_df
+                    height = min(len(amazon_df) * 35 + 38, 500)
                     st.dataframe(amazon_df, height=height, use_container_width=True)
+
+                    self.download_amazon_products(amazon_df)
+
                 else:
                     st.warning("商品が作成されませんでした。入力データを確認してください。")
             except Exception as e:
-                st.error(f"Amazon商品の作成中にエラーが発生しました: {str(e)}")
-        else:
-            st.info("ボタンをクリックしてAmazon商品を作成してください")
+                st.error(f"Amazon商品のプレビュー中にエラーが発生しました: {str(e)}")
+        
 
-    
+
+    def download_amazon_products(self, amazon_df):
+        template_path = Path(config.AMAZON_PRODUCT_TEMPLATE)
+        output_path = Path(config.AMAZON_PRODUCT_OUTPUT)
+        
+        # Save initial amazon_df
+        amazon_df.to_csv(output_path, index=False)
+        
+        # Insert template headers and combine with existing data
+        if template_path.exists():
+            final_path = self.insert_records(output_path, output_path)
+            
+            # Read the file for download
+            with open(final_path, 'rb') as file:
+                file_content = file.read()
+            
+            # Create download button
+            st.download_button(
+                label="Amazon商品リストをダウンロード",
+                data=file_content,
+                file_name=f"amazon_products({datetime.now().strftime('%Y-%m-%d %H:%M:%S')}).csv",
+                mime="text/csv",
+                use_container_width=True
+            )
+        
+
+    def insert_records(self, csv_path, output_path):
+        # Read template headers from template.csv
+        template_path = Path(config.AMAZON_PRODUCT_TEMPLATE)
+        template_headers = []
+        if template_path.exists():
+            template_df = pd.read_csv(template_path, encoding='utf-8-sig', header=None, nrows=2)
+            template_headers = template_df.values.tolist()
+        else:
+            raise FileNotFoundError("template.csv not found")
+        
+        # Read the CSV data
+        df = pd.read_csv(csv_path, header=None)
+        
+        # Check if template headers are needed
+        if not (df.iloc[0].tolist() == template_headers[1]):
+            df = pd.concat([pd.DataFrame(template_headers), df], ignore_index=True)
+        
+        # Save with UTF-8 BOM encoding for Excel compatibility
+        df.to_csv(output_path, index=False, header=False, encoding='utf-8-sig')
+        
+        return output_path
+
 
     def run(self):
         self.setup_sidebar()
