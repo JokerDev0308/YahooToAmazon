@@ -115,15 +115,15 @@ def make_amazon_products():
 
     # amazon_products['is_adult_product'] = ""
     amazon_products['main_image_url'] = yahoo_products['画像URL1']
-    amazon_products['swatch_image_url'] = yahoo_products['画像URL1']
-    amazon_products['other_image_url1'] = yahoo_products['画像URL1']
-    amazon_products['other_image_url2'] = yahoo_products['画像URL2']
-    amazon_products['other_image_url3'] = yahoo_products['画像URL3']
-    amazon_products['other_image_url4'] = yahoo_products['画像URL4']
-    amazon_products['other_image_url5'] = yahoo_products['画像URL5']
-    amazon_products['other_image_url6'] = yahoo_products['画像URL6']
-    amazon_products['other_image_url7'] = yahoo_products['画像URL7']
-    amazon_products['other_image_url8'] = yahoo_products['画像URL8']
+    amazon_products['swatch_image_url'] = ""
+    amazon_products['other_image_url1'] = yahoo_products['画像URL2']
+    amazon_products['other_image_url2'] = yahoo_products['画像URL3']
+    amazon_products['other_image_url3'] = yahoo_products['画像URL4']
+    amazon_products['other_image_url4'] = yahoo_products['画像URL5']
+    amazon_products['other_image_url5'] = yahoo_products['画像URL6']
+    amazon_products['other_image_url6'] = yahoo_products['画像URL7']
+    amazon_products['other_image_url7'] = yahoo_products['画像URL8']
+    amazon_products['other_image_url8'] = ""
     
 
 
