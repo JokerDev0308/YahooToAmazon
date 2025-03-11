@@ -153,7 +153,7 @@ class PriceScraperUI:
         output_path = Path(config.AMAZON_PRODUCT_OUTPUT)
         
         # Save initial amazon_df
-        amazon_df.to_csv(output_path, index=False, exist_ok=True)
+        amazon_df.to_csv(output_path, index=False)
         
         # Insert template headers and combine with existing data
         if template_path.exists():
