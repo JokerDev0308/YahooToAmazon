@@ -148,12 +148,12 @@ class PriceScraperUI:
         
 
 
-    def download_amazon_products(self, amazon_df):
+    def download_amazon_products(self, amazon_df:pd.DataFrame):
         template_path = Path(config.AMAZON_PRODUCT_TEMPLATE)
         output_path = Path(config.AMAZON_PRODUCT_OUTPUT)
         
         # Save initial amazon_df
-        amazon_df.to_csv(output_path, index=False)
+        amazon_df.to_csv(output_path, index=False, exist_ok=True)
         
         # Insert template headers and combine with existing data
         if template_path.exists():
