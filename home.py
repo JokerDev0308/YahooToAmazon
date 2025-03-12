@@ -126,13 +126,10 @@ class PriceScraperUI:
             progress_file.unlink()
 
     def making_amazon_products(self):
-        session = SessionManager()
-        
         if st.button('Amazon製品の作成'):
             try:
-                amazon_df = make_amazon_products()
+                amazon_df: pd.DataFrame = make_amazon_products()
                 if amazon_df is not None and not amazon_df.empty:
-                    session.amazon_df = amazon_df
                     self._display_and_download_products(amazon_df)
                 else:
                     st.warning("商品が作成されませんでした。入力データを確認してください。")

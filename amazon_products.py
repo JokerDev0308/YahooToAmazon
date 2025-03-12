@@ -4,7 +4,7 @@ from pathlib import Path
 
 import config
 
-def make_amazon_products():
+def make_amazon_products()->pd.DataFrame:
     yahoo_products = pd.read_excel(config.SCRAPED_XLSX)
 
     params = pd.read_excel(config.SETTING_PARAMS)
@@ -13,17 +13,13 @@ def make_amazon_products():
     exclude_sellers = pd.read_excel(config.SETTING_SELLER_EXCLUTIONS)
     setup_sales_price = pd.read_excel(config.SETTING_SALES_PRICE)
 
-    
-    amazon_products = pd.DataFrame(columns=config.amazon_columns)
-    
-    yahoo_products = yahoo_products[~yahoo_products['商品画像'].isna()]    
+    yahoo_products = yahoo_products[~yahoo_products['商品名'].isna()]    
     yahoo_products = yahoo_products[~yahoo_products['出品者ID'].isin(exclude_sellers['除外セラーID'])]
     yahoo_products = yahoo_products.reset_index(drop=True)
     yahoo_products.index = yahoo_products.index + 1
 
-    
+    amazon_products = pd.DataFrame(columns=config.amazon_columns)
     amazon_products['item_sku'] = yahoo_products['商品ID']
-
     amazon_products['item_name'] = yahoo_products['商品名']
 
     for _, old_word, new_word in products_name_replacements[['置換前', '置換後']].itertuples():
