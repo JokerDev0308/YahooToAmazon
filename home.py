@@ -105,8 +105,6 @@ class PriceScraperUI:
         else:
             st.sidebar.button("開 始", type="secondary", use_container_width=True, on_click=self.start_running)
         
-        
-
     def running(self):
         return os.path.exists(config.RUNNING)
 
