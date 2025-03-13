@@ -22,11 +22,23 @@ def make_amazon_products()->pd.DataFrame:
     amazon_products['item_sku'] = yahoo_products['商品ID']
     amazon_products['item_name'] = yahoo_products['商品名']
 
+    # for _, old_word, new_word in products_name_replacements[['置換前', '置換後']].itertuples():
+    #     if pd.notna(new_word):
+    #         amazon_products['item_name'] = amazon_products['item_name'].str.replace(str(old_word), str(new_word), regex=False)
+    #     else:
+    #         amazon_products['item_name'] = amazon_products['item_name'].str.replace(str(old_word), '', regex=False)
+
+        # Clean up item_name by replacing words and fixing spaces
+    # Apply replacements with spaces
     for _, old_word, new_word in products_name_replacements[['置換前', '置換後']].itertuples():
         if pd.notna(new_word):
-            amazon_products['item_name'] = amazon_products['item_name'].str.replace(str(old_word), str(new_word), regex=False)
+            amazon_products['item_name'] = amazon_products['item_name'].str.replace(str(old_word), f" {str(new_word)}", regex=False)
         else:
-            amazon_products['item_name'] = amazon_products['item_name'].str.replace(str(old_word), '', regex=False)
+            amazon_products['item_name'] = amazon_products['item_name'].str.replace(str(old_word), " ", regex=False)
+
+    # Clean up spaces: normalize multiple spaces to single space and remove leading/trailing spaces
+    amazon_products['item_name'] = amazon_products['item_name'].str.replace(r'\s+', ' ', regex=True).str.strip()
+
 
     # amazon_products['external_product_id'] = ""
     # amazon_products['external_product_id_type'] = ""
@@ -52,32 +64,23 @@ def make_amazon_products()->pd.DataFrame:
 
     # amazon_products['feed_product_type'] = ""
     amazon_products['part_number'] = yahoo_products['商品ID']
-    amazon_products['product_description'] = yahoo_products['商品名'] + "です。"
+
+    # Copy cleaned item_name to product_description and bullet_point1
+    amazon_products['product_description'] = amazon_products['item_name'] + "です。"
+
     amazon_products['model'] = yahoo_products['商品ID']
     amazon_products['update_delete'] = "Update"
     # amazon_products['quantity'] = ""
     # amazon_products['fulfillment_latency'] = ""
-    # amazon_products['standard_price'] = yahoo_products.apply(
-    #     lambda row: next(
-    #         (amazon_price for _, purchase_price, amazon_price in setup_sales_price[['仕入れ価格', 'アマゾン販売価格']].itertuples()
-    #          if purchase_price <= (
-    #              # For Yahoo Auctions, use max of bid price and buy-now price
-    #              max(row['入札価格'] if pd.notna(row['入札価格']) else 0,
-    #                  row['即決価格'] if pd.notna(row['即決価格']) else 0)
-    #              if pd.notna(row['入札価格']) or pd.notna(row['即決価格'])
-    #              # For Yahoo Flea Market, use selling price
-    #              else row['販売価格'] if pd.notna(row['販売価格'])
-    #              else 0
-    #          ) < setup_sales_price['仕入れ価格'].shift(-1).fillna(float('inf')).loc[_]),
-    #         setup_sales_price['アマゾン販売価格'].iloc[0]  # Default price if no range matches
-    #     ), axis=1
-    # )
+   
+    amazon_products['standard_price'] = pd.DataFrame({'price1': yahoo_products['販売価格'], 'price2': yahoo_products['販売価格(即決)']}).max(axis=1)
 
-    amazon_products['yahoo_products'] = yahoo_products['販売価格'].apply(
+
+    amazon_products['standard_price'] = amazon_products['standard_price'].apply(
         lambda price: next(
             (amazon_price for _, purchase_price, amazon_price in setup_sales_price[['仕入れ価格', 'アマゾン販売価格']].itertuples() 
-             if purchase_price <= (2500 if price == 0 else price) < setup_sales_price['仕入れ価格'].shift(-1).fillna(float('inf')).loc[_]),
-            setup_sales_price['アマゾン販売価格'].iloc[0]  # Default to last price if no range matches
+             if purchase_price <= (2500 if price < setup_sales_price['仕入れ価格'].iloc[0] else price) < setup_sales_price['仕入れ価格'].shift(-1).fillna(float('inf')).loc[_]),
+            setup_sales_price['アマゾン販売価格'].iloc[-1]  # Default to last price if no range matches
         )
     )
     
@@ -103,7 +106,7 @@ def make_amazon_products()->pd.DataFrame:
     # amazon_products['item_display_weight_unit_of_measure'] = ""
     # amazon_products['item_display_length'] = ""
     # amazon_products['item_display_length_unit_of_measure'] = ""
-    amazon_products['bullet_point1'] = yahoo_products['商品名'] + "です。"
+    amazon_products['bullet_point1'] = amazon_products['item_name'] + "です。"
     # amazon_products['bullet_point2'] = ""
     # amazon_products['bullet_point3'] = ""
     # amazon_products['bullet_point4'] = ""
