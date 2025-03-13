@@ -42,7 +42,7 @@ class YahooFleamarketScraper:
             # data['入札件数'] = counts[0].text if counts else "N/A"
             # data['残り時間'] = counts[1].text if len(counts) > 1 else "N/A"
 
-            data['出品者ID'] = self._safe_find('.sc-41b77e78-5.Ccmac.UserInfo__Name')
+            data['出品者ID'] = self._extract_id(self._safe_find('.bQHOuV a', "href"),'user')
 
             # Get all non-clone product images
             image_elements = self.driver.find_elements(By.CSS_SELECTOR, '.sc-7fc76147-3.eYQDzW')

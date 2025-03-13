@@ -57,7 +57,23 @@ def make_amazon_products()->pd.DataFrame:
     amazon_products['update_delete'] = "Update"
     # amazon_products['quantity'] = ""
     # amazon_products['fulfillment_latency'] = ""
-    amazon_products['standard_price'] = yahoo_products['販売価格'].apply(
+    # amazon_products['standard_price'] = yahoo_products.apply(
+    #     lambda row: next(
+    #         (amazon_price for _, purchase_price, amazon_price in setup_sales_price[['仕入れ価格', 'アマゾン販売価格']].itertuples()
+    #          if purchase_price <= (
+    #              # For Yahoo Auctions, use max of bid price and buy-now price
+    #              max(row['入札価格'] if pd.notna(row['入札価格']) else 0,
+    #                  row['即決価格'] if pd.notna(row['即決価格']) else 0)
+    #              if pd.notna(row['入札価格']) or pd.notna(row['即決価格'])
+    #              # For Yahoo Flea Market, use selling price
+    #              else row['販売価格'] if pd.notna(row['販売価格'])
+    #              else 0
+    #          ) < setup_sales_price['仕入れ価格'].shift(-1).fillna(float('inf')).loc[_]),
+    #         setup_sales_price['アマゾン販売価格'].iloc[0]  # Default price if no range matches
+    #     ), axis=1
+    # )
+
+    amazon_products['yahoo_products'] = yahoo_products['販売価格'].apply(
         lambda price: next(
             (amazon_price for _, purchase_price, amazon_price in setup_sales_price[['仕入れ価格', 'アマゾン販売価格']].itertuples() 
              if purchase_price <= (2500 if price == 0 else price) < setup_sales_price['仕入れ価格'].shift(-1).fillna(float('inf')).loc[_]),
