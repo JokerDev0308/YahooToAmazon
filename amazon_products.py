@@ -22,22 +22,22 @@ def make_amazon_products()->pd.DataFrame:
     amazon_products['item_sku'] = yahoo_products['商品ID']
     amazon_products['item_name'] = yahoo_products['商品名']
 
-    # for _, old_word, new_word in products_name_replacements[['置換前', '置換後']].itertuples():
-    #     if pd.notna(new_word):
-    #         amazon_products['item_name'] = amazon_products['item_name'].str.replace(str(old_word), str(new_word), regex=False)
-    #     else:
-    #         amazon_products['item_name'] = amazon_products['item_name'].str.replace(str(old_word), '', regex=False)
-
-        # Clean up item_name by replacing words and fixing spaces
-    # Apply replacements with spaces
     for _, old_word, new_word in products_name_replacements[['置換前', '置換後']].itertuples():
+        # If the new word is not NaN, replace the old word with the new word
         if pd.notna(new_word):
-            amazon_products['item_name'] = amazon_products['item_name'].str.replace(str(old_word), f" {str(new_word)}", regex=False)
+            amazon_products['item_name'] = amazon_products['item_name'].str.replace(str(old_word), f"{str(new_word)}", regex=False)
+        # If the new word is NaN, remove the old word
         else:
-            amazon_products['item_name'] = amazon_products['item_name'].str.replace(str(old_word), " ", regex=False)
+            amazon_products['item_name'] = amazon_products['item_name'].str.replace(str(old_word), "", regex=False)
 
-    # Clean up spaces: normalize multiple spaces to single space and remove leading/trailing spaces
+    # Step 3: Clean up spaces in 'item_name'
+    # - Normalize multiple consecutive spaces to a single space
+    # - Remove any leading or trailing spaces
     amazon_products['item_name'] = amazon_products['item_name'].str.replace(r'\s+', ' ', regex=True).str.strip()
+
+    # Step 4: Ensure no leading space after replacement
+    # In case the replacement created a leading space, we strip it explicitly
+    amazon_products['item_name'] = amazon_products['item_name'].str.lstrip()
 
 
     # amazon_products['external_product_id'] = ""
