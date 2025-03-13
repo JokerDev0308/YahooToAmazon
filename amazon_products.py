@@ -61,7 +61,7 @@ def make_amazon_products()->pd.DataFrame:
         lambda price: next(
             (amazon_price for _, purchase_price, amazon_price in setup_sales_price[['仕入れ価格', 'アマゾン販売価格']].itertuples() 
              if purchase_price <= (2500 if price == 0 else price) < setup_sales_price['仕入れ価格'].shift(-1).fillna(float('inf')).loc[_]),
-            setup_sales_price['アマゾン販売価格'].iloc[-1]  # Default to last price if no range matches
+            setup_sales_price['アマゾン販売価格'].iloc[0]  # Default to last price if no range matches
         )
     )
     

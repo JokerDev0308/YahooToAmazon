@@ -92,13 +92,13 @@ class YahooFleamarketScraper:
         #     cleaned_price = cleaned_price.replace(',', '')  
             
         #     try:
-        #         return float(cleaned_price)  # Convert to float
+        #         return float(cleaned_price)  
         #     except ValueError:
         #         return 0.0 
         # else:
         #     return 0.0  
         try:
-            return float(price_str.replace(',', ''))  # Convert to float
+            return float(price_str.replace(',', ''))  
         except ValueError:
             return 0.0
 
