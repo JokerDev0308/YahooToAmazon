@@ -1,8 +1,7 @@
 import pandas as pd
 from pathlib import Path
-
-
 import config
+import jaconv
 
 def make_amazon_products()->pd.DataFrame:
     yahoo_products = pd.read_excel(config.SCRAPED_XLSX)
@@ -25,20 +24,30 @@ def make_amazon_products()->pd.DataFrame:
     for _, old_word, new_word in products_name_replacements[['置換前', '置換後']].itertuples():
         # If the new word is not NaN, replace the old word with the new word
         if pd.notna(new_word):
-            amazon_products['item_name'] = amazon_products['item_name'].str.replace(str(old_word), f"{str(new_word)}", regex=False)
-        # If the new word is NaN, remove the old word
+            # For English words, use case-insensitive replacement
+            # For Japanese, convert both hiragana and katakana to the same form
+            old_word_str = str(old_word)
+            new_word_str = str(new_word)
+            if old_word_str.isascii():
+                amazon_products['item_name'] = amazon_products['item_name'].str.replace(
+                    old_word_str, new_word_str, case=False, regex=False)
+            else:
+            # Convert text to hiragana for comparison
+                amazon_products['item_name'] = amazon_products['item_name'].apply(
+                    lambda x: x.replace(jaconv.kata2hira(old_word_str), jaconv.kata2hira(new_word_str))
+                    if jaconv.kata2hira(old_word_str) in jaconv.kata2hira(x) else x)
         else:
-            amazon_products['item_name'] = amazon_products['item_name'].str.replace(str(old_word), "", regex=False)
+            old_word_str = str(old_word)
+            if old_word_str.isascii():
+                amazon_products['item_name'] = amazon_products['item_name'].str.replace(
+                    old_word_str, "", case=False, regex=False)
+            else:
+                amazon_products['item_name'] = amazon_products['item_name'].apply(
+                    lambda x: x.replace(jaconv.kata2hira(old_word_str), "")
+                    if jaconv.kata2hira(old_word_str) in jaconv.kata2hira(x) else x)
 
-    # Step 3: Clean up spaces in 'item_name'
-    # - Normalize multiple consecutive spaces to a single space
-    # - Remove any leading or trailing spaces
     amazon_products['item_name'] = amazon_products['item_name'].str.replace(r'\s+', ' ', regex=True).str.strip()
-
-    # Step 4: Ensure no leading space after replacement
-    # In case the replacement created a leading space, we strip it explicitly
     amazon_products['item_name'] = amazon_products['item_name'].str.lstrip()
-
 
     # amazon_products['external_product_id'] = ""
     # amazon_products['external_product_id_type'] = ""

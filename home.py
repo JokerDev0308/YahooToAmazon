@@ -62,7 +62,7 @@ class PriceScraperUI:
                     if col in yahoo_products_df.columns:
                         yahoo_products_df[col] = new_df[col]
 
-                st.write("T商品リストを読み込みました:", len(new_df))
+                st.write("商品リストを読み込みました:", len(new_df))
                 output_path = Path(config.SCRAPED_XLSX)
                 output_path.parent.mkdir(parents=True, exist_ok=True)
                 yahoo_products_df.to_excel(output_path, index=False)
@@ -76,6 +76,8 @@ class PriceScraperUI:
         
         yahoo_products_df.index = yahoo_products_df.index + 1
         height = min(len(yahoo_products_df) * 35 + 38, 700)
+
+        yahoo_products_df['商品ID'] = yahoo_products_df['商品ID'].astype(str)
         
         if self.running():
             self.scraping_progress(len(yahoo_products_df))
