@@ -59,23 +59,21 @@ class Scraper:
     def load_data(self) -> bool:
         """Load data and return success status."""
         self.df = self.data_handler.load_excel(config.SCRAPED_XLSX)
+        self.df = self.df[~self.df['商品URL'].isna()]
         return self.df is not None
-    
-
-    def process_product(self, index: int, row: pd.Series) -> Dict[str, Any]:
-        """Process a single product with error handling."""
+        
+    def scraper_auction(self, url):
         try:
-            url = row.get('商品URL')
-            if not url:
-                return {'error': 'Missing URL'}
-
             with ThreadPoolExecutor(max_workers=2) as executor:
-                if 'auctions.yahoo.co.jp' in url:
-                    future = executor.submit(self.yahoo_auction_scraper.run, url)
-                elif 'paypayfleamarket.yahoo.co.jp' in url:
-                    future = executor.submit(self.yahoo_fleamaket_scraper.run, url)
-                else:
-                    return {"商品URL":url}
+                future = executor.submit(self.yahoo_auction_scraper.run, url)
+                return future.result()
+        except Exception as e:
+            return {'error': str(e)}
+        
+    def scraper_fleaMarket(self, url):
+        try:
+            with ThreadPoolExecutor(max_workers=2) as executor:
+                future = executor.submit(self.yahoo_fleamaket_scraper.run, url)
                 return future.result()
         except Exception as e:
             return {'error': str(e)}
@@ -86,6 +84,8 @@ class Scraper:
         if not self.df is not None or self.df.empty:
             print("No data to process")
             return
+        
+        result = None
 
         try:
             total_records = len(self.df)
@@ -95,8 +95,20 @@ class Scraper:
                     break
 
                 print(f"Processing {index + 1}/{total_records}")
-                results = self.process_product(index, row)
-                self._update_dataframe(index, results)
+
+                p_url = row.get('商品URL')
+                if not p_url:
+                    print(f"Missing URL at index {index}")
+                    continue
+                else:
+                    if 'page.auctions.yahoo.co.jp' in p_url:
+                        result = self.yahoo_auction_scraper.run(p_url)
+                    elif 'paypayfleamarket.yahoo.co.jp' in p_url:
+                        result = self.yahoo_fleamaket_scraper.run(p_url)
+
+
+                result = self.process_product(index, row)
+                self._update_dataframe(index, result)
 
                 self.data_handler.set_progress(index+1)
                 if self._should_save_batch(index, total_records):
