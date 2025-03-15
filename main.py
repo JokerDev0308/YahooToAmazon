@@ -102,12 +102,10 @@ class Scraper:
                     continue
                 else:
                     if 'page.auctions.yahoo.co.jp' in p_url:
-                        result = self.yahoo_auction_scraper.run(p_url)
+                        result = self.scraper_auction(p_url)
                     elif 'paypayfleamarket.yahoo.co.jp' in p_url:
-                        result = self.yahoo_fleamaket_scraper.run(p_url)
+                        result = self.scraper_fleaMarket(p_url)
 
-
-                result = self.process_product(index, row)
                 self._update_dataframe(index, result)
 
                 self.data_handler.set_progress(index+1)
