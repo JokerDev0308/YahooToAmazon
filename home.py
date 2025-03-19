@@ -77,7 +77,7 @@ class PriceScraperUI:
         yahoo_products_df.index = yahoo_products_df.index + 1
         height = min(len(yahoo_products_df) * 35 + 38, 700)
 
-        yahoo_products_df['商品ID'] = yahoo_products_df['商品ID'].astype(str)
+        yahoo_products_df['商品ID'] = yahoo_products_df['商品ID'].fillna("").astype(str)
         
         if self.running():
             self.scraping_progress(len(yahoo_products_df))

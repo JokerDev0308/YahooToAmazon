@@ -32,9 +32,7 @@ class YahooFleamarketScraper:
                 '商品画像': 'N/A',
                 '商品名': self._safe_find('.sc-41a49a43-0.dLrIwr'),
                 '商品ID':self._extract_id(url, "item"),
-                # '販売価格': self.clean_price(self._safe_find('.sc-41a49a43-0.gjEqBV')),
                 '販売価格': self.clean_price(self._safe_find('.gjEqBV')),
-                # '販売価格(即決)': self.clean_price(self._safe_find('.Price__value--buyNow')),
                 '商品状態': self._safe_find('.sc-41a49a43-0.dhgSui'),
             }
 
