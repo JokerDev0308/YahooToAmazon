@@ -101,7 +101,7 @@ class Scraper:
                     print(f"Missing URL at index {index}")
                     continue
                 else:
-                    if 'page.auctions.yahoo.co.jp' in p_url:
+                    if 'auctions.yahoo.co.jp' in p_url:
                         result = self.scraper_auction(p_url)
                     elif 'paypayfleamarket.yahoo.co.jp' in p_url:
                         result = self.scraper_fleaMarket(p_url)
