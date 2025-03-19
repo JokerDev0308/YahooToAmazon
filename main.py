@@ -102,6 +102,8 @@ class Scraper:
                     continue
                 else:
                     if 'auctions.yahoo.co.jp' in p_url:
+                        if '/auctions.yahoo.co.jp/jp/auction/' in p_url:
+                            p_url = p_url.replace('/auctions.yahoo.co.jp/jp/auction/', '/page.auctions.yahoo.co.jp/jp/auction/')
                         result = self.scraper_auction(p_url)
                     elif 'paypayfleamarket.yahoo.co.jp' in p_url:
                         result = self.scraper_fleaMarket(p_url)
