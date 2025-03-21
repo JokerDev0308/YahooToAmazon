@@ -21,30 +21,56 @@ def make_amazon_products()->pd.DataFrame:
     amazon_products['item_sku'] = yahoo_products['商品ID']
     amazon_products['item_name'] = yahoo_products['商品名']
 
+    # for _, old_word, new_word in products_name_replacements[['置換前', '置換後']].itertuples():
+    #     # If the new word is not NaN, replace the old word with the new word
+    #     if pd.notna(new_word):
+    #         # For English words, use case-insensitive replacement
+    #         # For Japanese, convert both hiragana and katakana to the same form
+    #         old_word_str = str(old_word)
+    #         new_word_str = str(new_word)
+    #         if old_word_str.isascii():
+    #             amazon_products['item_name'] = amazon_products['item_name'].str.replace(
+    #                 old_word_str, new_word_str, case=False, regex=False)
+    #         else:
+    #         # Convert text to hiragana for comparison
+    #             amazon_products['item_name'] = amazon_products['item_name'].apply(
+    #                 lambda x: x.replace(jaconv.kata2hira(old_word_str), jaconv.kata2hira(new_word_str))
+    #                 if jaconv.kata2hira(old_word_str) in jaconv.kata2hira(x) else x)
+    #     else:
+    #         old_word_str = str(old_word)
+    #         if old_word_str.isascii():
+    #             amazon_products['item_name'] = amazon_products['item_name'].str.replace(
+    #                 old_word_str, "", case=False, regex=False)
+    #         else:
+    #             amazon_products['item_name'] = amazon_products['item_name'].apply(
+    #                 lambda x: x.replace(jaconv.kata2hira(old_word_str), "")
+    #                 if jaconv.kata2hira(old_word_str) in jaconv.kata2hira(x) else x)
+
     for _, old_word, new_word in products_name_replacements[['置換前', '置換後']].itertuples():
         # If the new word is not NaN, replace the old word with the new word
+        old_word = old_word.strip()
+        new_word = new_word.strip()
+
         if pd.notna(new_word):
-            # For English words, use case-insensitive replacement
-            # For Japanese, convert both hiragana and katakana to the same form
             old_word_str = str(old_word)
             new_word_str = str(new_word)
             if old_word_str.isascii():
                 amazon_products['item_name'] = amazon_products['item_name'].str.replace(
-                    old_word_str, new_word_str, case=False, regex=False)
+                    old_word_str, new_word_str, case=False, regex=False)                    
             else:
-            # Convert text to hiragana for comparison
+            # For Japanese text, use word boundaries to prevent partial matches
                 amazon_products['item_name'] = amazon_products['item_name'].apply(
-                    lambda x: x.replace(jaconv.kata2hira(old_word_str), jaconv.kata2hira(new_word_str))
-                    if jaconv.kata2hira(old_word_str) in jaconv.kata2hira(x) else x)
+                    lambda x: x.replace(old_word_str, new_word_str) if old_word_str in x else x)
         else:
             old_word_str = str(old_word)
             if old_word_str.isascii():
                 amazon_products['item_name'] = amazon_products['item_name'].str.replace(
                     old_word_str, "", case=False, regex=False)
             else:
+            # For Japanese text, use exact matching for removal
                 amazon_products['item_name'] = amazon_products['item_name'].apply(
-                    lambda x: x.replace(jaconv.kata2hira(old_word_str), "")
-                    if jaconv.kata2hira(old_word_str) in jaconv.kata2hira(x) else x)
+                    lambda x: x.replace(old_word_str, "") if old_word_str in x else x)
+                
 
     amazon_products['item_name'] = amazon_products['item_name'].str.replace(r'\s+', ' ', regex=True).str.strip()
     amazon_products['item_name'] = amazon_products['item_name'].str.lstrip()
