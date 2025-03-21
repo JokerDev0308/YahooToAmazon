@@ -75,7 +75,7 @@ class PriceScraperUI:
                     yahoo_products_df[col] = df[col]
         
         yahoo_products_df.index = yahoo_products_df.index + 1
-        height = min(len(yahoo_products_df) * 35 + 38, 700)
+        height = min(len(yahoo_products_df) * 35 + 38, 500)
 
         yahoo_products_df['商品ID'] = yahoo_products_df['商品ID'].fillna("").astype(str)
         
@@ -87,17 +87,17 @@ class PriceScraperUI:
             use_container_width=True, 
             height=height, 
             key="scraped_product_list",
-            column_config={
-                "商品画像": st.column_config.ImageColumn(),
-                "画像URL1": st.column_config.ImageColumn(),
-                "画像URL2": st.column_config.ImageColumn(),
-                "画像URL3": st.column_config.ImageColumn(),
-                "画像URL4": st.column_config.ImageColumn(),
-                "画像URL5": st.column_config.ImageColumn(),
-                "画像URL6": st.column_config.ImageColumn(),
-                "画像URL7": st.column_config.ImageColumn(),
-                "画像URL8": st.column_config.ImageColumn(),
-            }
+            # column_config={
+            #     "商品画像": st.column_config.ImageColumn(),
+            #     "画像URL1": st.column_config.ImageColumn(),
+            #     "画像URL2": st.column_config.ImageColumn(),
+            #     "画像URL3": st.column_config.ImageColumn(),
+            #     "画像URL4": st.column_config.ImageColumn(),
+            #     "画像URL5": st.column_config.ImageColumn(),
+            #     "画像URL6": st.column_config.ImageColumn(),
+            #     "画像URL7": st.column_config.ImageColumn(),
+            #     "画像URL8": st.column_config.ImageColumn(),
+            # }
         )
        
 
