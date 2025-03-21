@@ -32,7 +32,7 @@ def save_df2excel(df:pd.DataFrame, excel_uri:str):
 def download_excel(excel_uri:str, name:str):
     with open(excel_uri, 'rb') as file:
         st.download_button(
-            label=f"{name}ダウンロード",
+            label=f"{name}ダウンロード(Excel)",
             data=file,
             file_name=f"{name}.xlsx", 
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
