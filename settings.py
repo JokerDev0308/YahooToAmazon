@@ -39,9 +39,9 @@ def download_excel(excel_uri:str, name:str):
         )
 
 
-col1, col2, col3, col4, col5, col6 = st.tabs(["定型パラメータ","除外セラー","キーワードとの紐づけ","販売価格テーブル","商品名置換テーブル", "パスワード設定"])
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["定型パラメータ","除外セラー","キーワードとの紐づけ","販売価格テーブル","商品名置換テーブル", "パスワード設定"])
 
-with col1:
+with tab1:
     params_df = pd.DataFrame(columns=config.parms_columns)
 
     uploaded_file = st.file_uploader("定型パラメータをアップロード", type="xlsx")
@@ -73,13 +73,15 @@ with col1:
         }
     )
 
-    if st.button('定型パラメータを保存'):
-        save_df2excel(edited_params_df,config.SETTING_PARAMS)
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button('定型パラメータを保存'):
+            save_df2excel(edited_params_df,config.SETTING_PARAMS)
+    with col2:
+        if Path(config.SETTING_PARAMS).exists():
+            download_excel(config.SETTING_PARAMS, "定型パラメータ")
 
-    if Path(config.SETTING_PARAMS).exists():
-        download_excel(config.SETTING_PARAMS, "定型パラメータ")
-
-with col2:
+with tab2:
     seller_exclution_df = pd.DataFrame(columns=config.seller_exclution_columns)
     
     uploaded_file = st.file_uploader("除外セラーをアップロード", type="xlsx")
@@ -109,13 +111,15 @@ with col2:
         }
     )
 
-    if st.button('除外セラーを保存'):
-        save_df2excel(edited_seller_exclution_df,config.SETTING_SELLER_EXCLUTIONS)
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button('除外セラーを保存'):
+            save_df2excel(edited_seller_exclution_df,config.SETTING_SELLER_EXCLUTIONS)
+    with col2:
+        if Path(config.SETTING_SELLER_EXCLUTIONS).exists():
+            download_excel(config.SETTING_SELLER_EXCLUTIONS, "除外セラー")
 
-    if Path(config.SETTING_SELLER_EXCLUTIONS).exists():
-        download_excel(config.SETTING_SELLER_EXCLUTIONS, "除外セラー")
-
-with col3:
+with tab3:
     keywords_df = pd.DataFrame(columns=config.keywords_columns)
     
     uploaded_file = st.file_uploader("キーワード紐づけリストをアップロード", type="xlsx")
@@ -149,13 +153,15 @@ with col3:
         }
     )
 
-    if st.button('キーワードを保存'):
-        save_df2excel(edited_keywords_df,config.SETTING_KEYWORDS)
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button('キーワードを保存'):
+            save_df2excel(edited_keywords_df,config.SETTING_KEYWORDS)
+    with col2:
+        if Path(config.SETTING_KEYWORDS).exists():
+            download_excel(config.SETTING_KEYWORDS, "キーワード紐づけリスト")
 
-    if Path(config.SETTING_KEYWORDS).exists():
-        download_excel(config.SETTING_KEYWORDS, "キーワード紐づけリスト")
-
-with col4:
+with tab4:
     sales_df = pd.DataFrame(columns=config.sales_columns)
     
     uploaded_file = st.file_uploader("販売価格テーブルをアップロード", type="xlsx")
@@ -185,13 +191,15 @@ with col4:
         }
     )
 
-    if st.button('販売価格を保存'):
-        save_df2excel(edited_sales_df, config.SETTING_SALES_PRICE)
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button('販売価格を保存'):
+            save_df2excel(edited_sales_df, config.SETTING_SALES_PRICE)
+    with col2:
+        if Path(config.SETTING_SALES_PRICE).exists():
+            download_excel(config.SETTING_SALES_PRICE, "販売価格テーブル")
 
-    if Path(config.SETTING_SALES_PRICE).exists():
-        download_excel(config.SETTING_SALES_PRICE, "販売価格テーブル")
-
-with col5:
+with tab5:
     replacements_df = pd.DataFrame(columns=config.product_name_replacements_columns)
     
     uploaded_file = st.file_uploader("商品名置換テーブルをアップロード", type="xlsx")
@@ -223,13 +231,15 @@ with col5:
         }
     )
 
-    if st.button('置換設定を保存'):
-        save_df2excel(edited_replacements_df, config.SETTING_PRODUCT_NAME_REM)
-    
-    if Path(config.SETTING_PRODUCT_NAME_REM).exists():
-        download_excel(config.SETTING_PRODUCT_NAME_REM, "商品名置換テーブル")
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button('置換設定を保存'):
+            save_df2excel(edited_replacements_df, config.SETTING_PRODUCT_NAME_REM)
+    with col2:
+        if Path(config.SETTING_PRODUCT_NAME_REM).exists():
+            download_excel(config.SETTING_PRODUCT_NAME_REM, "商品名置換テーブル")
 
-with col6:
+with tab6:
     session_manager = SessionManager()
     col1, col2, col3 = st.columns(3)
     with col2:
