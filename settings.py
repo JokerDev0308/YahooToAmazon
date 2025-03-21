@@ -36,7 +36,6 @@ def download_excel(excel_uri:str, name:str):
             data=file,
             file_name=name, 
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            use_container_width=True
         )
 
 
