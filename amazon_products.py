@@ -48,8 +48,7 @@ def make_amazon_products()->pd.DataFrame:
 
     for _, old_word, new_word in products_name_replacements[['置換前', '置換後']].itertuples():
         # If the new word is not NaN, replace the old word with the new word
-        old_word = old_word.strip()
-        new_word = new_word.strip()
+        old_word = old_word.str.strip()
 
         if pd.notna(new_word):
             old_word_str = str(old_word)
