@@ -101,7 +101,7 @@ class PriceScraperUI:
         )
 
         if not self.running() and Path(config.SCRAPED_XLSX).exists():
-            with open('config.SCRAPED_XLSX', 'rb') as file:
+            with open(config.SCRAPED_XLSX, 'rb') as file:
                 timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 st.download_button(
                     label="商品リストをダウンロード",
