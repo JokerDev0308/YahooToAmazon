@@ -22,11 +22,22 @@ LOGIN_STYLE = """
     </style>
 """
 
-def save_df2excel(df:pd.DataFrame, excel_name:str):
-    output_path = Path(excel_name)
+def save_df2excel(df:pd.DataFrame, excel_uri:str):
+    output_path = Path(excel_uri)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     df.to_excel(output_path, index=False)
     st.success(f'データを {output_path} に保存しました')
+
+
+def download_excel(excel_uri:str, name:str):
+    with open(excel_uri, 'rb') as file:
+        st.download_button(
+            label=f"{name}ダウンロード",
+            data=file,
+            file_name=name, 
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            use_container_width=True
+        )
 
 
 col1, col2, col3, col4, col5, col6 = st.tabs(["定型パラメータ","除外セラー","キーワードとの紐づけ","販売価格テーブル","商品名置換テーブル", "パスワード設定"])
@@ -66,6 +77,9 @@ with col1:
     if st.button('定型パラメータを保存'):
         save_df2excel(edited_params_df,config.SETTING_PARAMS)
 
+    if Path(config.SETTING_PARAMS).exists():
+        download_excel(config.SETTING_PARAMS, "定型パラメータ")
+
 with col2:
     seller_exclution_df = pd.DataFrame(columns=config.seller_exclution_columns)
     
@@ -98,6 +112,9 @@ with col2:
 
     if st.button('除外セラーを保存'):
         save_df2excel(edited_seller_exclution_df,config.SETTING_SELLER_EXCLUTIONS)
+
+    if Path(config.SETTING_SELLER_EXCLUTIONS).exists():
+        download_excel(config.SETTING_SELLER_EXCLUTIONS, "除外セラー")
 
 with col3:
     keywords_df = pd.DataFrame(columns=config.keywords_columns)
@@ -136,6 +153,9 @@ with col3:
     if st.button('キーワードを保存'):
         save_df2excel(edited_keywords_df,config.SETTING_KEYWORDS)
 
+    if Path(config.SETTING_KEYWORDS).exists():
+        download_excel(config.SETTING_KEYWORDS, "キーワード紐づけリスト")
+
 with col4:
     sales_df = pd.DataFrame(columns=config.sales_columns)
     
@@ -168,6 +188,9 @@ with col4:
 
     if st.button('販売価格を保存'):
         save_df2excel(edited_sales_df, config.SETTING_SALES_PRICE)
+
+    if Path(config.SETTING_SALES_PRICE).exists():
+        download_excel(config.SETTING_SALES_PRICE, "販売価格テーブル")
 
 with col5:
     replacements_df = pd.DataFrame(columns=config.product_name_replacements_columns)
@@ -203,6 +226,9 @@ with col5:
 
     if st.button('置換設定を保存'):
         save_df2excel(edited_replacements_df, config.SETTING_PRODUCT_NAME_REM)
+    
+    if Path(config.SETTING_PRODUCT_NAME_REM).exists():
+        download_excel(config.SETTING_PRODUCT_NAME_REM, "商品名置換テーブル")
 
 with col6:
     session_manager = SessionManager()
