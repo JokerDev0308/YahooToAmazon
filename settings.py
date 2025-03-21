@@ -60,7 +60,7 @@ with tab1:
             if col in params_df:
                 params_df[col] = saved_params_df[col].astype(str)
     
-    height = min(len(params_df) * 35 + 38, 600)
+    height = min(len(params_df) * 35 + 38, 500)
     edited_params_df = st.data_editor(
         params_df,
         height=height,
@@ -101,7 +101,7 @@ with tab2:
                 seller_exclution_df[col] = saved_seller_exclution_df[col].astype(str)
 
 
-    height = min(len(seller_exclution_df) * 35 + 38, 600)
+    height = min(len(seller_exclution_df) * 35 + 38, 500)
     edited_seller_exclution_df = st.data_editor(
         seller_exclution_df,
         height=height,
@@ -138,7 +138,7 @@ with tab3:
             if col in keywords_df:
                 keywords_df[col] = saved_keywords_df[col].astype(str)
     
-    height = min(len(keywords_df) * 35 + 38, 600)
+    height = min(len(keywords_df) * 35 + 38, 500)
     edited_keywords_df = st.data_editor(
         keywords_df,
         num_rows="dynamic",
@@ -180,7 +180,7 @@ with tab4:
             if col in sales_df:
                 sales_df[col] = saved_sales_df[col]
     
-    height = min(len(sales_df) * 35 + 38, 600)
+    height = min(len(sales_df) * 35 + 38, 500)
     edited_sales_df = st.data_editor(
         sales_df,
         num_rows="dynamic",
@@ -220,7 +220,7 @@ with tab5:
                 # Replace NaN values with empty string before converting to str
                 replacements_df[col] = saved_replacements_df[col].fillna('').astype(str)
     
-    height = min(len(replacements_df) * 35 + 38, 600)
+    height = min(len(replacements_df) * 35 + 38, 500)
     edited_replacements_df = st.data_editor(
         replacements_df,
         num_rows="dynamic",
