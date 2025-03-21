@@ -153,8 +153,8 @@ class PriceScraperUI:
         st.dataframe(amazon_df, height=height, use_container_width=True)
         
         # Save and process file
-        output_path = Path(config.AMAZON_PRODUCT_OUTPUT)
-        amazon_df.to_csv(output_path, index=False)
+        output_path = Path(config.AMAZON_PRODUCT_OUTPUT).with_suffix('.xlsx')
+        amazon_df.to_excel(output_path, index=False)
         
         try:
             final_path = self._process_with_template(output_path)
@@ -165,17 +165,17 @@ class PriceScraperUI:
             st.error(f"ファイル処理中にエラーが発生しました: {str(e)}")
 
     def _process_with_template(self, output_path: Path) -> Path:
-        template_path = Path(config.AMAZON_PRODUCT_TEMPLATE)
+        template_path = Path(config.AMAZON_PRODUCT_TEMPLATE).with_suffix('.xlsx')
         if not template_path.exists():
-            raise FileNotFoundError("template.csv not found")
+            raise FileNotFoundError("template.xlsx not found")
         
-        template_df = pd.read_csv(template_path, encoding='utf-8-sig', header=None, nrows=2)
-        data_df = pd.read_csv(output_path, header=None)
+        template_df = pd.read_excel(template_path, nrows=2, header=None)
+        data_df = pd.read_excel(output_path, header=None)
         
         if data_df.iloc[0].tolist() != template_df.iloc[1].tolist():
             data_df = pd.concat([template_df, data_df], ignore_index=True)
         
-        data_df.to_csv(output_path, index=False, header=False, encoding='utf-8-sig')
+        data_df.to_excel(output_path, index=False, header=False)
         return output_path
 
     def _create_download_button(self, file_path: Path):
@@ -183,9 +183,9 @@ class PriceScraperUI:
             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             st.download_button(
                 label="Amazon商品リストをダウンロード",
-                data=file.read(),
-                file_name=f"amazon_products({timestamp}).csv",
-                mime="text/csv",
+                data=file,
+                file_name=f"Amazon商品リストを({timestamp}).xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 use_container_width=True
             )
 
