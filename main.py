@@ -131,8 +131,8 @@ class Scraper:
                 self.df[key] = self.df[key].astype('object')
 
             # Assign the value (if 'N/A', convert to NaN or assign as string if needed)
-            if value == 'N/A':  # Example handling for 'N/A'
-                self.df.at[index, key] = 'N/A'  # Assign string 'N/A'
+            if value == 'N/A' or value == "nan":  # Example handling for 'N/A'
+                self.df.at[index, key] = ''  # Assign string 'N/A'
             else:
                 self.df.at[index, key] = value
 
