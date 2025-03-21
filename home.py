@@ -99,6 +99,17 @@ class PriceScraperUI:
             #     "画像URL8": st.column_config.ImageColumn(),
             # }
         )
+
+        if not self.running() and Path(config.SCRAPED_XLSX).exists():
+            with open('config.SCRAPED_XLSX', 'rb') as file:
+                timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                st.download_button(
+                    label="商品リストをダウンロード",
+                    data=file,
+                    file_name=f"製品リスト({timestamp}).xlsx", 
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    use_container_width=True
+                )
        
 
     def _setup_scraping_controls(self):

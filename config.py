@@ -6,8 +6,8 @@ TIMEOUT = 1  # Selenium wait timeout
 CHROMEDRIVER_PATH = "drivers/chromedriver"
 USERS_XLSX = 'data/users.json'
 SCRAPED_XLSX = 'data/scraped_data.xlsx'
-AMAZON_PRODUCT_TEMPLATE = 'data/amazon-product-table-template.csv'
-AMAZON_PRODUCT_OUTPUT = 'data/amazon-product-table-result.csv'
+AMAZON_PRODUCT_TEMPLATE = 'data/amazon-product-table-template.xlsx'
+AMAZON_PRODUCT_OUTPUT = 'data/amazon-product-table-result.xlsx'
 
 PROGRESS_TXT = 'tmp/progress.txt'
 
