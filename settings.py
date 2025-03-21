@@ -34,7 +34,7 @@ def download_excel(excel_uri:str, name:str):
         st.download_button(
             label=f"{name}ダウンロード",
             data=file,
-            file_name=name, 
+            file_name=f"{name}.xlsx", 
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
 
