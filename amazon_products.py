@@ -46,37 +46,37 @@ def make_amazon_products()->pd.DataFrame:
     #                 lambda x: x.replace(jaconv.kata2hira(old_word_str), "")
     #                 if jaconv.kata2hira(old_word_str) in jaconv.kata2hira(x) else x)
 
-    # for _, old_word, new_word in products_name_replacements[['置換前', '置換後']].itertuples():
-    #     # If the new word is not NaN, replace the old word with the new word
-    #     old_word = old_word.strip()
-
-    #     if pd.notna(new_word):
-    #         old_word_str = str(old_word)
-    #         new_word_str = str(new_word)
-    #         if old_word_str.isascii():
-    #             amazon_products['item_name'] = amazon_products['item_name'].str.replace(
-    #                 old_word_str, new_word_str, case=False, regex=False)                    
-    #         else:
-    #         # For Japanese text, use word boundaries to prevent partial matches
-    #             amazon_products['item_name'] = amazon_products['item_name'].apply(
-    #                 lambda x: x.replace(old_word_str, new_word_str) if old_word_str in x else x)
-    #     else:
-    #         old_word_str = str(old_word)
-    #         if old_word_str.isascii():
-    #             amazon_products['item_name'] = amazon_products['item_name'].str.replace(
-    #                 old_word_str, "", case=False, regex=False)
-    #         else:
-    #         # For Japanese text, use exact matching for removal
-    #             amazon_products['item_name'] = amazon_products['item_name'].apply(
-    #                 lambda x: x.replace(old_word_str, "") if old_word_str in x else x)
-
     for _, old_word, new_word in products_name_replacements[['置換前', '置換後']].itertuples():
         # If the new word is not NaN, replace the old word with the new word
         old_word = old_word.strip()
-        new_word = new_word.strip() if pd.notna(new_word) else ''
 
-        amazon_products['item_name'] = amazon_products['item_name'].str.replace(
-                    old_word, new_word, case=False, regex=False) 
+        if pd.notna(new_word):
+            old_word_str = str(old_word)
+            new_word_str = str(new_word)
+            if old_word_str.isascii():
+                amazon_products['item_name'] = amazon_products['item_name'].str.replace(
+                    old_word_str, new_word_str, case=False, regex=False)                    
+            else:
+            # For Japanese text, use word boundaries to prevent partial matches
+                amazon_products['item_name'] = amazon_products['item_name'].apply(
+                    lambda x: x.replace(old_word_str, new_word_str) if old_word_str in x else x)
+        else:
+            old_word_str = str(old_word)
+            if old_word_str.isascii():
+                amazon_products['item_name'] = amazon_products['item_name'].str.replace(
+                    old_word_str, "", case=False, regex=False)
+            else:
+            # For Japanese text, use exact matching for removal
+                amazon_products['item_name'] = amazon_products['item_name'].apply(
+                    lambda x: x.replace(old_word_str, "") if old_word_str in x else x)
+
+    # for _, old_word, new_word in products_name_replacements[['置換前', '置換後']].itertuples():
+    #     # If the new word is not NaN, replace the old word with the new word
+    #     old_word = old_word.strip()
+    #     new_word = new_word.strip() if pd.notna(new_word) else ''
+
+    #     amazon_products['item_name'] = amazon_products['item_name'].str.replace(
+    #                 old_word, new_word, case=False, regex=False) 
 
                 
 
