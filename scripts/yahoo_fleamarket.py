@@ -4,7 +4,6 @@ from selenium.webdriver.support import expected_conditions as EC
 import re
 from config import TIMEOUT
 from webdriver_manager import WebDriverManager
-import config
 
 import logging
 # Configure logging

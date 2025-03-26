@@ -4,7 +4,6 @@ from selenium.webdriver.support import expected_conditions as EC
 import re
 from config import TIMEOUT
 from webdriver_manager import WebDriverManager
-import config
 
 import logging
 # Configure logging
@@ -23,27 +22,28 @@ class YahooAuctionScraper:
             
             # Wait for main content to load
             WebDriverWait(self.driver, TIMEOUT).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, ".ProductInformation__item"))
+                EC.presence_of_element_located((By.CSS_SELECTOR, ".bEOjaA"))
             )
 
             # Get page source and parse all required fields
             data = {
                 '商品URL': url,
                 '商品画像': 'N/A',
-                '商品名': self._safe_find('.ProductTitle__text'),
+                '商品名': self._safe_find('.gv-u-fontWeightBold--sVSx7bUE6MAd26cg9XrB'),
                 '商品ID':self._extract_id(url, "auction"),
-                '販売価格': self.clean_price(self._safe_find('.Price__value')),
-                '販売価格(即決)': self.clean_price(self._safe_find('.Price__value--buyNow')),
-                '商品状態': self._safe_find('.ProductTable__item:contains("商品の状態") + .ProductTable__data'),
+                '販売価格': self.clean_price(self._safe_find_arr('.fHKtMh')[0].text),
+                '販売価格': self.clean_price(self._safe_find_arr('.fHKtMh')[1].text) if len(self._safe_find_arr('.fHKtMh')) > 1 else 0,
             }
 
-            counts = self.driver.find_elements(By.CSS_SELECTOR, '.Count__detail')
+            counts = self.driver.find_elements(By.CSS_SELECTOR, '.jDULLH')
             data['入札件数'] = counts[0].text if counts else "N/A"
             data['残り時間'] = counts[1].text if len(counts) > 1 else "N/A"
-            data['出品者ID'] = self._extract_id(self._safe_find('.Seller__name > a', 'href'), "seller")
+            data['商品状態']  = counts[2].text if len(counts) > 2 else "N/A"
+            
+            data['出品者ID'] = self._extract_id(self._safe_find('.iRuFtz > a', 'href'), "seller")
 
             # Get all non-clone product images
-            image_elements = self.driver.find_elements(By.CSS_SELECTOR, '.ProductImage__image:not([class*="clone"]) .ProductImage__inner img')
+            image_elements = self.driver.find_elements(By.CSS_SELECTOR, '.slick-track .dJykpL img')
             unique_image_urls = list(dict.fromkeys(img.get_attribute('src') for img in image_elements))[:8]
 
             # Add image URLs to data dictionary
@@ -72,6 +72,14 @@ class YahooAuctionScraper:
         try:
             element = self.driver.find_element(By.CSS_SELECTOR, selector)
             return element.get_attribute(attribute) if attribute else element.text
+        except:
+            return "N/A"
+        
+    def _safe_find_arr(self, selector):
+        """Helper method to safely find elements and get their text or attribute"""
+        try:
+            elements = self.driver.find_elements(By.CSS_SELECTOR, selector)
+            return elements
         except:
             return "N/A"
         
