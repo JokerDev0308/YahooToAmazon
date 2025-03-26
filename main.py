@@ -7,6 +7,7 @@ from typing import Optional, Dict, Any
 from concurrent.futures import ThreadPoolExecutor
 from webdriver_manager import WebDriverManager
 from scripts.yahoo_auction import YahooAuctionScraper
+from scripts.yahoo_auction1 import YahooAuctionScraper1
 from scripts.yahoo_fleamarket import YahooFleamarketScraper
 import config
 from pathlib import Path
@@ -51,6 +52,7 @@ class Scraper:
     def __init__(self):
         self.df: Optional[pd.DataFrame] = None
         self.yahoo_auction_scraper = YahooAuctionScraper()
+        self.yahoo_auction_scraper1 = YahooAuctionScraper1()
         self.yahoo_fleamaket_scraper = YahooFleamarketScraper()
         self.batch_size = config.BATCH_SIZE
         self.data_handler = DataHandler()
@@ -104,7 +106,7 @@ class Scraper:
                     if 'auctions.yahoo.co.jp' in p_url:
                         if '/auctions.yahoo.co.jp/jp/auction/' in p_url:
                             p_url = p_url.replace('/auctions.yahoo.co.jp/jp/auction/', '/page.auctions.yahoo.co.jp/jp/auction/')
-                        result = self.scraper_auction(p_url)
+                        result = self.scraper_auction(p_url) if index == 0 else self.scraper_auction1(p_url)
                     elif 'paypayfleamarket.yahoo.co.jp' in p_url:
                         result = self.scraper_fleaMarket(p_url)
 
