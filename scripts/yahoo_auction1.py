@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class YahooAuctionScraper1:
     def __init__(self):
-        self.driver = WebDriverManager.get_driver("yahoo_auction")
+        self.driver = WebDriverManager.get_driver("yahoo_auction1")
 
     
     def run(self, url):
