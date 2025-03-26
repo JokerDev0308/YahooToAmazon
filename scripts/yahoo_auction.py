@@ -17,6 +17,7 @@ class YahooAuctionScraper:
     
     def run(self, url):
         """Helper method to scrape details from a specific Yahoo Auction product URL"""
+        logger.info(f"Yahoo Auction")
         try:
             self.driver.get(url)
             
