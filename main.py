@@ -64,10 +64,11 @@ class Scraper:
         self.df = self.df[~self.df['商品URL'].isna()]
         return self.df is not None
         
-    def scraper_auction(self, url):
+    def scraper_auction(self, url, index):
         try:
             with ThreadPoolExecutor(max_workers=2) as executor:
-                future = executor.submit(self.yahoo_auction_scraper.run, url)
+                
+                future = executor.submit(self.yahoo_auction_scraper.run if index ==0 else self.yahoo_auction_scraper1.run, url)
                 return future.result()
         except Exception as e:
             return {'error': str(e)}
@@ -106,7 +107,7 @@ class Scraper:
                     if 'auctions.yahoo.co.jp' in p_url:
                         if '/auctions.yahoo.co.jp/jp/auction/' in p_url:
                             p_url = p_url.replace('/auctions.yahoo.co.jp/jp/auction/', '/page.auctions.yahoo.co.jp/jp/auction/')
-                        result = self.scraper_auction(p_url) if index == 0 else self.scraper_auction1(p_url)
+                        result = self.scraper_auction(p_url, index)
                     elif 'paypayfleamarket.yahoo.co.jp' in p_url:
                         result = self.scraper_fleaMarket(p_url)
 
