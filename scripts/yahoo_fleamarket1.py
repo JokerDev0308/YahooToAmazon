@@ -12,17 +12,18 @@ logger = logging.getLogger(__name__)
 
 class YahooFleamarketScraper:
     def __init__(self):
-        self.driver = WebDriverManager.get_driver("yahoo_fleamarket")
+        self.driver = WebDriverManager.get_driver("yahoo_fleamarket1")
 
     
     def run(self, url):
         """Helper method to scrape details from a specific Yahoo Fleamarket product URL"""
+        logger.info("Yahoo fleamarket-1")
         try:
             self.driver.get(url)
             
             # Wait for main content to load
             WebDriverWait(self.driver, TIMEOUT).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, ".kAgSsD"))
+                EC.presence_of_element_located((By.CSS_SELECTOR, ".sc-3c604a9b-0.bdwqrh"))
             )
 
             # Get page source and parse all required fields
