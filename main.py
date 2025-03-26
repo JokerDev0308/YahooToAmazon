@@ -117,7 +117,7 @@ class Scraper:
                         if index == 0:
                             result = self.scraper_auction(p_url)
                         else:
-                            result = self.scraper_auction1(p_url)
+                            result = self.scraper_auction(p_url)    # Change to self.scraper_auction1(p_url) to use the second scraper
                     elif 'paypayfleamarket.yahoo.co.jp' in p_url:
                         result = self.scraper_fleaMarket(p_url)
 
