@@ -31,7 +31,7 @@ class YahooAuctionScraper1:
             data = {
                 '商品URL': url,
                 '商品画像': 'N/A',
-                '商品名': self._safe_find('.gv-u-fontWeightBold--sVSx7bUE6MAd26cg9XrB'),
+                '商品名': self._safe_find('.fTKYpL>.eTzLQx>.gv-u-fontWeightBold--sVSx7bUE6MAd26cg9XrB'),
                 '商品ID':self._extract_id(url, "auction"),
                 '販売価格': self.clean_price(self._safe_find_arr('.fHKtMh')[0].text),
                 '販売価格(即決)': self.clean_price(self._safe_find_arr('.fHKtMh')[1].text) if len(self._safe_find_arr('.fHKtMh')) > 1 else 0,
