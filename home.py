@@ -87,17 +87,17 @@ class PriceScraperUI:
             use_container_width=True, 
             height=height, 
             key="scraped_product_list",
-            # column_config={
-            #     "商品画像": st.column_config.ImageColumn(),
-            #     "画像URL1": st.column_config.ImageColumn(),
-            #     "画像URL2": st.column_config.ImageColumn(),
-            #     "画像URL3": st.column_config.ImageColumn(),
-            #     "画像URL4": st.column_config.ImageColumn(),
-            #     "画像URL5": st.column_config.ImageColumn(),
-            #     "画像URL6": st.column_config.ImageColumn(),
-            #     "画像URL7": st.column_config.ImageColumn(),
-            #     "画像URL8": st.column_config.ImageColumn(),
-            # }
+            column_config={
+                "商品画像": st.column_config.ImageColumn(),
+                "画像URL1": st.column_config.ImageColumn(),
+                "画像URL2": st.column_config.ImageColumn(),
+                "画像URL3": st.column_config.ImageColumn(),
+                "画像URL4": st.column_config.ImageColumn(),
+                "画像URL5": st.column_config.ImageColumn(),
+                "画像URL6": st.column_config.ImageColumn(),
+                "画像URL7": st.column_config.ImageColumn(),
+                "画像URL8": st.column_config.ImageColumn(),
+            }
         )
 
         if not self.running() and Path(config.SCRAPED_XLSX).exists():
@@ -150,7 +150,19 @@ class PriceScraperUI:
     def _display_and_download_products(self, amazon_df: pd.DataFrame):
         # Display dataframe
         height = min(len(amazon_df) * 35 + 38, 500)
-        st.dataframe(amazon_df, height=height, use_container_width=True)
+        st.dataframe(amazon_df, height=height,
+            use_container_width=True,
+            column_config={
+                "main_image_url": st.column_config.ImageColumn(),
+                "other_image_url1": st.column_config.ImageColumn(),
+                "other_image_url2": st.column_config.ImageColumn(),
+                "other_image_url3": st.column_config.ImageColumn(),
+                "other_image_url4": st.column_config.ImageColumn(),
+                "other_image_url5": st.column_config.ImageColumn(),
+                "other_image_url6": st.column_config.ImageColumn(),
+                "other_image_url7": st.column_config.ImageColumn(),
+                "other_image_url8": st.column_config.ImageColumn(),
+            })
         
         # Save and process file
         output_path = Path(config.AMAZON_PRODUCT_OUTPUT).with_suffix('.xlsx')
