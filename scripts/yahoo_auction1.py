@@ -24,7 +24,7 @@ class YahooAuctionScraper1:
             
             # Wait for main content to load
             WebDriverWait(self.driver, TIMEOUT).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, ".bEOjaA"))
+                EC.presence_of_element_located((By.CSS_SELECTOR, ".cUYAJX"))
             )
 
             # Get page source and parse all required fields
@@ -33,15 +33,15 @@ class YahooAuctionScraper1:
                 '商品画像': 'N/A',
                 '商品名': self._safe_find('.fTKYpL>.eTzLQx>.gv-u-fontWeightBold--sVSx7bUE6MAd26cg9XrB'),
                 '商品ID':self._extract_id(url, "auction"),
-                '販売価格': self.clean_price(self._safe_find_arr('.fHKtMh')[0].text),
-                '販売価格(即決)': self.clean_price(self._safe_find_arr('.fHKtMh')[1].text) if len(self._safe_find_arr('.fHKtMh')) > 1 else 0,
+                '販売価格': self.clean_price(self._safe_find_arr('.kxUAXU')[0].text),
+                '販売価格(即決)': self.clean_price(self._safe_find_arr('.kxUAXU')[1].text) if len(self._safe_find_arr('.kxUAXU')) > 1 else 0,
             }
-            counts = self.driver.find_elements(By.CSS_SELECTOR, '.jDULLH')
+            counts = self.driver.find_elements(By.CSS_SELECTOR, '.eSkbOZ')
             data['入札件数'] = counts[0].text if counts else "N/A"
             data['残り時間'] = counts[1].text if len(counts) > 1 else "N/A"
             data['商品状態']  = counts[2].text if len(counts) > 2 else "N/A"
             
-            data['出品者ID'] = self._extract_id(self._safe_find('.iRuFtz > a', 'href'), "seller")
+            data['出品者ID'] = self._extract_id(self._safe_find('.kuMeVm > a', 'href'), "seller")
 
             # Get all non-clone product images
             image_elements = self.driver.find_elements(By.CSS_SELECTOR, '.slick-track .slick-slide:not(.slick-cloned) .dJykpL img')
