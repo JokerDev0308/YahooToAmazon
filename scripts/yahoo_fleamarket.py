@@ -22,7 +22,7 @@ class YahooFleamarketScraper:
             
             # Wait for main content to load
             WebDriverWait(self.driver, TIMEOUT).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, ".bYMsWd")) 
+                EC.presence_of_element_located((By.CSS_SELECTOR, ".jdlCMw")) 
             )
 
             # Get page source and parse all required fields
