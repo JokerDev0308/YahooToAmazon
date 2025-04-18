@@ -22,14 +22,14 @@ class YahooFleamarketScraper:
             
             # Wait for main content to load
             WebDriverWait(self.driver, TIMEOUT).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, ".jdlCMw")) 
+                EC.presence_of_element_located((By.CSS_SELECTOR, ".ItemMain__Component")) 
             )
 
             # Get page source and parse all required fields
             data = {
                 '商品URL': url,
                 '商品画像': 'N/A',
-                '商品名': self._safe_find('.gHRTcR'),
+                '商品名': self._safe_find('.ItemTitle__Component'),
                 '商品ID':self._extract_id(url, "item"),
                 '販売価格': self.clean_price(self._safe_find('.lfSzHD')),
                 '商品状態': self._safe_find('.gIvWhM'),
