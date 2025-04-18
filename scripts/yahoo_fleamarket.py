@@ -42,7 +42,7 @@ class YahooFleamarketScraper:
             data['出品者ID'] = self._extract_id(self._safe_find('.bPwzBk a', "href"),'user')
 
             # Get all non-clone product images
-            image_elements = self.driver.find_elements(By.CSS_SELECTOR, '.bvEyKL')
+            image_elements = self.driver.find_elements(By.CSS_SELECTOR, '.bDgrAu')
             unique_image_urls = list(dict.fromkeys(img.get_attribute('src') for img in image_elements))[:8]
 
             # Add image URLs to data dictionary
