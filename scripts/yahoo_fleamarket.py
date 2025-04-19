@@ -19,6 +19,8 @@ class YahooFleamarketScraper:
         """Helper method to scrape details from a specific Yahoo Fleamarket product URL"""
         try:
             self.driver.get(url)
+
+            logger.info(url)
             
             # Wait for main content to load
             WebDriverWait(self.driver, TIMEOUT).until(
@@ -35,11 +37,15 @@ class YahooFleamarketScraper:
                 '商品状態': self._safe_find('.gIvWhM'),
             }
 
+            logger.info(data)
+
             # counts = self.driver.find_elements(By.CSS_SELECTOR, '.Count__detail')
             # data['入札件数'] = counts[0].text if counts else "N/A"
             # data['残り時間'] = counts[1].text if len(counts) > 1 else "N/A"
 
             data['出品者ID'] = self._extract_id(self._safe_find('.bPwzBk a', "href"),'user')
+
+            logger.info(data)
 
             # Get all non-clone product images
             image_elements = self.driver.find_elements(By.CSS_SELECTOR, '.bDgrAu')
@@ -51,6 +57,8 @@ class YahooFleamarketScraper:
 
 
             data['商品画像'] = data.get('画像URL1', 'N/A')
+
+            logger.info(data)
 
             return data
 
