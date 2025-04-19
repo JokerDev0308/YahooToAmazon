@@ -4,6 +4,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import re
 from config import TIMEOUT
 from webdriver_manager import WebDriverManager
+from datetime import datetime
 
 import logging
 # Configure logging
@@ -12,7 +13,8 @@ logger = logging.getLogger(__name__)
 
 class YahooFleamarketScraper:
     def __init__(self):
-        self.driver = WebDriverManager.get_driver("fleamarket")
+        uid = datetime.now().second
+        self.driver = WebDriverManager.get_driver(uid)
 
     
     def run(self, url):
