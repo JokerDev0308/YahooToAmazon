@@ -1,6 +1,6 @@
 # config.py
 HEADLESS = True  # Set to False if you want to see browser running
-TIMEOUT = 1  # Selenium wait timeout
+TIMEOUT = 10  # Selenium wait timeout
 
 
 CHROMEDRIVER_PATH = "drivers/chromedriver"
