@@ -27,6 +27,8 @@ class YahooFleamarketScraper:
                 EC.presence_of_element_located((By.CSS_SELECTOR, ".eOyszT")) 
             )
 
+            logger.info(url)
+
             # Get page source and parse all required fields
             data = {
                 '商品URL': url,
