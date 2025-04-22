@@ -20,6 +20,8 @@ class YahooFleamarketScraper:
         try:
             self.driver.get(url)
 
+            logger.info(url)
+
             # Wait for main content to load
             WebDriverWait(self.driver, TIMEOUT).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, ".eOyszT")) 
