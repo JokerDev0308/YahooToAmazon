@@ -41,7 +41,7 @@ class YahooAuctionScraper1:
             data['残り時間'] = counts[1].text if len(counts) > 1 else "N/A"
             data['商品状態']  = counts[2].text if len(counts) > 2 else "N/A"
             
-            data['出品者ID'] = self._extract_id(self._safe_find('.kuMeVm > a', 'href'), "seller")
+            data['出品者ID'] = self._extract_id(self._safe_find('.konYbX > a', 'href'), "seller")
 
             # Get all non-clone product images
             image_elements = self.driver.find_elements(By.CSS_SELECTOR, '.slick-track .slick-slide:not(.slick-cloned) img')
