@@ -45,7 +45,7 @@ class YahooAuctionScraper1:
 
             data['入札件数'] = self.driver.find_element(By.CSS_SELECTOR, 'a.gv-u-fontSize16--_aSkEz8L_OSLLKFaubKB').text
             data['残り時間'] = self.driver.find_elements(By.CSS_SELECTOR,'.gv-u-fontSize12--s5WnvVgDScOXPWU7Mgqd.gv-u-colorTextGray--OzMlIYwM3n8ZKUl0z2ES')[1].text
-            data['商品状態']  = self.driver.find_element(By.CSS_SELECTOR, '.czQQLT')[1].text
+            data['商品状態']  = self.driver.find_elements(By.CSS_SELECTOR, '.czQQLT')[1].text
             
             data['出品者ID'] = self._extract_id(self._safe_find('.konYbX > a', 'href'), "seller")
 
