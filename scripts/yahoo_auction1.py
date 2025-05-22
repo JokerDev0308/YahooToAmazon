@@ -35,7 +35,7 @@ class YahooAuctionScraper1:
                 '商品名': self._safe_find('.eTzLQx'),
                 '商品ID':self._extract_id(url, "auction"),
                 '販売価格': self.clean_price(self._safe_find_arr('.kxUAXU').text),
-                '販売価格(即決)': self.clean_price(self._safe_find_arr('.gv-u-fontSize12--s5WnvVgDScOXPWU7Mgqd.gv-u-colorContentOnSurfaceVariant--iGAjy0BdpomNMjXrpED_').text),
+                '販売価格(即決)': self.clean_price(self._safe_find_arr('.gv-u-fontSize12--s5WnvVgDScOXPWU7Mgqd.gv-u-colorContentOnSurfaceVariant--iGAjy0BdpomNMjXrpED_')),
             }
 
             counts = self.driver.find_elements(By.CSS_SELECTOR, '.gv-u-fontSize16--_aSkEz8L_OSLLKFaubKB')
