@@ -24,22 +24,28 @@ class YahooAuctionScraper1:
             
             # Wait for main content to load
             WebDriverWait(self.driver, TIMEOUT).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, ".cUYAJX"))
+                EC.presence_of_element_located((By.CSS_SELECTOR, ".WiVCl"))
             )
 
             # Get page source and parse all required fields
+                        
             data = {
                 '商品URL': url,
                 '商品画像': 'N/A',
-                '商品名': self._safe_find('.fTKYpL>.eTzLQx>.gv-u-fontWeightBold--sVSx7bUE6MAd26cg9XrB'),
+                '商品名': self._safe_find('.eTzLQx'),
                 '商品ID':self._extract_id(url, "auction"),
-                '販売価格': self.clean_price(self._safe_find_arr('.kxUAXU')[0].text),
-                '販売価格(即決)': self.clean_price(self._safe_find_arr('.kxUAXU')[1].text) if len(self._safe_find_arr('.kxUAXU')) > 1 else 0,
+                '販売価格': self.clean_price(self._safe_find_arr('.kxUAXU').text),
+                '販売価格(即決)': self.clean_price(self._safe_find_arr('.gv-u-fontSize12--s5WnvVgDScOXPWU7Mgqd.gv-u-colorContentOnSurfaceVariant--iGAjy0BdpomNMjXrpED_').text),
             }
-            counts = self.driver.find_elements(By.CSS_SELECTOR, '.eSkbOZ')
-            data['入札件数'] = counts[0].text if counts else "N/A"
-            data['残り時間'] = counts[1].text if len(counts) > 1 else "N/A"
-            data['商品状態']  = counts[2].text if len(counts) > 2 else "N/A"
+
+            counts = self.driver.find_elements(By.CSS_SELECTOR, '.gv-u-fontSize16--_aSkEz8L_OSLLKFaubKB')
+            # data['入札件数'] = counts[0].text if counts else "N/A"
+            # data['残り時間'] = counts[1].text if len(counts) > 1 else "N/A"
+            # data['商品状態']  = counts[2].text if len(counts) > 2 else "N/A"
+
+            data['入札件数'] = counts[4].text if counts else "N/A"
+            data['残り時間'] = self.driver.find_elements(By.CSS_SELECTOR,'.gv-u-fontSize12--s5WnvVgDScOXPWU7Mgqd.gv-u-colorTextGray--OzMlIYwM3n8ZKUl0z2ES')[1].text
+            data['商品状態']  = counts[6].text if counts else "N/A"
             
             data['出品者ID'] = self._extract_id(self._safe_find('.konYbX > a', 'href'), "seller")
 
