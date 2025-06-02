@@ -56,7 +56,7 @@ class PriceScraperUI:
         if not self.running():
             uploaded_file = st.file_uploader("商品URLリスト", type="xlsx")
             if uploaded_file is not None:
-                new_df = pd.read_excel(uploaded_file)
+                new_df = pd.read_excel(uploaded_file, dtype={col: str for col in yahoo_products_df.columns if col == "商品ID"})
 
                 for col in new_df.columns:
                     if col in yahoo_products_df.columns:
@@ -69,26 +69,28 @@ class PriceScraperUI:
                 st.success(f'データを保存しました {output_path}')
 
         if Path(config.SCRAPED_XLSX).exists():
-            df = pd.read_excel(config.SCRAPED_XLSX)
+            df = pd.read_excel(config.SCRAPED_XLSX, dtype={col: str for col in yahoo_products_df.columns if col == "商品ID"})
             for col in df.columns:
                 if col in yahoo_products_df.columns:
                     yahoo_products_df[col] = df[col]
-        
+
         yahoo_products_df.index = yahoo_products_df.index + 1
         height = min(len(yahoo_products_df) * 35 + 38, 500)
 
-        yahoo_products_df['商品ID'] = yahoo_products_df['商品ID'].fillna("").astype(str)
-        
+        # Ensure 商品ID is always string and remove .0 if present
+        yahoo_products_df['商品ID'] = yahoo_products_df['商品ID'].fillna("").astype(str).str.replace(r'\.0$', '', regex=True)
+
         if self.running():
             self.scraping_progress(len(yahoo_products_df))
-        
+
         st.dataframe(
-            yahoo_products_df, 
-            use_container_width=True, 
-            height=height, 
+            yahoo_products_df,
+            use_container_width=True,
+            height=height,
             key="scraped_product_list",
             column_config={
                 "商品画像": st.column_config.ImageColumn(),
+                "商品ID": st.column_config.TextColumn(),
                 "画像URL1": st.column_config.ImageColumn(),
                 "画像URL2": st.column_config.ImageColumn(),
                 "画像URL3": st.column_config.ImageColumn(),
@@ -106,11 +108,10 @@ class PriceScraperUI:
                 st.download_button(
                     label="商品リストをダウンロード",
                     data=file,
-                    file_name=f"製品リスト({timestamp}).xlsx", 
+                    file_name=f"製品リスト({timestamp}).xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                     use_container_width=True
                 )
-       
 
     def _setup_scraping_controls(self):
         if self.running():
