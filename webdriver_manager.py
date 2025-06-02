@@ -15,7 +15,8 @@ class WebDriverManager:
                 options.add_argument("--headless")
                 options.add_argument("--no-sandbox")
                 options.add_argument("--disable-dev-shm-usage")
-                options.binary_location = "/usr/bin/google-chrome"
+                options.binary_location = "/usr/bin/google-chrome"          # Linux
+                # options.binary_location = "C:\Program Files\Google\Chrome\Application\chrome.exe"     # Windows
                 options.add_argument("--remote-debugging-port=0")  # Use dynamic port
             
             service = Service(CHROMEDRIVER_PATH)

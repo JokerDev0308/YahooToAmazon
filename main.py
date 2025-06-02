@@ -9,6 +9,8 @@ from webdriver_manager import WebDriverManager
 from scripts.yahoo_auction import YahooAuctionScraper
 from scripts.yahoo_auction1 import YahooAuctionScraper1
 from scripts.yahoo_fleamarket import YahooFleamarketScraper
+from scripts.suruga import SurugaScraper
+from scripts.manda_rake_order import MandaRakeOrder
 import config
 from pathlib import Path
 
@@ -54,6 +56,8 @@ class Scraper:
         self.yahoo_auction_scraper = YahooAuctionScraper()
         self.yahoo_auction_scraper1 = YahooAuctionScraper1()
         self.yahoo_fleamaket_scraper = YahooFleamarketScraper()
+        self.suruga_scraper = SurugaScraper()
+        self.manda_rake_order = MandaRakeOrder()
         self.batch_size = config.BATCH_SIZE
         self.data_handler = DataHandler()
         
@@ -61,8 +65,10 @@ class Scraper:
     def load_data(self) -> bool:
         """Load data and return success status."""
         self.df = self.data_handler.load_excel(config.SCRAPED_XLSX)
+        if self.df is None:
+            return False
         self.df = self.df[~self.df['商品URL'].isna()]
-        return self.df is not None
+        return not self.df.empty
         
     def scraper_auction(self, url):
         try:
@@ -84,6 +90,24 @@ class Scraper:
         try:
             with ThreadPoolExecutor(max_workers=2) as executor:
                 future = executor.submit(self.yahoo_fleamaket_scraper.run, url)
+                return future.result()
+        except Exception as e:
+            return {'error': str(e)}
+        
+        
+    def scraper_suruga(self, url):
+        try:
+            with ThreadPoolExecutor(max_workers=2) as executor:
+                future = executor.submit(self.suruga_scraper.run, url)
+                return future.result()
+        except Exception as e:
+            return {'error': str(e)}
+        
+
+    def scraper_manda_rake_order(self, url):
+        try:
+            with ThreadPoolExecutor(max_workers=2) as executor:
+                future = executor.submit(self.manda_rake_order.run, url)
                 return future.result()
         except Exception as e:
             return {'error': str(e)}
@@ -120,6 +144,10 @@ class Scraper:
                         result = self.scraper_auction1(p_url)   
                     elif 'paypayfleamarket.yahoo.co.jp' in p_url:
                         result = self.scraper_fleaMarket(p_url)
+                    elif 'suruga-ya.jp' in p_url:
+                        result = self.scraper_suruga(p_url)
+                    elif 'order.mandarake.co.jp' in p_url:
+                        result = self.scraper_manda_rake_order(p_url)
 
                 self._update_dataframe(index, result)
 

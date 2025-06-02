@@ -13,6 +13,7 @@ env/
 # Ignore logs and temp files
 *.log
 *.tmp
+tmp
 
 
 # Ignore CSV input (optional, if you don’t want to commit JAN codes)
@@ -23,6 +24,7 @@ data/settings/
 
 
 # Ignore Selenium WebDriver binaries
+drivers/chromedriver.exe
 drivers/chromedriver
 drivers/geckodriver
 

@@ -3,7 +3,8 @@ HEADLESS = True  # Set to False if you want to see browser running
 TIMEOUT = 4  # Selenium wait timeout
 
 
-CHROMEDRIVER_PATH = "drivers/chromedriver"
+CHROMEDRIVER_PATH = "drivers/chromedriver"          # linux
+#CHROMEDRIVER_PATH = "drivers/chromedriver.exe"      # windows
 USERS_XLSX = 'data/users.json'
 SCRAPED_XLSX = 'data/scraped_data.xlsx'
 AMAZON_PRODUCT_TEMPLATE = 'data/amazon-product-table-template.xlsx'
