@@ -104,15 +104,26 @@ class MandaRakeOrder:
             return "N/A"
         
     def _extract_id(self, href, pre):
-        """Helper method to extract seller ID from the href of an anchor tag"""
+        """
+        Extracts the value following 'pre' in the URL.
+        For example, if pre="item?itemCode=", it extracts the itemCode value.
+        """
         try:
-            # Use a regular expression to extract the seller ID from the URL
-            match = re.search(rf'{pre}/([a-zA-Z0-9_-]+)', href)
-            if match:
-                return match.group(1)  # Return the seller ID part from the URL
-        except Exception as e:
-            logger.error(f"Failed to extract seller ID: {e}")
+            idx = href.find(pre)
+            if idx != -1:
+                start = idx + len(pre)
+                # Extract until next '&' or end of string
+                end = href.find('&', start)
+                if end == -1:
+                    return href[start:]
+                else:
+                    return href[start:end]
             return None
+        except Exception as e:
+            logger.error(f"Failed to extract value after '{pre}': {e}")
+            return None
+        
+
         
     def clean_price(self, price_str):
         """
