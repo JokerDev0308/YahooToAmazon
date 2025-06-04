@@ -69,6 +69,9 @@ class MandaRakeOrder:
                     if match:
                         image_urls.append(match.group(1))
 
+            # Limit to 8 images
+            image_urls = image_urls[:8]
+
             # Enumerate image_urls for later use
             image_urls = list(enumerate(image_urls, 1))
 

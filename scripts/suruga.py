@@ -50,6 +50,9 @@ class SurugaScraper:
             # Extract the 'src' attribute from each image element
             unique_image_urls = list(dict.fromkeys(img.get_attribute('src') for img in image_elements if img.get_attribute('src')))[:8]
 
+            # Limit to 8 images
+            unique_image_urls = unique_image_urls[:8]
+
             # Add image URLs to data dictionary
             for i, img_url in enumerate(unique_image_urls, 1):
                 data[f'画像URL{i}'] = img_url
