@@ -51,7 +51,10 @@ class MandaRakeOrder:
 
             # data['入札件数'] = self.driver.find_element(By.CSS_SELECTOR, 'a.gv-u-fontSize16--_aSkEz8L_OSLLKFaubKB').text
             # data['残り時間'] = self.driver.find_element(By.CSS_SELECTOR, 'span.gv-u-fontSize12--s5WnvVgDScOXPWU7Mgqd.gv-u-colorTextGray--OzMlIYwM3n8ZKUl0z2ES').text
-            data['商品状態']  = self.driver.find_element(By.CSS_SELECTOR, 'tr.condition > td').text.strip()
+            try:
+                data['商品状態'] = self.driver.find_element(By.CSS_SELECTOR, 'tr.condition > td').text.strip()
+            except Exception:
+                data['商品状態'] = ""
             
             # data['出品者ID'] = self._extract_id(self._safe_find('.konYbX > a', 'href'), "seller")
 
