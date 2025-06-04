@@ -32,7 +32,7 @@ class MandaRakeOrder:
                 '商品URL': url,
                 '商品画像': 'N/A',
                 '商品名': self._safe_find('div.subject>h1'),
-                '商品ID':self._extract_id(url, "itemCode="),
+                '商品ID':self._extract_id(url, "item?itemCode="),
             }
 
             price_element = self.driver.find_element(By.CSS_SELECTOR, '.shohin_price.__price + p').text.strip()
