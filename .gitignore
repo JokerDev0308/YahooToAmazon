@@ -10,7 +10,7 @@ venv/
 .env/
 env/
 
-.streamlit/
+.streamlit
 
 # Ignore logs and temp files
 *.log
