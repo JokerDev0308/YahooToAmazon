@@ -34,9 +34,10 @@ class SurugaScraper:
                 '商品画像': 'N/A',
                 '商品名': self._safe_find('#item_title'),
                 '商品ID':self._extract_id(url, "detail"),
-                '販売価格': self.clean_price(self._safe_find('.price-buy')),
+                '販売価格': self.clean_price(self._safe_find('.price-buy')) or self.clean_price(self._safe_find('.mgnT12 span.text-red')),
                 # '販売価格(即決)': self.clean_price(self._safe_find('.gv-u-fontSize12--s5WnvVgDScOXPWU7Mgqd.gv-u-colorContentOnSurfaceVariant--iGAjy0BdpomNMjXrpED_')),
             }
+
 
             # counts = self.driver.find_elements(By.CSS_SELECTOR, '.Count__detail')
             # data['入札件数'] = counts[0].text if counts else "N/A"
