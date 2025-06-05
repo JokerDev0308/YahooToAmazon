@@ -45,11 +45,8 @@ class YahooFleamarketScraper:
             image_elements = self.driver.find_elements(By.CSS_SELECTOR, '.bvEyKL')
             unique_image_urls = list(dict.fromkeys(img.get_attribute('src') for img in image_elements))[:8]
 
-            print(unique_image_urls)
-
             # Add image URLs to data dictionary
             for i, img_url in enumerate(unique_image_urls, 1):
-                print(img_url)
                 data[f'画像URL{i}'] = img_url
 
 
