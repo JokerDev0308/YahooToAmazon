@@ -49,7 +49,7 @@ class SurugaScraper:
             # Find all image elements inside .swiper-wrapper.total-img
             image_elements = self.driver.find_elements(By.CSS_SELECTOR, '.total-img img')
             # Extract the 'src' attribute from each image element
-            unique_image_urls = list(dict.fromkeys(img.get_attribute('src') for img in image_elements if img.get_attribute('src')))[:8]
+            unique_image_urls = list(dict.fromkeys(a.get_attribute('zoom-photo-url') for a in image_elements if a.get_attribute('zoom-photo-url')))[:8]
 
             # Limit to 8 images
             unique_image_urls = unique_image_urls[:8]
