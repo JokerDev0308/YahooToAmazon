@@ -24,7 +24,7 @@ class YahooAuctionScraper1:
             
             # Wait for main content to load
             WebDriverWait(self.driver, TIMEOUT).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, ".WiVCl"))
+                EC.presence_of_element_located((By.CSS_SELECTOR, ".bgnEiA"))
             )
 
             # Get page source and parse all required fields
@@ -35,7 +35,7 @@ class YahooAuctionScraper1:
                 '商品名': self._safe_find('.eTzLQx'),
                 '商品ID':self._extract_id(url, "auction"),
                 '販売価格': self.clean_price(self._safe_find('.kxUAXU')),
-                '販売価格(即決)': self.clean_price(self._safe_find('.gv-u-fontSize12--s5WnvVgDScOXPWU7Mgqd.gv-u-colorContentOnSurfaceVariant--iGAjy0BdpomNMjXrpED_')),
+                '販売価格(即決)': self.clean_price(self._safe_find('.eGrksu')),
             }
 
             # counts = self.driver.find_elements(By.CSS_SELECTOR, '.gv-u-fontSize16--_aSkEz8L_OSLLKFaubKB')
@@ -44,8 +44,8 @@ class YahooAuctionScraper1:
             # data['商品状態']  = counts[2].text if len(counts) > 2 else "N/A"
 
             data['入札件数'] = self.driver.find_element(By.CSS_SELECTOR, 'a.gv-u-fontSize16--_aSkEz8L_OSLLKFaubKB').text
-            data['残り時間'] = self.driver.find_element(By.CSS_SELECTOR, 'span.gv-u-fontSize12--s5WnvVgDScOXPWU7Mgqd.gv-u-colorTextGray--OzMlIYwM3n8ZKUl0z2ES').text
-            data['商品状態']  = self.driver.find_elements(By.CSS_SELECTOR, '.czQQLT')[1].text
+            data['残り時間'] = self.driver.find_element(By.CSS_SELECTOR, '.ntWoh span.gv-u-fontSize12--s5WnvVgDScOXPWU7Mgqd.gv-u-colorTextGray--OzMlIYwM3n8ZKUl0z2ES').text
+            data['商品状態']  = self.driver.find_elements(By.CSS_SELECTOR, '.czQQLT')[2].text
             
             data['出品者ID'] = self._extract_id(self._safe_find('.konYbX > a', 'href'), "seller")
 

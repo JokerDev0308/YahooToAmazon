@@ -22,7 +22,7 @@ class YahooFleamarketScraper:
 
             # Wait for main content to load
             WebDriverWait(self.driver, TIMEOUT).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, ".cePMol")) 
+                EC.presence_of_element_located((By.CSS_SELECTOR, ".ewpVai")) 
             )
 
             # Get page source and parse all required fields
@@ -32,7 +32,7 @@ class YahooFleamarketScraper:
                 '商品名': self._safe_find('.gHRTcR'),
                 '商品ID':self._extract_id(url, "item"),
                 '販売価格': self.clean_price(self._safe_find('.lfSzHD')),
-                '商品状態': self._safe_find('.gIvWhM'),
+                '商品状態': self._safe_find('.bgOrgw'),
             }
 
             # counts = self.driver.find_elements(By.CSS_SELECTOR, '.Count__detail')
@@ -42,7 +42,7 @@ class YahooFleamarketScraper:
             data['出品者ID'] = self._extract_id(self._safe_find('.bPwzBk a', "href"),'user')
 
             # Get all non-clone product images
-            image_elements = self.driver.find_elements(By.CSS_SELECTOR, '.bDgrAu')
+            image_elements = self.driver.find_elements(By.CSS_SELECTOR, '.bvEyKL')
             unique_image_urls = list(dict.fromkeys(img.get_attribute('src') for img in image_elements))[:8]
 
             # Add image URLs to data dictionary
