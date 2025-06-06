@@ -56,6 +56,8 @@ class SurugaScraper:
 
             # Add image URLs to data dictionary
             for i, img_url in enumerate(unique_image_urls, 1):
+                if img_url.lower().endswith('.webp'):
+                    img_url = f"https://images.weserv.nl/?url={img_url}&output=jpg&q=90"
                 data[f'画像URL{i}'] = img_url
 
 
