@@ -43,6 +43,14 @@ class YahooFleamarketScraper:
 
             # Get all non-clone product images
             image_elements = self.driver.find_elements(By.CSS_SELECTOR, '.bvEyKL')
+
+            # If not found, try alternative selector
+            if not image_elements:
+                image_elements = self.driver.find_elements(By.CSS_SELECTOR, '.bDgrAu')
+
+            if not image_elements:
+                image_elements = []
+
             unique_image_urls = list(dict.fromkeys(img.get_attribute('src') for img in image_elements))[:8]
 
             # Add image URLs to data dictionary
