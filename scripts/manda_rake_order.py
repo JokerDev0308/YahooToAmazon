@@ -4,6 +4,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import re
 from config import TIMEOUT
 from webdriver_manager import WebDriverManager
+from time import sleep
 
 import logging
 # Configure logging
@@ -12,37 +13,17 @@ logger = logging.getLogger(__name__)
 
 class MandaRakeOrder:
     def __init__(self):
-        # Set custom user-agent and options to reduce bot detection
-        from selenium.webdriver import ChromeOptions
-        options = ChromeOptions()
-        options.add_argument("--disable-blink-features=AutomationControlled")
-        options.add_argument("--disable-infobars")
-        options.add_argument("--disable-extensions")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--window-size=1200,800")
-        options.add_argument(
-            "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-        )
-        # If WebDriverManager supports passing options, do so
-        try:
-            self.driver = WebDriverManager.get_driver("manda_rake_order", options=options)
-        except TypeError:
-            # fallback if not supported
-            self.driver = WebDriverManager.get_driver("manda_rake_order")
-            try:
-                self.driver.execute_cdp_cmd(
-                    "Network.setUserAgentOverride",
-                    {"userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"}
-                )
-            except Exception as e:
-                logger.warning(f"Could not set user-agent via CDP: {e}")
+        self.driver = WebDriverManager.get_driver("manda_rake_order")
 
     
     def run(self, url):
         """Helper method to scrape details from a specific product URL"""
 
         try:
+            self.driver.get("https://mandarake.co.jp/")
+
+            sleep(2)  # Wait for the homepage to load completely
+
             self.driver.get(url)
             
             # Wait for main content to load
