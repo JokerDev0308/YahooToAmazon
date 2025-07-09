@@ -185,4 +185,9 @@ def make_amazon_products()->pd.DataFrame:
     
 
 
+    # Ensure Arrow/Streamlit compatibility: convert problematic columns to string
+    for col in ["recommended_browse_nodes", "generic_keywords"]:
+        if col in amazon_products.columns:
+            amazon_products[col] = amazon_products[col].astype(str)
+
     return amazon_products
