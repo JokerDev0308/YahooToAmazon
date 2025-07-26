@@ -24,7 +24,7 @@ class YahooAuctionScraper1:
             
             # Wait for main content to load
             WebDriverWait(self.driver, TIMEOUT).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, ".sc-4a4befc7-1"))
+                EC.presence_of_element_located((By.CSS_SELECTOR, ".jdIrpj"))
             )
 
             # Get page source and parse all required fields
@@ -32,7 +32,7 @@ class YahooAuctionScraper1:
             data = {
                 '商品URL': url,
                 '商品画像': 'N/A',
-                '商品名': self._safe_find('.eTzLQx'),
+                '商品名': self._safe_find('#itemTitle'),
                 '商品ID':self._extract_id(url, "auction"),
                 '販売価格': self.clean_price(self._safe_find('.kxUAXU')),
                 '販売価格(即決)': self.clean_price(self._safe_find('.eGrksu')),
