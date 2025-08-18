@@ -50,13 +50,13 @@ class YahooAuctionScraper1:
             data['出品者ID'] = self._extract_id(self._safe_find('.konYbX > a', 'href'), "seller")
 
             # Get all non-clone product images
-            image_elements = self.driver.find_elements(By.CSS_SELECTOR, '.slick-track .slick-slide:not(.slick-cloned) img')
+            # image_elements = self.driver.find_elements(By.CSS_SELECTOR, '.slick-track .slick-slide:not(.slick-cloned) img')
             
-            unique_image_urls = list(dict.fromkeys(img.get_attribute('src') for img in image_elements))[:8]
+            # unique_image_urls = list(dict.fromkeys(img.get_attribute('src') for img in image_elements))[:8]
 
             # Add image URLs to data dictionary
-            for i, img_url in enumerate(unique_image_urls, 1):
-                data[f'画像URL{i}'] = img_url
+            # for i, img_url in enumerate(unique_image_urls, 1):
+            #     data[f'画像URL{i}'] = img_url
 
             # # Get all image URLs from main product images
             # image_elements = self.driver.find_elements(By.CSS_SELECTOR, '.ProductImage__inner img')
@@ -67,7 +67,7 @@ class YahooAuctionScraper1:
             # for i, img_url in enumerate(image_urls, 1):
             #     data[f'image{i}'] = img_url
 
-            data['商品画像'] = data.get('画像URL1', 'N/A')
+            # data['商品画像'] = data.get('画像URL1', 'N/A')
 
             return data
 
