@@ -43,20 +43,20 @@ class YahooAuctionScraper1:
             # data['残り時間'] = counts[1].text if len(counts) > 1 else "N/A"
             # data['商品状態']  = counts[2].text if len(counts) > 2 else "N/A"
 
-            # data['入札件数'] = self.driver.find_element(By.CSS_SELECTOR, 'a.gv-u-fontSize16--_aSkEz8L_OSLLKFaubKB').text
-            # data['残り時間'] = self.driver.find_element(By.CSS_SELECTOR, '.ntWoh span.gv-u-fontSize12--s5WnvVgDScOXPWU7Mgqd.gv-u-colorTextGray--OzMlIYwM3n8ZKUl0z2ES').text
-            # data['商品状態']  = self.driver.find_elements(By.CSS_SELECTOR, '.czQQLT')[2].text
+            data['入札件数'] = self.driver.find_element(By.CSS_SELECTOR, 'a.gv-u-fontSize16--_aSkEz8L_OSLLKFaubKB').text
+            data['残り時間'] = self.driver.find_element(By.CSS_SELECTOR, '.ntWoh span.gv-u-fontSize12--s5WnvVgDScOXPWU7Mgqd.gv-u-colorTextGray--OzMlIYwM3n8ZKUl0z2ES').text
+            data['商品状態']  = self.driver.find_elements(By.CSS_SELECTOR, '.czQQLT')[2].text
             
             data['出品者ID'] = self._extract_id(self._safe_find('.konYbX > a', 'href'), "seller")
 
             # Get all non-clone product images
-            # image_elements = self.driver.find_elements(By.CSS_SELECTOR, '.slick-track .slick-slide:not(.slick-cloned) img')
+            image_elements = self.driver.find_elements(By.CSS_SELECTOR, '.slick-track .slick-slide:not(.slick-cloned) img')
             
-            # unique_image_urls = list(dict.fromkeys(img.get_attribute('src') for img in image_elements))[:8]
+            unique_image_urls = list(dict.fromkeys(img.get_attribute('src') for img in image_elements))[:8]
 
             # Add image URLs to data dictionary
-            # for i, img_url in enumerate(unique_image_urls, 1):
-            #     data[f'画像URL{i}'] = img_url
+            for i, img_url in enumerate(unique_image_urls, 1):
+                data[f'画像URL{i}'] = img_url
 
             # # Get all image URLs from main product images
             # image_elements = self.driver.find_elements(By.CSS_SELECTOR, '.ProductImage__inner img')
@@ -67,7 +67,7 @@ class YahooAuctionScraper1:
             # for i, img_url in enumerate(image_urls, 1):
             #     data[f'image{i}'] = img_url
 
-            # data['商品画像'] = data.get('画像URL1', 'N/A')
+            data['商品画像'] = data.get('画像URL1', 'N/A')
 
             return data
 
