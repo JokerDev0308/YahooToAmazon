@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class YahooFleamarketScraper:
     def __init__(self):
-        self.driver = WebDriverManager.get_driver('fleamarket0424')
+        self.driver = WebDriverManager.get_driver('fleamarket0914')
 
     
     def run(self, url):
