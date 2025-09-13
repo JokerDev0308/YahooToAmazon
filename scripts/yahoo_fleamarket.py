@@ -17,6 +17,9 @@ class YahooFleamarketScraper:
     
     def run(self, url):
         """Helper method to scrape details from a specific Yahoo Fleamarket product URL"""
+
+        data = {}
+
         try:
             self.driver.get(url)
 
@@ -64,7 +67,8 @@ class YahooFleamarketScraper:
 
         except Exception as e:
             logger.error(f"URL scraping failed for {url}: {e}")
-            return {"商品URL": url} 
+            # return {"商品URL": url} 
+            return data
 
     def _safe_find(self, selector, attribute=None):
         """Helper method to safely find elements and get their text or attribute"""
