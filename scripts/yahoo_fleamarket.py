@@ -32,7 +32,7 @@ class YahooFleamarketScraper:
             data = {
                 '商品URL': url,
                 '商品画像': 'N/A',
-                '商品名': self._safe_find('.ItemTitle__Component'),
+                '商品名': self._safe_find('.cbMEDL'),
                 '商品ID':self._extract_id(url, "item"),
                 '販売価格': self.clean_price(self._safe_find('.eZCKPx')),
                 '商品状態': self._safe_find('.fxgRfG'),
@@ -45,7 +45,7 @@ class YahooFleamarketScraper:
             data['出品者ID'] = self._extract_id(self._safe_find('.bPwzBk a', "href"),'user')
 
             # Get all non-clone product images
-            image_elements = self.driver.find_elements(By.CSS_SELECTOR, '.sc-9b33bf35-3 bDgrAu')
+            image_elements = self.driver.find_elements(By.CSS_SELECTOR, '.sc-9b33bf35-3.bDgrAu')
 
             # If not found, try alternative selector
             if not image_elements:
