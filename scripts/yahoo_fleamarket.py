@@ -11,44 +11,45 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-class YahooFleamarketScraper:
-    def __init__(self):
-        self.driver = WebDriverManager.get_driver('fleamarket0914')
 
-    def run(self, url):
+class YahooFleamarketScraper:
+    def run(self, url, profile_name):
         """Scrape product details from a Yahoo Flea Market product page."""
         data = {}
+        logger.info(f"Scraping Yahoo Flea Market URL: {url} (Profile: {profile_name})")
 
-        logger.info(f"Scraping URL: {url}")
+        driver = None
 
         try:
-            self.driver.get(url)
+            # Use unique Chrome profile per session
+            driver = WebDriverManager.get_driver(profile_name)
+            driver.get(url)
 
-            # Wait for a key element to load
-            WebDriverWait(self.driver, TIMEOUT).until(
+            # Wait for page to load
+            WebDriverWait(driver, TIMEOUT).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, ".kKVxMl"))
             )
 
             # Product Name
-            product_name = self._safe_find('.cbMEDL')
+            product_name = self._safe_find(driver, '.cbMEDL')
             if product_name == "N/A":
-                product_name = self._safe_find('h1')
+                product_name = self._safe_find(driver, 'h1')
 
             # Price
-            raw_price = self._safe_find('.eZCKPx')
+            raw_price = self._safe_find(driver, '.eZCKPx')
             if raw_price == "N/A":
-                raw_price = self._safe_find('.Price__value')
+                raw_price = self._safe_find(driver, '.Price__value')
             price = self.clean_price(raw_price)
 
             # Product Condition
-            condition = self._safe_find('.fxgRfG')
+            condition = self._safe_find(driver, '.fxgRfG')
             if condition == "N/A":
-                condition = self._safe_find('.ProductCondition__value')
+                condition = self._safe_find(driver, '.ProductCondition__value')
 
             # Seller ID
-            seller_href = self._safe_find('.bPwzBk a', "href")
+            seller_href = self._safe_find(driver, '.bPwzBk a', "href")
             if seller_href == "N/A":
-                seller_href = self._safe_find('a[href*="user/"]', "href")
+                seller_href = self._safe_find(driver, 'a[href*="user/"]', "href")
             seller_id = self._extract_id(seller_href, 'user')
 
             # Product Images
@@ -60,10 +61,10 @@ class YahooFleamarketScraper:
 
             image_elements = []
             for selector in image_selectors:
-                elements = self.driver.find_elements(By.CSS_SELECTOR, selector)
+                elements = driver.find_elements(By.CSS_SELECTOR, selector)
                 if elements:
                     image_elements = elements
-                    break  # Use first working selector
+                    break
 
             unique_image_urls = []
             for img in image_elements:
@@ -72,14 +73,14 @@ class YahooFleamarketScraper:
                     if src and src.startswith("http") and src not in unique_image_urls:
                         unique_image_urls.append(src)
                 except Exception:
-                    continue  # Skip broken image elements
+                    continue
 
-            unique_image_urls = unique_image_urls[:8]  # Limit to 8 images
+            unique_image_urls = unique_image_urls[:8]  # Limit to 8
 
             # Extract item ID from URL
             item_id = self._extract_id(url, "item")
 
-            # Assemble data dictionary
+            # Data dict
             data = {
                 '商品URL': url,
                 '商品画像': unique_image_urls[0] if unique_image_urls else 'N/A',
@@ -94,17 +95,26 @@ class YahooFleamarketScraper:
             for i, img_url in enumerate(unique_image_urls, 1):
                 data[f'画像URL{i}'] = img_url
 
-            logger.info(f"Scraping completed for: {url}")
+            logger.info(f"Scraping successful for: {url}")
             return data
 
         except Exception as e:
             logger.error(f"Scraping failed for URL {url}: {e}")
             return data
 
-    def _safe_find(self, selector, attribute=None):
-        """Safely find an element and return its text or specified attribute, or 'N/A'."""
+        finally:
+            # Close the driver after use (or let WebDriverManager handle global cleanup)
+            try:
+                if driver:
+                    driver.quit()
+                    logger.info(f"Driver closed for profile: {profile_name}")
+            except Exception as e:
+                logger.error(f"Failed to close driver for {profile_name}: {e}")
+
+    def _safe_find(self, driver, selector, attribute=None):
+        """Safely extract text or attribute from a single element."""
         try:
-            element = self.driver.find_element(By.CSS_SELECTOR, selector)
+            element = driver.find_element(By.CSS_SELECTOR, selector)
             if attribute:
                 value = element.get_attribute(attribute)
                 return value.strip() if value else "N/A"
@@ -116,7 +126,7 @@ class YahooFleamarketScraper:
             return "N/A"
 
     def _extract_id(self, text, key):
-        """Extract ID from string based on a prefix."""
+        """Extract value after a specific key in a URL (e.g., user/item ID)."""
         try:
             if not text or text == "N/A":
                 return "N/A"
@@ -127,7 +137,7 @@ class YahooFleamarketScraper:
             return "N/A"
 
     def clean_price(self, price_str):
-        """Convert price string like '1,000円（税込）' to float."""
+        """Convert price string like '1,000円' to float 1000.0."""
         try:
             if not price_str or price_str == "N/A":
                 return 0.0
@@ -137,14 +147,5 @@ class YahooFleamarketScraper:
                 return float(cleaned_price)
             return 0.0
         except Exception as e:
-            logger.debug(f"Failed to clean price from string '{price_str}': {e}")
+            logger.debug(f"Price cleaning failed for '{price_str}': {e}")
             return 0.0
-
-    def close(self):
-        """Close the Selenium driver."""
-        try:
-            if self.driver:
-                self.driver.quit()
-                logger.info("Web driver closed.")
-        except Exception as e:
-            logger.error(f"Error closing driver: {e}")

@@ -12,14 +12,14 @@ logger = logging.getLogger(__name__)
 
 class SurugaScraper:
     def __init__(self):
-        self.driver = WebDriverManager.get_driver("suruga")
-
+        self.driver = None
     
-    def run(self, url):
+    def run(self, url, profile_name):
         """Helper method to scrape details from a specific product URL"""
         logger.info(f"Suruga")
 
         try:
+            self.driver = WebDriverManager.get_driver(profile_name)
             self.driver.get(url)
             
             # Wait for main content to load

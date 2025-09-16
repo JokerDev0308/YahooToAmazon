@@ -12,13 +12,14 @@ logger = logging.getLogger(__name__)
 
 class YahooAuctionScraper:
     def __init__(self):
-        self.driver = WebDriverManager.get_driver("yahoo_auction")
+        self.driver = None
 
     
-    def run(self, url):
+    def run(self, url, profile_name):
         """Helper method to scrape details from a specific Yahoo Auction product URL"""
         logger.info(f"Yahoo Auction")
         try:
+            self.driver = WebDriverManager.get_driver(profile_name)
             self.driver.get(url)
             
             # Wait for main content to load

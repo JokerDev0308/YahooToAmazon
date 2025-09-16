@@ -5,6 +5,9 @@ import os
 from time import sleep
 from typing import Optional, Dict, Any
 from concurrent.futures import ThreadPoolExecutor
+import uuid
+from pathlib import Path
+
 from webdriver_manager import WebDriverManager
 from scripts.yahoo_auction import YahooAuctionScraper
 from scripts.yahoo_auction1 import YahooAuctionScraper1
@@ -12,12 +15,11 @@ from scripts.yahoo_fleamarket import YahooFleamarketScraper
 from scripts.suruga import SurugaScraper
 from scripts.manda_rake_order import MandaRakeOrder
 import config
-from pathlib import Path
+
 
 class DataHandler:
     @staticmethod
     def load_excel(file_path: str) -> Optional[pd.DataFrame]:
-        """Load data from Excel file with error handling."""
         try:
             return pd.read_excel(file_path)
         except FileNotFoundError:
@@ -29,7 +31,6 @@ class DataHandler:
 
     @staticmethod
     def save_excel(df: pd.DataFrame, file_path: str) -> bool:
-        """Save DataFrame to Excel with error handling."""
         try:
             os.makedirs(os.path.dirname(file_path), exist_ok=True)
             df.to_excel(file_path, index=False)
@@ -38,17 +39,16 @@ class DataHandler:
         except Exception as e:
             print(f"Error saving file: {str(e)}")
             return False
-    
+
     @staticmethod
     def set_progress(progress: int) -> None:
-        """Save progress value to file with error handling."""
         try:
             progress_file = Path(config.PROGRESS_TXT)
             progress_file.parent.mkdir(exist_ok=True)
             progress_file.write_text(str(progress))
         except Exception as e:
             print(f"Error saving progress: {e}")
-        
+
 
 class Scraper:
     def __init__(self):
@@ -60,72 +60,62 @@ class Scraper:
         self.manda_rake_order = MandaRakeOrder()
         self.batch_size = config.BATCH_SIZE
         self.data_handler = DataHandler()
-        
 
     def load_data(self) -> bool:
-        """Load data and return success status."""
         self.df = self.data_handler.load_excel(config.SCRAPED_XLSX)
         if self.df is None:
             return False
         self.df = self.df[~self.df['商品URL'].isna()]
         return not self.df.empty
-        
-    def scraper_auction(self, url):
-        try:
-            with ThreadPoolExecutor(max_workers=2) as executor:
-                future = executor.submit(self.yahoo_auction_scraper.run, url)
-                return future.result()
-        except Exception as e:
-            return {'error': str(e)}
-    
-    def scraper_auction1(self, url):
-        try:
-            with ThreadPoolExecutor(max_workers=2) as executor:
-                future = executor.submit(self.yahoo_auction_scraper1.run, url)
-                return future.result()
-        except Exception as e:
-            return {'error': str(e)}
-        
-    def scraper_fleaMarket(self, url):
-        try:
-            with ThreadPoolExecutor(max_workers=2) as executor:
-                future = executor.submit(self.yahoo_fleamaket_scraper.run, url)
-                return future.result()
-        except Exception as e:
-            return {'error': str(e)}
-        
-        
-    def scraper_suruga(self, url):
-        try:
-            with ThreadPoolExecutor(max_workers=2) as executor:
-                future = executor.submit(self.suruga_scraper.run, url)
-                return future.result()
-        except Exception as e:
-            return {'error': str(e)}
-        
 
-    def scraper_manda_rake_order(self, url):
+    def run_with_new_profile(self, scraper_func, url):
+        profile_name = f"profile_{uuid.uuid4().hex[:8]}"
+        with ThreadPoolExecutor(max_workers=1) as executor:
+            future = executor.submit(scraper_func, url, profile_name)
+            return future.result()
+
+    def scraper_auction(self, url, profile_name):
         try:
-            with ThreadPoolExecutor(max_workers=2) as executor:
-                future = executor.submit(self.manda_rake_order.run, url)
-                return future.result()
+            return self.yahoo_auction_scraper.run(url, profile_name)
         except Exception as e:
             return {'error': str(e)}
-        
+
+    def scraper_auction1(self, url, profile_name):
+        try:
+            return self.yahoo_auction_scraper1.run(url, profile_name)
+        except Exception as e:
+            return {'error': str(e)}
+
+    def scraper_fleaMarket(self, url, profile_name):
+        try:
+            return self.yahoo_fleamaket_scraper.run(url, profile_name)
+        except Exception as e:
+            return {'error': str(e)}
+
+    def scraper_suruga(self, url, profile_name):
+        try:
+            return self.suruga_scraper.run(url, profile_name)
+        except Exception as e:
+            return {'error': str(e)}
+
+    def scraper_manda_rake_order(self, url, profile_name):
+        try:
+            return self.manda_rake_order.run(url, profile_name)
+        except Exception as e:
+            return {'error': str(e)}
 
     def scrape_running(self) -> None:
-        """Main scraping loop with improved error handling and optimization."""
-        if not self.df is not None or self.df.empty:
+        if self.df is None or self.df.empty:
             print("No data to process")
             return
-        
+
         result = None
+        total_records = len(self.df)
 
         try:
-            total_records = len(self.df)
             for index, row in self.df.iterrows():
                 if not self._check_running():
-                    print("Scraping was stopped")
+                    print("Scraping stopped manually.")
                     break
 
                 print(f"Processing {index + 1}/{total_records}")
@@ -134,76 +124,68 @@ class Scraper:
                 if not p_url:
                     print(f"Missing URL at index {index}")
                     continue
-                else:
-                    if 'auctions.yahoo.co.jp' in p_url:
-                        if '/auctions.yahoo.co.jp/jp/auction/' in p_url:
-                            p_url = p_url.replace('/auctions.yahoo.co.jp/jp/auction/', '/page.auctions.yahoo.co.jp/jp/auction/')
-                        # if index == 0:
-                        #     result = self.scraper_auction(p_url)
-                        # else:
-                        result = self.scraper_auction1(p_url)   
-                    elif 'paypayfleamarket.yahoo.co.jp' in p_url:
-                        result = self.scraper_fleaMarket(p_url)
-                    elif 'suruga-ya.jp' in p_url:
-                        result = self.scraper_suruga(p_url)
-                    elif 'order.mandarake.co.jp' in p_url:
-                        result = self.scraper_manda_rake_order(p_url)
+
+                if 'auctions.yahoo.co.jp' in p_url:
+                    if '/auctions.yahoo.co.jp/jp/auction/' in p_url:
+                        p_url = p_url.replace('/auctions.yahoo.co.jp/jp/auction/', '/page.auctions.yahoo.co.jp/jp/auction/')
+                    result = self.run_with_new_profile(self.scraper_auction1, p_url)
+
+                elif 'paypayfleamarket.yahoo.co.jp' in p_url:
+                    result = self.run_with_new_profile(self.scraper_fleaMarket, p_url)
+
+                elif 'suruga-ya.jp' in p_url:
+                    result = self.run_with_new_profile(self.scraper_suruga, p_url)
+
+                elif 'order.mandarake.co.jp' in p_url:
+                    result = self.run_with_new_profile(self.scraper_manda_rake_order, p_url)
 
                 self._update_dataframe(index, result)
+                self.data_handler.set_progress(index + 1)
 
-                self.data_handler.set_progress(index+1)
                 if self._should_save_batch(index, total_records):
                     self.save_results()
+
                 sleep(1)
 
-            if self._check_running():              
-                self.stop_running()                
+            if self._check_running():
+                self.stop_running()
+
         except Exception as e:
             print(f"Scraping error: {str(e)}")
         finally:
             self.cleanup()
 
-
     def _update_dataframe(self, index: int, results: Dict[str, Any]) -> None:
-        """Update DataFrame with scraped results."""
         for key, value in results.items():
-            # Ensure the column dtype is 'object' to allow any type assignment
-            if self.df[key].dtype != 'object':
-                self.df[key] = self.df[key].astype('object')
-
-            # Assign the value (if 'N/A', convert to NaN or assign as string if needed)
-            if value == 'N/A' or value == "nan":  # Example handling for 'N/A'
-                self.df.at[index, key] = ''  # Assign string 'N/A'
-            else:
-                self.df.at[index, key] = value
+            if key not in self.df.columns:
+                self.df[key] = np.nan
+            self.df.at[index, key] = '' if value in ['N/A', 'nan'] else value
 
     def _should_save_batch(self, index: int, total_records: int) -> bool:
-        """Determine if current batch should be saved."""
         return (index + 1) % self.batch_size == 0 or (index + 1) == total_records
 
     @staticmethod
     def _check_running() -> bool:
-        """Check if scraping should continue."""
         return os.path.exists(config.RUNNING)
-    
+
     @staticmethod
     def stop_running():
-        running_file = Path(config.RUNNING)
-        progress_file = Path(config.PROGRESS_TXT)
-        if running_file.exists():
-            running_file.unlink()
-        if progress_file.exists():
-            progress_file.unlink()
+        for path in [config.RUNNING, config.PROGRESS_TXT]:
+            try:
+                file = Path(path)
+                if file.exists():
+                    file.unlink()
+            except Exception:
+                pass
 
     def save_results(self) -> None:
-        """Save results to Excel file."""
         if self.df is not None:
             self.data_handler.save_excel(self.df, config.SCRAPED_XLSX)
 
     @staticmethod
     def cleanup() -> None:
-        """Cleanup resources."""
         WebDriverManager.close_all()
+
 
 def main():
     scraper = None
@@ -218,6 +200,7 @@ def main():
     finally:
         if scraper:
             scraper.cleanup()
+
 
 if __name__ == "__main__":
     main()

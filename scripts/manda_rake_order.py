@@ -13,13 +13,14 @@ logger = logging.getLogger(__name__)
 
 class MandaRakeOrder:
     def __init__(self):
-        self.driver = WebDriverManager.get_driver("manda_rake_order")
+        self.driver =None
 
     
-    def run(self, url):
+    def run(self, url, profile_name):
         """Helper method to scrape details from a specific product URL"""
 
         try:
+            self.driver = WebDriverManager.get_driver(profile_name)
             self.driver.get("https://mandarake.co.jp/")
 
             sleep(2)  # Wait for the homepage to load completely
