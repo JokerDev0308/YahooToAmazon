@@ -20,6 +20,8 @@ class YahooFleamarketScraper:
 
         data = {}
 
+        print('yahoo_fleamarket.py - run() called', url)
+
         try:
             self.driver.get(url)
 
