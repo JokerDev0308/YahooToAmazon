@@ -6,6 +6,8 @@ from config import TIMEOUT
 from webdriver_manager import WebDriverManager
 
 import logging
+from time import sleep
+from random import randint
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -19,6 +21,7 @@ class YahooFleamarketScraper:
         logger.info(f"Scraping Yahoo Flea Market URL: {url} (Profile: {profile_name})")
 
         driver = None
+        sleep(randint(0, 20))  # Initial wait to ensure any previous operations are settled
 
         try:
             # Use unique Chrome profile per session
