@@ -25,7 +25,7 @@ class YahooAuctionScraper1:
             
             # Wait for main content to load
             WebDriverWait(self.driver, TIMEOUT).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, ".jdIrpj"))
+                EC.presence_of_element_located((By.CSS_SELECTOR, ".gfZMtt"))
             )
 
             # Get page source and parse all required fields
