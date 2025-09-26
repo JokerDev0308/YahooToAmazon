@@ -159,6 +159,9 @@ class Scraper:
         for key, value in results.items():
             if key not in self.df.columns:
                 self.df[key] = np.nan
+            # Ensure dtype is object before assigning string values
+            if self.df[key].dtype != 'O':
+                self.df[key] = self.df[key].astype('object')
             self.df.at[index, key] = '' if value in ['N/A', 'nan'] else value
 
     def _should_save_batch(self, index: int, total_records: int) -> bool:
